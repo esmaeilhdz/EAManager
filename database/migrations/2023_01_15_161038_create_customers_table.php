@@ -17,9 +17,10 @@ class CreateCustomersTable extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('parent_id')->nullable()->comment('معرف');
+            $table->string('code', 32)->index()->unique();
             $table->string('name');
             $table->string('mobile', 11);
-            $table->string('tel', 20);
+            $table->string('tel', 20)->nullable();
             $table->unsignedTinyInteger('score')->default(0);
             $table->unsignedBigInteger('created_by');
             $table->timestamps();

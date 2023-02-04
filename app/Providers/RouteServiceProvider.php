@@ -78,6 +78,8 @@ class RouteServiceProvider extends ServiceProvider
             $this->mapSewing();
             // روت برش
             $this->mapCutting();
+            // روت مشتری
+            $this->mapCustomer();
 
         });
     }
@@ -214,6 +216,15 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/cutting.php'));
+
+    }
+
+    private function mapCustomer()
+    {
+        Route::prefix('api')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/customer.php'));
 
     }
 

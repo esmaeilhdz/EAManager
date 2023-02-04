@@ -7,6 +7,7 @@ use App\Helpers\AccessoryHelper;
 use App\Helpers\AccountHelper;
 use App\Helpers\ClothBuyHelper;
 use App\Helpers\ClothHelper;
+use App\Helpers\CustomerHelper;
 use App\Helpers\CuttingHelper;
 use App\Helpers\NotifHelper;
 use App\Helpers\PeriodSaleHelper;
@@ -44,6 +45,7 @@ class HelperServiceProvider extends ServiceProvider
         App::alias(ProductPriceHelper::class, 'product_price_helper');
         App::alias(SewingHelper::class, 'sewing_helper');
         App::alias(CuttingHelper::class, 'cutting_helper');
+        App::alias(CustomerHelper::class, 'customer_helper');
     }
 
     /**
