@@ -17,6 +17,8 @@ class CreateCitiesTable extends Migration
             $table->id();
             $table->unsignedBigInteger('province_id');
             $table->string('name');
+            $table->string('latitude');
+            $table->string('longitude');
 
             $table->engine = 'InnoDB';
 

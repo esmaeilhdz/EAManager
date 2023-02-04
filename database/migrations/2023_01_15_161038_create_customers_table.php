@@ -20,7 +20,6 @@ class CreateCustomersTable extends Migration
             $table->string('code', 32)->index()->unique();
             $table->string('name');
             $table->string('mobile', 11);
-            $table->string('tel', 20)->nullable();
             $table->unsignedTinyInteger('score')->default(0);
             $table->unsignedBigInteger('created_by');
             $table->timestamps();

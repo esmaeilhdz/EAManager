@@ -52,7 +52,10 @@ class CustomerRepository implements Interfaces\iCustomer
     {
         try {
             return Customer::with([
-                'parent:id,name'
+                'parent:id,name',
+                'address:model_type,model_id,province_id,city_id,address,tel',
+                'address.province:id,name',
+                'address.city:id,name',
             ])
                 ->select([
                     'id',
@@ -60,7 +63,6 @@ class CustomerRepository implements Interfaces\iCustomer
                     'parent_id',
                     'name',
                     'mobile',
-                    'tel',
                     'score'
                 ])
                 ->whereCode($code)
@@ -85,9 +87,6 @@ class CustomerRepository implements Interfaces\iCustomer
             }
             $customer->name = $inputs['name'];
             $customer->mobile = $inputs['mobile'];
-            if (isset($inputs['tel'])) {
-                $customer->tel = $inputs['tel'];
-            }
             $customer->score = $inputs['score'];
 
             return $customer->save();
@@ -112,7 +111,6 @@ class CustomerRepository implements Interfaces\iCustomer
             $customer->parent_id = $inputs['parent_id'] ?? null;
             $customer->name = $inputs['name'];
             $customer->mobile = $inputs['mobile'];
-            $customer->tel = $inputs['tel'] ?? null;
             $customer->score = $inputs['score'];
             $customer->created_by = $user->id;
 
