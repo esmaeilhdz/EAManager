@@ -12,6 +12,7 @@
         "laravel/sanctum": "^2.11",
         "laravel/telescope": "^4.12",
         "laravel/tinker": "^2.5",
+        "maatwebsite/excel": "^3.1",
         "morilog/jalali": "3.*"
     },
     "require-dev": {
