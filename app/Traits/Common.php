@@ -2,7 +2,6 @@
 
 namespace App\Traits;
 
-use App\Models\User;
 use Illuminate\Support\Str;
 
 trait Common
@@ -422,48 +421,6 @@ trait Common
         return $message;
     }
 
-    /**
-     * تبدیل رشته به name_space مدل
-     * @param $resource
-     * @return string
-     */
-    public function getResourceNameSpace($resource): string
-    {
-        $model_name = '';
-        $resource_array = explode('_', $resource);
-        foreach ($resource_array as $item) {
-            $model_name .= ucfirst($item);
-        }
-
-        switch ($resource) {
-            case 'user':
-                $name_space = "App\\Models\\$model_name";
-                break;
-            default:
-                $name_space = "App\\Models\\$model_name";
-                break;
-        }
-
-        return $name_space;
-    }
-
-    /**
-     * تبدیل کد به id در صورت لزوم
-     * @param $resource
-     * @param $resource_id
-     * @return mixed
-     */
-    public function getResourceId($resource, $resource_id)
-    {
-        switch ($resource) {
-            case 'user':
-                $resource_id = User::select('id')->whereCode($resource_id)->first()->id;
-                break;
-        }
-
-        return $resource_id;
-    }
-
     public function errorHandling(\Exception $e)
     {
         $message = '';
@@ -516,6 +473,31 @@ trait Common
         }
 
         return $order_by;
+    }
+
+    public function convertModelNameToNamespace($model_name): string
+    {
+        return match ($model_name) {
+            'place' => \App\Models\Place::class,
+            'company' => \App\Models\Company::class,
+            'person' => \App\Models\Person::class,
+            'customer' => \App\Models\Customer::class,
+        };
+    }
+
+    public function getResourceId($resource, $resource_id): string
+    {
+        return match ($resource) {
+            'user' => \App\Models\User::query()->select('id')->whereCode($resource_id)->first()->id ?? 0,
+            'account' => \App\Models\Account::query()->select('id')->whereCode($resource_id)->first()->id ?? 0,
+            'person' => \App\Models\Person::query()->select('id')->whereCode($resource_id)->first()->id ?? 0,
+            'notif' => \App\Models\Notif::query()->select('id')->whereCode($resource_id)->first()->id ?? 0,
+            'company' => \App\Models\Company::query()->select('id')->whereCode($resource_id)->first()->id ?? 0,
+            'cloth' => \App\Models\Cloth::query()->select('id')->whereCode($resource_id)->first()->id ?? 0,
+            'product' => \App\Models\Product::query()->select('id')->whereCode($resource_id)->first()->id ?? 0,
+            'customer' => \App\Models\Customer::query()->select('id')->whereCode($resource_id)->first()->id ?? 0,
+            default => $resource_id,
+        };
     }
 
 }

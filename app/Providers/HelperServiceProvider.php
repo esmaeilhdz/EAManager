@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Helpers\AccessoryBuyHelper;
 use App\Helpers\AccessoryHelper;
 use App\Helpers\AccountHelper;
+use App\Helpers\AddressHelper;
 use App\Helpers\ClothBuyHelper;
 use App\Helpers\ClothHelper;
 use App\Helpers\CustomerHelper;
@@ -46,6 +47,7 @@ class HelperServiceProvider extends ServiceProvider
         App::alias(SewingHelper::class, 'sewing_helper');
         App::alias(CuttingHelper::class, 'cutting_helper');
         App::alias(CustomerHelper::class, 'customer_helper');
+        App::alias(AddressHelper::class, 'address_helper');
     }
 
     /**

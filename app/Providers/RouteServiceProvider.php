@@ -80,6 +80,8 @@ class RouteServiceProvider extends ServiceProvider
             $this->mapCutting();
             // روت مشتری
             $this->mapCustomer();
+            // روت آدرس
+            $this->mapAddress();
 
         });
     }
@@ -225,6 +227,15 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/customer.php'));
+
+    }
+
+    private function mapAddress()
+    {
+        Route::prefix('api')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/address.php'));
 
     }
 

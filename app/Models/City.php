@@ -9,4 +9,9 @@ class City extends Model
 {
     use HasFactory;
     protected $hidden = ['id'];
+
+    public function province()
+    {
+        return $this->hasOne(Province::class, 'id', 'province_id');
+    }
 }

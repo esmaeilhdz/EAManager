@@ -6,6 +6,7 @@ use App\Repositories\AccessoryBuyRepository;
 use App\Repositories\AccessoryRepository;
 use App\Repositories\AccessoryWarehouseRepository;
 use App\Repositories\AccountRepository;
+use App\Repositories\AddressRepository;
 use App\Repositories\ClothBuyRepository;
 use App\Repositories\ClothRepository;
 use App\Repositories\ClothWarehouseRepository;
@@ -15,6 +16,7 @@ use App\Repositories\Interfaces\iAccessory;
 use App\Repositories\Interfaces\iAccessoryBuy;
 use App\Repositories\Interfaces\iAccessoryWarehouse;
 use App\Repositories\Interfaces\iAccount;
+use App\Repositories\Interfaces\iAddress;
 use App\Repositories\Interfaces\iCloth;
 use App\Repositories\Interfaces\iClothBuy;
 use App\Repositories\Interfaces\iClothWarehouse;
@@ -70,6 +72,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(iSewing::class, SewingRepository::class);
         $this->app->bind(iCutting::class, CuttingRepository::class);
         $this->app->bind(iCustomer::class, CustomerRepository::class);
+        $this->app->bind(iAddress::class, AddressRepository::class);
     }
 
     /**
