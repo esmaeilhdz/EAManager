@@ -4,7 +4,7 @@ namespace App\Repositories\Interfaces;
 
 interface iProductWarehouse
 {
-    public function getProductWarehouses($inputs);
+    public function getProductWarehouses($product_id, $inputs, $user);
 
     public function getProductWarehouseById($inputs, $select = [], $relation = []);
 

@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Exceptions\ApiException;
 use Illuminate\Support\Str;
 
 trait Common
@@ -59,7 +60,6 @@ trait Common
 
     function isAssoc(array $arr): bool
     {
-
         if (array() === $arr) return false;
         return array_keys($arr) !== range(0, count($arr) - 1);
     }
@@ -224,7 +224,7 @@ trait Common
      * @author Mohammad Reza Rassouli
      * @access public
      */
-    private function unicodeTextToCode(string $u)
+    private function unicodeTextToCode(string $u): float|int
     {
         $k = mb_convert_encoding($u, 'UCS-2LE', 'UTF-8');
         $k1 = ord(substr($k, 0, 1));
@@ -487,17 +487,32 @@ trait Common
 
     public function getResourceId($resource, $resource_id): string
     {
-        return match ($resource) {
-            'user' => \App\Models\User::query()->select('id')->whereCode($resource_id)->first()->id ?? 0,
-            'account' => \App\Models\Account::query()->select('id')->whereCode($resource_id)->first()->id ?? 0,
-            'person' => \App\Models\Person::query()->select('id')->whereCode($resource_id)->first()->id ?? 0,
-            'notif' => \App\Models\Notif::query()->select('id')->whereCode($resource_id)->first()->id ?? 0,
-            'company' => \App\Models\Company::query()->select('id')->whereCode($resource_id)->first()->id ?? 0,
-            'cloth' => \App\Models\Cloth::query()->select('id')->whereCode($resource_id)->first()->id ?? 0,
-            'product' => \App\Models\Product::query()->select('id')->whereCode($resource_id)->first()->id ?? 0,
-            'customer' => \App\Models\Customer::query()->select('id')->whereCode($resource_id)->first()->id ?? 0,
-            default => $resource_id,
-        };
+        try {
+            return match ($resource) {
+                'user' => \App\Models\User::query()->select('id')->whereCode($resource_id)->first()->id ?? 0,
+                'account' => \App\Models\Account::query()->select('id')->whereCode($resource_id)->first()->id ?? 0,
+                'person' => \App\Models\Person::query()->select('id')->whereCode($resource_id)->first()->id ?? 0,
+                'notif' => \App\Models\Notif::query()->select('id')->whereCode($resource_id)->first()->id ?? 0,
+                'company' => \App\Models\Company::query()->select('id')->whereCode($resource_id)->first()->id ?? 0,
+                'cloth' => \App\Models\Cloth::query()->select('id')->whereCode($resource_id)->first()->id ?? 0,
+                'product' => \App\Models\Product::query()->select('id')->whereCode($resource_id)->first()->id ?? 0,
+                'customer' => \App\Models\Customer::query()->select('id')->whereCode($resource_id)->first()->id ?? 0,
+                default => $resource_id,
+            };
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
+    public function getCurrentCompanyOfUser($user)
+    {
+        try {
+            $person_company = $user->person->person_company->where('is_enable', 1)->first();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+
+        return $person_company->company_id;
     }
 
 }

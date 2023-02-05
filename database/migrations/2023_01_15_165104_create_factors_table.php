@@ -22,6 +22,7 @@ class CreateFactorsTable extends Migration
             $table->boolean('has_return_permission')->default(0)->comment('اجازه مرجوع');
             $table->boolean('is_credit')->default(0)->comment('فروش اعتباری(امانی)');
             $table->date('settlement_date')->nullable()->comment('تاریخ تسویه');
+            $table->boolean('is_complete')->default(0)->index()->comment('وضعیت تکمیل بودن فاکتور');
             $table->text('description')->nullable();
             $table->unsignedBigInteger('created_by');
             $table->timestamps();

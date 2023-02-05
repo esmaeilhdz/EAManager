@@ -14,32 +14,40 @@ class ProductWarehouseRepository implements Interfaces\iProductWarehouse
     use Common;
 
     /**
-     * لیست کالاها
+     * لیست انبارهای کالای شرکت کاربر
+     * @param $product_id
      * @param $inputs
+     * @param $user
      * @return LengthAwarePaginator
      * @throws ApiException
      */
-    public function getProductWarehouses($inputs): LengthAwarePaginator
+    public function getProductWarehouses($product_id, $inputs, $user): LengthAwarePaginator
     {
         try {
-            return Product::query()
+            $company_id = $this->getCurrentCompanyOfUser($user);
+            return ProductWarehouse::query()
                 ->with([
-                    'productWarehouse:product_id,color_id,free_size_count,size1_count,size2_count,size3_count,size4_count',
-                    'productPrice:product_id,final_price',
+                    'place:id,name',
+                    'color:enum_id,enum_caption',
                     'creator:id,person_id',
                     'creator.person:id,name,family'
                 ])
                 ->select([
                     'id',
-                    'code',
-                    'internal_code',
-                    'name',
-                    'has_accessories',
-                    'cloth_id',
+                    'place_id',
+                    'color_id',
+                    'free_size_count',
+                    'size1_count',
+                    'size2_count',
+                    'size3_count',
+                    'size4_count',
+                    'is_enable',
                     'created_by',
                     'created_at'
                 ])
-                ->whereRaw($inputs['where']['search']['condition'], $inputs['where']['search']['params'])
+                ->where('product_id', $product_id)
+                ->where('company_id', $company_id)
+//                ->whereRaw($inputs['where']['search']['condition'], $inputs['where']['search']['params'])
                 ->paginate($inputs['per_page']);
         } catch (\Exception $e) {
             throw new ApiException($e);
@@ -148,8 +156,11 @@ class ProductWarehouseRepository implements Interfaces\iProductWarehouse
     public function addProductWarehouse($inputs, $user): array
     {
         try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
+
             $product_warehouse = new ProductWarehouse();
 
+            $product_warehouse->company_id = $company_id;
             $product_warehouse->product_id = $inputs['product_id'];
             $product_warehouse->place_id = $inputs['place_id'];
             $product_warehouse->color_id = $inputs['color_id'];

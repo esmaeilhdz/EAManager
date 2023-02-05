@@ -137,7 +137,6 @@ class SewingHelper
      */
     public function editSewing($inputs): array
     {
-
         // کالا
         $select = ['id'];
         $product = $this->product_interface->getProductByCode($inputs['code'], $select);

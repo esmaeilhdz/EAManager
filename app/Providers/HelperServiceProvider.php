@@ -17,6 +17,7 @@ use App\Helpers\PlaceHelper;
 use App\Helpers\ProductHelper;
 use App\Helpers\ProductPriceHelper;
 use App\Helpers\ProductToStoreHelper;
+use App\Helpers\ProductWarehouseHelper;
 use App\Helpers\RequestProductWarehouseHelper;
 use App\Helpers\SewingHelper;
 use Illuminate\Support\Facades\App;
@@ -44,6 +45,7 @@ class HelperServiceProvider extends ServiceProvider
         App::alias(NotifHelper::class, 'notif_helper');
         App::alias(RequestProductWarehouseHelper::class, 'request_product_warehouse_helper');
         App::alias(ProductPriceHelper::class, 'product_price_helper');
+        App::alias(ProductWarehouseHelper::class, 'product_warehouse_helper');
         App::alias(SewingHelper::class, 'sewing_helper');
         App::alias(CuttingHelper::class, 'cutting_helper');
         App::alias(CustomerHelper::class, 'customer_helper');

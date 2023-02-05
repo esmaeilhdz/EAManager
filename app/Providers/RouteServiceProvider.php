@@ -74,6 +74,8 @@ class RouteServiceProvider extends ServiceProvider
             $this->mapRequestProductFromWarehouse();
             // روت قیمت های کالا
             $this->mapProductPrice();
+            // روت انبار های کالا
+            $this->mapProductWarehouse();
             // روت دوخت
             $this->mapSewing();
             // روت برش
@@ -182,6 +184,15 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/product_price.php'));
+
+    }
+
+    private function mapProductWarehouse()
+    {
+        Route::prefix('api')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/product_warehouse.php'));
 
     }
 

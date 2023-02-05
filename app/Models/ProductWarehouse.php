@@ -21,10 +21,27 @@ class ProductWarehouse extends Model
         );
     }
 
+    protected function isEnable(): Attribute
+    {
+        return Attribute::get(
+            get: fn ($value) => (bool) $value
+        );
+    }
+
 
     public function place()
     {
         return $this->hasOne(Place::class, 'id', 'place_id');
+    }
+
+    public function product()
+    {
+        return $this->hasOne(Product::class, 'id', 'product_id');
+    }
+
+    public function company()
+    {
+        return $this->hasOne(Company::class, 'id', 'company_id');
     }
 
     public function color()
