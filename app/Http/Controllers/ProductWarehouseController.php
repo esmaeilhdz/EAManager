@@ -39,7 +39,7 @@ class ProductWarehouseController extends Controller
         $this->cleanInput($inputs, array_keys($request->rules()));
 
         $result = ProductWarehouseFacade::getProductWarehouseDetail($inputs);
-        return $this->api_response->response($result['result'], $result['message'], $result['data']);
+        return $this->api_response->response($result['result'], $result['message'], $result['data'], $result['other']);
     }
 
     /**

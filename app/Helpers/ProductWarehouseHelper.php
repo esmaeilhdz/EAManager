@@ -55,10 +55,6 @@ class ProductWarehouseHelper
                     'id' => $item->place_id,
                     'name' => $item->place->name
                 ],
-                'color' => [
-                    'id' => $item->color_id,
-                    'caption' => $item->color->enum_caption
-                ],
                 'free_size_count' => $item->free_size_count,
                 'size1_count' => $item->size1_count,
                 'size2_count' => $item->size2_count,
@@ -102,10 +98,10 @@ class ProductWarehouseHelper
             ];
         }
 
-        // قیمت کالا
+        // انبار کالا
         $inputs['product_id'] = $product->id;
-        $relation = ['product:id,name'];
-        $select = ['product_id', 'total_count', 'serial_count', 'sewing_warehouse', 'cutting_warehouse', 'sewing_final_warehouse', 'sale_profit_warehouse', 'final_warehouse', 'is_enable'];
+        $relation = ['color:enum_id,enum_caption'];
+        $select = ['product_id', 'place_id', 'free_size_count', 'size1_count', 'size2_count', 'size3_count', 'size4_count', 'is_enable'];
         $product_warehouse = $this->product_warehouse_interface->getProductWarehouseById($inputs, $select, $relation);
         if (is_null($product_warehouse)) {
             return [
@@ -118,7 +114,10 @@ class ProductWarehouseHelper
         return [
             'result' => true,
             'message' => __('messages.success'),
-            'data' => $product_warehouse
+            'data' => $product_warehouse,
+            'other' => [
+                'product_name' => $product->name
+            ]
         ];
     }
 
@@ -141,7 +140,7 @@ class ProductWarehouseHelper
         }
 
         $inputs['product_id'] = $product->id;
-        $select = ['id', 'total_count', 'serial_count', 'sewing_warehouse', 'cutting_warehouse', 'sewing_final_warehouse', 'sale_profit_warehouse', 'final_warehouse', 'is_enable'];
+        $select = ['id', 'product_id', 'place_id', 'free_size_count', 'size1_count', 'size2_count', 'size3_count', 'size4_count', 'is_enable'];
         $product_warehouse = $this->product_warehouse_interface->getProductWarehouseById($inputs, $select);
         if (is_null($product_warehouse)) {
             return [
@@ -181,8 +180,9 @@ class ProductWarehouseHelper
         DB::beginTransaction();
         $inputs['product_id'] = $product->id;
         $user = Auth::user();
-        $result[] = $this->product_warehouse_interface->deActiveOldWarehouses($product->id);
-        $result[] = $this->product_warehouse_interface->addProductWarehouse($inputs, $user);
+        $result[] = $this->product_warehouse_interface->deActiveOldWarehouses($inputs);
+        $res = $this->product_warehouse_interface->addProductWarehouse($inputs, $user);
+        $result[] = $res['result'];
 
         if (!in_array(false, $result)) {
             $flag = true;
@@ -195,7 +195,7 @@ class ProductWarehouseHelper
         return [
             'result' => $flag,
             'message' => $flag ? __('messages.success') : __('messages.fail'),
-            'data' => null
+            'data' => $res['data']
         ];
     }
 
@@ -217,7 +217,7 @@ class ProductWarehouseHelper
             ];
         }
 
-        // قیمت کالا
+        // انبار کالا
         $inputs['product_id'] = $product->id;
         $product_warehouse = $this->product_warehouse_interface->getProductWarehouseById($inputs, ['id']);
         if (is_null($product_warehouse)) {

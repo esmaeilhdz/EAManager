@@ -19,7 +19,6 @@ class CreateProductWarehousesTable extends Migration
             $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('place_id');
-            $table->unsignedTinyInteger('color_id')->index();
             $table->unsignedInteger('free_size_count');
             $table->unsignedInteger('size1_count');
             $table->unsignedInteger('size2_count');

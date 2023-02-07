@@ -28,14 +28,12 @@ class ProductWarehouseRepository implements Interfaces\iProductWarehouse
             return ProductWarehouse::query()
                 ->with([
                     'place:id,name',
-                    'color:enum_id,enum_caption',
                     'creator:id,person_id',
                     'creator.person:id,name,family'
                 ])
                 ->select([
                     'id',
                     'place_id',
-                    'color_id',
                     'free_size_count',
                     'size1_count',
                     'size2_count',
@@ -114,9 +112,6 @@ class ProductWarehouseRepository implements Interfaces\iProductWarehouse
             if (!empty($inputs['place_id'])) {
                 $product_warehouse->place_id = $inputs['place_id'];
             }
-            if (!empty($inputs['color_id'])) {
-                $product_warehouse->color_id = $inputs['color_id'];
-            }
 
             if (isset($inputs['sign'])) {
                 if ($inputs['sign'] == 'plus') {
@@ -140,7 +135,28 @@ class ProductWarehouseRepository implements Interfaces\iProductWarehouse
                 $product_warehouse->size4_count = $inputs['size4_count'];
             }
 
+            if (isset($inputs['is_enable'])) {
+                $product_warehouse->is_enable = $inputs['is_enable'];
+            }
+
             return $product_warehouse->save();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
+    /**
+     * غیرفعال سازی انبار یک کالا
+     * @param $inputs
+     * @return mixed
+     * @throws ApiException
+     */
+    public function deActiveOldWarehouses($inputs): mixed
+    {
+        try {
+            return ProductWarehouse::where('product_id', $inputs['product_id'])
+                ->where('place_id', $inputs['place_id'])
+                ->update(['is_enable' => 0]);
         } catch (\Exception $e) {
             throw new ApiException($e);
         }
@@ -163,7 +179,6 @@ class ProductWarehouseRepository implements Interfaces\iProductWarehouse
             $product_warehouse->company_id = $company_id;
             $product_warehouse->product_id = $inputs['product_id'];
             $product_warehouse->place_id = $inputs['place_id'];
-            $product_warehouse->color_id = $inputs['color_id'];
             $product_warehouse->free_size_count = $inputs['free_size_count'];
             $product_warehouse->size1_count = $inputs['size1_count'];
             $product_warehouse->size2_count = $inputs['size2_count'];
@@ -189,10 +204,10 @@ class ProductWarehouseRepository implements Interfaces\iProductWarehouse
      * @return mixed
      * @throws ApiException
      */
-    public function deleteProductWarehouse($product): mixed
+    public function deleteProductWarehouse($product_warehouse): mixed
     {
         try {
-            return $product->delete();
+            return $product_warehouse->delete();
         } catch (\Exception $e) {
             throw new ApiException($e);
         }

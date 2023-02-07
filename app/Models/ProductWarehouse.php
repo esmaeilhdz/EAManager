@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class ProductWarehouse extends Model
 {
     use HasFactory;
-    protected $hidden = ['id', 'cloth_id', 'place_id', 'product_id', 'created_by', 'updated_at'];
+    protected $hidden = ['id', 'place_id', 'product_id', 'created_by', 'updated_at'];
 
     protected function createdAt(): Attribute
     {
@@ -42,12 +42,6 @@ class ProductWarehouse extends Model
     public function company()
     {
         return $this->hasOne(Company::class, 'id', 'company_id');
-    }
-
-    public function color()
-    {
-        return $this->hasOne(Enumeration::class, 'enum_id', 'color_id')
-            ->where('category_name', 'color');
     }
 
     public function creator()

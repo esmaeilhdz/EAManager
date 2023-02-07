@@ -12,7 +12,9 @@ interface iProductWarehouse
 
     public function editProductWarehouse($product_warehouse, $inputs);
 
+    public function deActiveOldWarehouses($inputs);
+
     public function addProductWarehouse($inputs, $user);
 
-    public function deleteProductWarehouse($product);
+    public function deleteProductWarehouse($product_warehouse);
 }
