@@ -64,7 +64,14 @@ class CustomerHelper
      */
     public function getCustomerDetail($code): array
     {
-        $customer = $this->customer_interface->getCustomerByCode($code);
+        $select = ['id', 'code', 'parent_id', 'name', 'mobile', 'score'];
+        $relation = [
+            'parent:id,name',
+            'address:model_type,model_id,province_id,city_id,address,tel',
+            'address.province:id,name',
+            'address.city:id,name',
+        ];
+        $customer = $this->customer_interface->getCustomerByCode($code, $select, $relation);
         if (is_null($customer)) {
             return [
                 'result' => false,

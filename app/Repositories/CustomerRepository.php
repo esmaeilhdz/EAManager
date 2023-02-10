@@ -45,28 +45,25 @@ class CustomerRepository implements Interfaces\iCustomer
     /**
      * جزئیات مشتری
      * @param $code
+     * @param array $select
+     * @param array $relation
      * @return mixed
      * @throws ApiException
      */
-    public function getCustomerByCode($code): mixed
+    public function getCustomerByCode($code, $select = [], $relation = []): mixed
     {
         try {
-            return Customer::with([
-                'parent:id,name',
-                'address:model_type,model_id,province_id,city_id,address,tel',
-                'address.province:id,name',
-                'address.city:id,name',
-            ])
-                ->select([
-                    'id',
-                    'code',
-                    'parent_id',
-                    'name',
-                    'mobile',
-                    'score'
-                ])
-                ->whereCode($code)
-                ->first();
+            $customer = Customer::whereCode($code);
+
+            if (count($relation)) {
+                $customer = $customer->with($relation);
+            }
+
+            if (count($select)) {
+                $customer = $customer->select($select);
+            }
+
+            return $customer->first();
         } catch (\Exception $e) {
             throw new ApiException($e);
         }

@@ -27,4 +27,6 @@ return [
     'size4_not_enough' => 'سایز4 موجود نیست.',
     'not_allowed' => 'شما مجوز انجام این عملیات را ندارید.',
     'request_confirmed_not_allowed' => 'به دلیل تایید این درخواست، مجوز انجام این عملیات را ندارید.',
+    'customer_not_found' => 'مشتری یافت نشد.',
+    'invoice_product_not_found' => 'محصول پیش فاکتور یافت نشد.',
 ];

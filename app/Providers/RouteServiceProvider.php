@@ -84,6 +84,8 @@ class RouteServiceProvider extends ServiceProvider
             $this->mapCustomer();
             // روت آدرس
             $this->mapAddress();
+            // روت پیش فاکتور
+            $this->mapInvoice();
 
         });
     }
@@ -247,6 +249,15 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/address.php'));
+
+    }
+
+    private function mapInvoice()
+    {
+        Route::prefix('api')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/invoice.php'));
 
     }
 

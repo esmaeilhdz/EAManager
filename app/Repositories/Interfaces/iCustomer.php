@@ -6,7 +6,7 @@ interface iCustomer
 {
     public function getCustomers($inputs);
 
-    public function getCustomerByCode($code);
+    public function getCustomerByCode($code, $select = [], $relation = []);
 
     public function editCustomer($customer, $inputs);
 
