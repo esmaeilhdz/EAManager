@@ -23,6 +23,7 @@ class CreateInvoiceProductsTable extends Migration
             $table->unsignedInteger('size2_count');
             $table->unsignedInteger('size3_count');
             $table->unsignedInteger('size4_count');
+            $table->unsignedInteger('price');
             $table->timestamps();
 
             $table->engine = 'InnoDB';

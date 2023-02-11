@@ -49,6 +49,7 @@ class InvoiceProductRepository implements Interfaces\iInvoiceProduct
             $invoice_product->size2_count = $inputs['size2_count'];
             $invoice_product->size3_count = $inputs['size3_count'];
             $invoice_product->size4_count = $inputs['size4_count'];
+            $invoice_product->price = $inputs['price'];
 
             return $invoice_product->save();
         } catch (\Exception $e) {
@@ -76,6 +77,7 @@ class InvoiceProductRepository implements Interfaces\iInvoiceProduct
             $invoice_product->size2_count = $inputs['size2_count'];
             $invoice_product->size3_count = $inputs['size3_count'];
             $invoice_product->size4_count = $inputs['size4_count'];
+            $invoice_product->price = $inputs['price'];
 
             $result = $invoice_product->save();
 

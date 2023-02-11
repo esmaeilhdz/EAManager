@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Exceptions\ApiException;
 use App\Models\Cloth;
-use App\Models\PeriodSale;
+use App\Models\SalePeriod;
 use App\Traits\Common;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 

@@ -2,85 +2,85 @@
 
 namespace App\Http\Controllers;
 
-use App\Facades\PeriodSaleFacade;
-use App\Http\Requests\PeriodSale\PeriodSaleAddRequest;
-use App\Http\Requests\PeriodSale\PeriodSaleDetailRequest;
-use App\Http\Requests\PeriodSale\PeriodSaleEditRequest;
-use App\Http\Requests\PeriodSale\PeriodSaleListRequest;
+use App\Facades\SalePeriodFacade;
+use App\Http\Requests\SalePeriod\SalePeriodAddRequest;
+use App\Http\Requests\SalePeriod\SalePeriodDetailRequest;
+use App\Http\Requests\SalePeriod\SalePeriodEditRequest;
+use App\Http\Requests\SalePeriod\SalePeriodListRequest;
 use App\Traits\Common;
 use Illuminate\Http\JsonResponse;
 
-class PeriodSaleController extends Controller
+class SalePeriodController extends Controller
 {
     use Common;
 
     /**
      * سرویس لیست دوره های فروش
-     * @param PeriodSaleListRequest $request
+     * @param SalePeriodListRequest $request
      * @return JsonResponse
      */
-    public function getPeriodSales(PeriodSaleListRequest $request): JsonResponse
+    public function getSalePeriods(SalePeriodListRequest $request): JsonResponse
     {
         $inputs = $request->validated();
         $this->cleanInput($inputs, array_keys($request->rules()));
 
-        $result = PeriodSaleFacade::getPeriodSales($inputs);
+        $result = SalePeriodFacade::getSalePeriods($inputs);
         return $this->api_response->response($result['result'], $result['message'], $result['data']);
     }
 
     /**
      * سرویس جزئیات دوره فروش
-     * @param PeriodSaleDetailRequest $request
+     * @param SalePeriodDetailRequest $request
      * @return JsonResponse
      */
-    public function getPeriodSaleDetail(PeriodSaleDetailRequest $request): JsonResponse
+    public function getSalePeriodDetail(SalePeriodDetailRequest $request): JsonResponse
     {
         $inputs = $request->validated();
         $this->cleanInput($inputs, array_keys($request->rules()));
 
-        $result = PeriodSaleFacade::getPeriodSaleDetail($inputs['id']);
+        $result = SalePeriodFacade::getSalePeriodDetail($inputs['id']);
         return $this->api_response->response($result['result'], $result['message'], $result['data']);
     }
 
     /**
      * سرویس ویرایش دوره فروش
-     * @param PeriodSaleEditRequest $request
+     * @param SalePeriodEditRequest $request
      * @return JsonResponse
      */
-    public function editPeriodSale(PeriodSaleEditRequest $request): JsonResponse
+    public function editSalePeriod(SalePeriodEditRequest $request): JsonResponse
     {
         $inputs = $request->validated();
         $this->cleanInput($inputs, array_keys($request->rules()));
 
-        $result = PeriodSaleFacade::editPeriodSale($inputs);
+        $result = SalePeriodFacade::editSalePeriod($inputs);
         return $this->api_response->response($result['result'], $result['message'], $result['data']);
     }
 
     /**
      * سرویس افزودن دوره فروش
-     * @param PeriodSaleAddRequest $request
+     * @param SalePeriodAddRequest $request
      * @return JsonResponse
      */
-    public function addPeriodSale(PeriodSaleAddRequest $request): JsonResponse
+    public function addSalePeriod(SalePeriodAddRequest $request): JsonResponse
     {
         $inputs = $request->validated();
         $this->cleanInput($inputs, array_keys($request->rules()));
 
-        $result = PeriodSaleFacade::addPeriodSale($inputs);
+        $result = SalePeriodFacade::addSalePeriod($inputs);
         return $this->api_response->response($result['result'], $result['message'], $result['data']);
     }
 
     /**
      * سرویس حذف دوره فروش
-     * @param PeriodSaleDetailRequest $request
+     * @param SalePeriodDetailRequest $request
      * @return JsonResponse
      */
-    public function deletePeriodSale(PeriodSaleDetailRequest $request): JsonResponse
+    public function deleteSalePeriod(SalePeriodDetailRequest $request): JsonResponse
     {
         $inputs = $request->validated();
         $this->cleanInput($inputs, array_keys($request->rules()));
 
-        $result = PeriodSaleFacade::deletePeriodSale($inputs);
+        $result = SalePeriodFacade::deleteSalePeriod($inputs);
         return $this->api_response->response($result['result'], $result['message'], $result['data']);
     }
 }

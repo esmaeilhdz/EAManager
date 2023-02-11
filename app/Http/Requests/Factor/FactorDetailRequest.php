@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\PeriodSale;
+namespace App\Http\Requests\Factor;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PeriodSaleEditRequest extends FormRequest
+class FactorDetailRequest extends FormRequest
 {
 
     /**
@@ -15,7 +15,7 @@ class PeriodSaleEditRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'id' => $this->id,
+            'code' => $this->code,
         ]);
     }
 
@@ -37,10 +37,7 @@ class PeriodSaleEditRequest extends FormRequest
     public function rules()
     {
         return [
-            'id' => 'required|numeric|min:1',
-            'name' => 'required|string',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date'
+            'code' => 'required|string|size:32'
         ];
     }
 }

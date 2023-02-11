@@ -13,8 +13,8 @@ class CreateSalePeriodsTable extends Migration
      */
     public function up()
     {
-        Schema::dropIfExists('period_sales');
-        Schema::create('period_sales', function (Blueprint $table) {
+        Schema::dropIfExists('sale_periods');
+        Schema::create('sale_periods', function (Blueprint $table) {
             $table->id();
             $table->string('name')->index();
             $table->date('start_date')->index();
@@ -33,6 +33,6 @@ class CreateSalePeriodsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('period_sales');
+        Schema::dropIfExists('sale_periods');
     }
 }

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PeriodSale extends Model
+class SalePeriod extends Model
 {
     use HasFactory;
     protected $primaryKey = 'id';

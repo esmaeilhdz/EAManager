@@ -10,9 +10,10 @@ use App\Helpers\ClothBuyHelper;
 use App\Helpers\ClothHelper;
 use App\Helpers\CustomerHelper;
 use App\Helpers\CuttingHelper;
+use App\Helpers\FactorHelper;
 use App\Helpers\InvoiceHelper;
 use App\Helpers\NotifHelper;
-use App\Helpers\PeriodSaleHelper;
+use App\Helpers\SalePeriodHelper;
 use App\Helpers\PersonHelper;
 use App\Helpers\PlaceHelper;
 use App\Helpers\ProductHelper;
@@ -35,7 +36,7 @@ class HelperServiceProvider extends ServiceProvider
     {
         App::alias(PersonHelper::class, 'person_helper');
         App::alias(PlaceHelper::class, 'place_helper');
-        App::alias(PeriodSaleHelper::class, 'period_sale_helper');
+        App::alias(SalePeriodHelper::class, 'sale_period_helper');
         App::alias(AccountHelper::class, 'account_helper');
         App::alias(ClothHelper::class, 'cloth_helper');
         App::alias(ClothBuyHelper::class, 'cloth_buy_helper');
@@ -52,6 +53,7 @@ class HelperServiceProvider extends ServiceProvider
         App::alias(CustomerHelper::class, 'customer_helper');
         App::alias(AddressHelper::class, 'address_helper');
         App::alias(InvoiceHelper::class, 'invoice_helper');
+        App::alias(FactorHelper::class, 'factor_helper');
     }
 
     /**

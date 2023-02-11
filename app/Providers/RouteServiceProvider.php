@@ -53,7 +53,7 @@ class RouteServiceProvider extends ServiceProvider
             // روت مکان
             $this->mapPlace();
             // روت دوره فروش
-            $this->mapPeriodSale();
+            $this->mapSalePeriod();
             // روت حساب های بانکی
             $this->mapAccount();
             // روت پارچه ها
@@ -86,6 +86,8 @@ class RouteServiceProvider extends ServiceProvider
             $this->mapAddress();
             // روت پیش فاکتور
             $this->mapInvoice();
+            // روت فاکتور
+            $this->mapFactor();
 
         });
     }
@@ -108,12 +110,12 @@ class RouteServiceProvider extends ServiceProvider
 
     }
 
-    private function mapPeriodSale()
+    private function mapSalePeriod()
     {
         Route::prefix('api')
             ->middleware('api')
             ->namespace($this->namespace)
-            ->group(base_path('routes/period_sale.php'));
+            ->group(base_path('routes/sale_period.php'));
 
     }
 
@@ -258,6 +260,15 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/invoice.php'));
+
+    }
+
+    private function mapFactor()
+    {
+        Route::prefix('api')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/factor.php'));
 
     }
 

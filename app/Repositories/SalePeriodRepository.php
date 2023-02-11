@@ -3,11 +3,11 @@
 namespace App\Repositories;
 
 use App\Exceptions\ApiException;
-use App\Models\PeriodSale;
+use App\Models\SalePeriod;
 use App\Traits\Common;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-class PeriodSaleRepository implements Interfaces\iPeriodSale
+class SalePeriodRepository implements Interfaces\iSalePeriod
 {
     use Common;
 
@@ -17,10 +17,10 @@ class PeriodSaleRepository implements Interfaces\iPeriodSale
      * @return LengthAwarePaginator
      * @throws ApiException
      */
-    public function getPeriodSales($inputs): LengthAwarePaginator
+    public function getSalePeriods($inputs): LengthAwarePaginator
     {
         try {
-            return PeriodSale::with([
+            return SalePeriod::with([
                 'creator:id,person_id',
                 'creator.person:id,name,family',
             ])
@@ -39,10 +39,10 @@ class PeriodSaleRepository implements Interfaces\iPeriodSale
         }
     }
 
-    public function getPeriodSaleById($id)
+    public function getSalePeriodById($id)
     {
         try {
-            return PeriodSale::query()
+            return SalePeriod::query()
                 ->select([
                     'id',
                     'name',
@@ -55,10 +55,10 @@ class PeriodSaleRepository implements Interfaces\iPeriodSale
         }
     }
 
-    public function editPeriodSale($inputs)
+    public function editSalePeriod($inputs)
     {
         try {
-            return PeriodSale::where('id', $inputs['id'])
+            return SalePeriod::where('id', $inputs['id'])
                 ->update([
                     'name' => $inputs['name'],
                     'start_date' => $inputs['start_date'],
@@ -69,31 +69,31 @@ class PeriodSaleRepository implements Interfaces\iPeriodSale
         }
     }
 
-    public function addPeriodSale($inputs, $user)
+    public function addSalePeriod($inputs, $user)
     {
         try {
-            $period_sale = new PeriodSale();
+            $sale_period = new SalePeriod();
 
-            $period_sale->name = $inputs['name'];
-            $period_sale->start_date = $inputs['start_date'];
-            $period_sale->end_date = $inputs['end_date'];
-            $period_sale->created_by = $user->id;
+            $sale_period->name = $inputs['name'];
+            $sale_period->start_date = $inputs['start_date'];
+            $sale_period->end_date = $inputs['end_date'];
+            $sale_period->created_by = $user->id;
 
-            $result = $period_sale->save();
+            $result = $sale_period->save();
 
             return [
                 'result' => $result,
-                'data' => $result ? $period_sale->id : null
+                'data' => $result ? $sale_period->id : null
             ];
         } catch (\Exception $e) {
             throw new ApiException($e);
         }
     }
 
-    public function deletePeriodSale($id)
+    public function deleteSalePeriod($id)
     {
         try {
-            return PeriodSale::where('id', $id)->delete();
+            return SalePeriod::where('id', $id)->delete();
         } catch (\Exception $e) {
             throw new ApiException($e);
         }

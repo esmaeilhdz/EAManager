@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\PeriodSale;
+namespace App\Http\Requests\SalePeriod;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PeriodSaleListRequest extends FormRequest
+class SalePeriodAddRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +24,9 @@ class PeriodSaleListRequest extends FormRequest
     public function rules()
     {
         return [
-            'page' => 'required|numeric|min:1',
-            'per_page' => 'required|numeric',
-            'search_txt' => 'nullable|string'
+            'name' => 'required|string',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date'
         ];
     }
 }

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\PeriodSale;
+namespace App\Http\Requests\SalePeriod;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PeriodSaleDetailRequest extends FormRequest
+class SalePeriodDetailRequest extends FormRequest
 {
 
     /**

@@ -2,20 +2,20 @@
 
 namespace App\Helpers;
 
-use App\Repositories\Interfaces\iPeriodSale;
+use App\Repositories\Interfaces\iSalePeriod;
 use App\Traits\Common;
 use Illuminate\Support\Facades\Auth;
 
-class PeriodSaleHelper
+class SalePeriodHelper
 {
     use Common;
 
     // attributes
-    public iPeriodSale $period_sale_interface;
+    public iSalePeriod $sale_period_interface;
 
-    public function __construct(iPeriodSale $period_sale_interface)
+    public function __construct(iSalePeriod $sale_period_interface)
     {
-        $this->period_sale_interface = $period_sale_interface;
+        $this->sale_period_interface = $sale_period_interface;
     }
 
     /**
@@ -23,7 +23,7 @@ class PeriodSaleHelper
      * @param $inputs
      * @return array
      */
-    public function getPeriodSales($inputs): array
+    public function getSalePeriods($inputs): array
     {
         $search_data = $param_array = [];
         $search_data[] = $this->GWC($inputs['search_txt'] ?? '', 'string:name');
@@ -32,9 +32,9 @@ class PeriodSaleHelper
 
         $inputs['per_page'] = $this->calculatePerPage($inputs);
 
-        $period_sales = $this->period_sale_interface->getPeriodSales($inputs);
+        $sale_periods = $this->sale_period_interface->getSalePeriods($inputs);
 
-        $period_sales->transform(function ($item) {
+        $sale_periods->transform(function ($item) {
             return [
                 'name' => $item->name,
                 'start_date' => $item->start_date,
@@ -51,7 +51,7 @@ class PeriodSaleHelper
         return [
             'result' => true,
             'message' => __('messages.success'),
-            'data' => $period_sales
+            'data' => $sale_periods
         ];
     }
 
@@ -60,10 +60,10 @@ class PeriodSaleHelper
      * @param $id
      * @return array|void
      */
-    public function getPeriodSaleDetail($id): array
+    public function getSalePeriodDetail($id): array
     {
-        $period_sale = $this->period_sale_interface->getPeriodSaleById($id);
-        if (is_null($period_sale)) {
+        $sale_period = $this->sale_period_interface->getSalePeriodById($id);
+        if (is_null($sale_period)) {
             return [
                 'result' => false,
                 'message' => __('messages.record_not_found'),
@@ -74,7 +74,7 @@ class PeriodSaleHelper
         return [
             'result' => true,
             'message' => __('messages.success'),
-            'data' => $period_sale
+            'data' => $sale_period
         ];
     }
 
@@ -83,9 +83,9 @@ class PeriodSaleHelper
      * @param $inputs
      * @return array
      */
-    public function editPeriodSale($inputs): array
+    public function editSalePeriod($inputs): array
     {
-        $place = $this->period_sale_interface->getPeriodSaleById($inputs['id']);
+        $place = $this->sale_period_interface->getSalePeriodById($inputs['id']);
         if (is_null($place)) {
             return [
                 'result' => false,
@@ -94,7 +94,7 @@ class PeriodSaleHelper
             ];
         }
 
-        $result = $this->period_sale_interface->editPeriodSale($inputs);
+        $result = $this->sale_period_interface->editSalePeriod($inputs);
         return [
             'result' => (bool) $result,
             'message' => $result ? __('messages.success') : __('messages.fail'),
@@ -107,10 +107,10 @@ class PeriodSaleHelper
      * @param $inputs
      * @return array
      */
-    public function addPeriodSale($inputs): array
+    public function addSalePeriod($inputs): array
     {
         $user = Auth::user();
-        $result = $this->period_sale_interface->addPeriodSale($inputs, $user);
+        $result = $this->sale_period_interface->addSalePeriod($inputs, $user);
         return [
             'result' => $result['result'],
             'message' => $result['result'] ? __('messages.success') : __('messages.fail'),
@@ -122,10 +122,10 @@ class PeriodSaleHelper
      * @param $id
      * @return array
      */
-    public function deletePeriodSale($id): array
+    public function deleteSalePeriod($id): array
     {
-        $period_sale = $this->period_sale_interface->getPeriodSaleById($id);
-        if (is_null($period_sale)) {
+        $sale_period = $this->sale_period_interface->getSalePeriodById($id);
+        if (is_null($sale_period)) {
             return [
                 'result' => false,
                 'message' => __('messages.record_not_found'),
@@ -133,7 +133,7 @@ class PeriodSaleHelper
             ];
         }
 
-        $result = $this->period_sale_interface->deletePeriodSale($id);
+        $result = $this->sale_period_interface->deleteSalePeriod($id);
         return [
             'result' => (bool) $result,
             'message' => $result ? __('messages.success') : __('messages.fail'),

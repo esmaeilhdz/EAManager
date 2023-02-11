@@ -16,6 +16,7 @@ class CreateFactorsTable extends Migration
         Schema::dropIfExists('factors');
         Schema::create('factors', function (Blueprint $table) {
             $table->id();
+            $table->string('code', 32)->unique();
             $table->unsignedBigInteger('customer_id');
             $table->unsignedBigInteger('sale_period_id');
             $table->string('factor_no', 16)->unique();
@@ -23,6 +24,7 @@ class CreateFactorsTable extends Migration
             $table->boolean('is_credit')->default(0)->comment('فروش اعتباری(امانی)');
             $table->date('settlement_date')->nullable()->comment('تاریخ تسویه');
             $table->boolean('is_complete')->default(0)->index()->comment('وضعیت تکمیل بودن فاکتور');
+            $table->unsignedInteger('final_price');
             $table->text('description')->nullable();
             $table->unsignedBigInteger('created_by');
             $table->timestamps();

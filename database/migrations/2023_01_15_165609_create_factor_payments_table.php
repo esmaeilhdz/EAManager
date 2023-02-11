@@ -18,6 +18,7 @@ class CreateFactorPaymentsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('factor_id');
             $table->unsignedTinyInteger('payment_type_id')->index();
+            $table->unsignedInteger('price');
             $table->text('description')->nullable();
             $table->timestamps();
 
