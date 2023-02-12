@@ -8,7 +8,13 @@ interface iProductWarehouse
 
     public function getProductWarehouseById($inputs, $select = [], $relation = []);
 
+    public function getDestinationProductWarehouseById($inputs, $select = [], $relation = []);
+
     public function getByProductId($id, $select = [], $relation = []);
+
+    public function getById($id, $select = [], $relation = []);
+
+    public function getByStockProduct($inputs, $data, $select = [], $relation = []);
 
     public function editProductWarehouse($product_warehouse, $inputs);
 

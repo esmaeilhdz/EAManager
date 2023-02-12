@@ -2,10 +2,13 @@
 
 namespace App\Helpers;
 
+use App\Facades\ProductWarehouseFacade;
 use App\Repositories\Interfaces\iCustomer;
 use App\Repositories\Interfaces\iFactor;
 use App\Repositories\Interfaces\iFactorPayment;
 use App\Repositories\Interfaces\iFactorProduct;
+use App\Repositories\Interfaces\iProductWarehouse;
+use App\Repositories\Interfaces\iRequestProductWarehouse;
 use App\Traits\Common;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -19,18 +22,24 @@ class FactorHelper
     public iFactorProduct $factor_product_interface;
     public iFactorPayment $factor_payment_interface;
     public iCustomer $customer_interface;
+    public iProductWarehouse $product_warehouse_interface;
+    public iRequestProductWarehouse $request_product_interface;
 
     public function __construct(
-        iFactor $factor_interface,
-        iCustomer $customer_interface,
-        iFactorProduct $factor_product_interface,
-        iFactorPayment $factor_payment_interface,
+        iFactor                  $factor_interface,
+        iCustomer                $customer_interface,
+        iFactorProduct           $factor_product_interface,
+        iFactorPayment           $factor_payment_interface,
+        iProductWarehouse        $product_warehouse_interface,
+        iRequestProductWarehouse $request_product_interface,
     )
     {
         $this->factor_interface = $factor_interface;
         $this->customer_interface = $customer_interface;
         $this->factor_product_interface = $factor_product_interface;
         $this->factor_payment_interface = $factor_payment_interface;
+        $this->product_warehouse_interface = $product_warehouse_interface;
+        $this->request_product_interface = $request_product_interface;
     }
 
     /**
@@ -228,10 +237,60 @@ class FactorHelper
         ];
     }
 
+    public function changeCompleteFactor($inputs): array
+    {
+        // فاکتور
+        $select = ['id', 'is_complete'];
+        $factor = $this->factor_interface->getFactorByCode($inputs['code'], $select);
+        if (is_null($factor)) {
+            return [
+                'result' => false,
+                'message' => __('messages.record_not_found'),
+                'data' => null
+            ];
+        }
+
+        DB::beginTransaction();
+        $result[] = $this->factor_interface->changeCompleteFactor($factor, $inputs);
+        // تکمیل فاکتور ناقص
+        // باید موجودی انبار موردنظر به تعداد خریداری شده، کسر شود.
+        if ($inputs['is_complete'] == 1) {
+            $select = ['product_warehouse_id', 'free_size_count', 'size1_count', 'size2_count', 'size3_count', 'size4_count'];
+            $relation = [
+                'product_warehouse:id,free_size_count,size1_count,size2_count,size3_count,size4_count'
+            ];
+            $factor_products = $this->factor_product_interface->getByFactorId($factor->id, $select, $relation);
+            foreach ($factor_products as $factor_product) {
+                $params['sign'] = 'minus';
+                $params['free_size_count'] = $factor_product->free_size_count;
+                $params['size1_count'] = $factor_product->size1_count;
+                $params['size2_count'] = $factor_product->size2_count;
+                $params['size3_count'] = $factor_product->size3_count;
+                $params['size4_count'] = $factor_product->size4_count;
+                $result[] = $this->product_warehouse_interface->editProductWarehouse($factor_product->product_warehouse, $params);
+            }
+        }
+
+        if (!in_array(false, $result)) {
+            $flag = true;
+            DB::commit();
+        } else {
+            $flag = false;
+            DB::rollBack();
+        }
+
+        return [
+            'result' => $flag,
+            'message' => $flag ? __('messages.success') : __('messages.fail'),
+            'data' => null
+        ];
+    }
+
     /**
      * افزودن فاکتور
      * @param $inputs
      * @return array
+     * @throws \App\Exceptions\ApiException
      */
     public function addFactor($inputs): array
     {
@@ -251,9 +310,89 @@ class FactorHelper
         $res_factor = $this->factor_interface->addFactor($inputs, $user);
         $result[] = $res_factor['result'];
 
+        $company_id = $this->getCurrentCompanyOfUser($user);
         foreach ($inputs['products'] as $product_item) {
+
             $res = $this->factor_product_interface->addFactorProduct($product_item, $res_factor['data']['id'], $user);
             $result[] = $res['result'];
+            // باید موجودی انبار موردنظر به تعداد خریداری شده، کسر شود.
+            $select = ['id', 'product_id', 'free_size_count', 'size1_count', 'size2_count', 'size3_count', 'size4_count'];
+            $product_warehouse_primary = $this->product_warehouse_interface->getById($product_item['product_warehouse_id'], $select);
+            // بررسی موجودی انبار با تعداد فاکتور
+            $result_check_stock = ProductWarehouseFacade::checkStock($product_warehouse_primary, $product_item);
+            if ($inputs['is_complete'] == 1) {
+
+                if (!$result_check_stock['result']) {
+                    return [
+                        'result' => false,
+                        'message' => $result_check_stock['message'],
+                        'data' => $result_check_stock['data']
+                    ];
+                }
+
+                $params['sign'] = 'minus';
+                $params['free_size_count'] = $product_item['free_size_count'];
+                $params['size1_count'] = $product_item['size1_count'];
+                $params['size2_count'] = $product_item['size2_count'];
+                $params['size3_count'] = $product_item['size3_count'];
+                $params['size4_count'] = $product_item['size4_count'];
+                $result[] = $this->product_warehouse_interface->editProductWarehouse($product_warehouse_primary, $params);
+            } else {
+                // درج خودکار درخواست کالا از انباری که موجودی مورد نیاز را دارد.
+                if (!$result_check_stock['result']) {
+                    $params = [
+                        'company_id' => $company_id,
+                        'product_id' => $product_warehouse_primary->product_id
+                    ];
+                    $select = ['id', 'product_id', 'free_size_count', 'size1_count', 'size2_count', 'size3_count', 'size4_count'];
+                    // انبار کالا به ازای موجود بودن تمام درخواست های کالا
+                    $product_warehouse = $this->product_warehouse_interface->getByStockProduct($params, $product_item, $select);
+                    if (is_null($product_warehouse)) {
+                        DB::rollBack();
+                        return [
+                            'result' => false,
+                            'message' => $result_check_stock['message'],
+                            'data' => $result_check_stock['data']
+                        ];
+                    }
+
+                    // محاسبه برای درخواست کسری موجودی برای انبار اول
+                    $params = null;
+                    $params['warehouse_id'] = $product_warehouse_primary->id;
+                    $params['free_size_count'] = 0;
+                    $params['size1_count'] = 0;
+                    $params['size2_count'] = 0;
+                    $params['size3_count'] = 0;
+                    $params['size4_count'] = 0;
+                    if (in_array('free_size_count', $result_check_stock['size'])) {
+                        $params['free_size_count'] = $product_warehouse->free_size_count - $product_item['free_size_count'];
+                    }
+                    if (in_array('size1_count', $result_check_stock['size'])) {
+                        $params['size1_count'] = $product_warehouse->size1_count - $product_item['size1_count'];
+                    }
+                    if (in_array('size2_count', $result_check_stock['size'])) {
+                        $params['size2_count'] = $product_warehouse->size2_count - $product_item['size2_count'];
+                    }
+                    if (in_array('size3_count', $result_check_stock['size'])) {
+                        $params['size3_count'] = $product_warehouse->size3_count - $product_item['size3_count'];
+                    }
+                    if (in_array('size4_count', $result_check_stock['size'])) {
+                        $params['size4_count'] = $product_warehouse->size4_count - $product_item['size4_count'];
+                    }
+                    // درج درخواست کسری موجودی برای سفارش جاری
+                    $result[] = $this->request_product_interface->addRequestProductWarehouse($params, $user)['result'];
+
+                    $params = null;
+                    // کسر موجودی فروخته شده از انبار اتومات
+                    $params['sign'] = 'minus';
+                    $params['free_size_count'] = $product_item['free_size_count'];
+                    $params['size1_count'] = $product_item['size1_count'];
+                    $params['size2_count'] = $product_item['size2_count'];
+                    $params['size3_count'] = $product_item['size3_count'];
+                    $params['size4_count'] = $product_item['size4_count'];
+                    $result[] = $this->product_warehouse_interface->editProductWarehouse($product_warehouse, $params);
+                }
+            }
         }
 
         foreach ($inputs['payments'] as $payment_item) {
@@ -294,8 +433,8 @@ class FactorHelper
 
         DB::beginTransaction();
         $result[] = $this->factor_interface->deleteFactor($factor);
-        $result[] = (bool) $this->factor_product_interface->deleteFactorProduct($factor->id);
-        $result[] = (bool) $this->factor_payment_interface->deleteFactorPayment($factor->id);
+        $result[] = (bool)$this->factor_product_interface->deleteFactorProduct($factor->id);
+        $result[] = (bool)$this->factor_payment_interface->deleteFactorPayment($factor->id);
 
         if (!in_array(false, $result)) {
             $flag = true;

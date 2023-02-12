@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\ProductWarehouse;
 use App\Repositories\Interfaces\iProduct;
 use App\Repositories\Interfaces\iProductWarehouse;
 use App\Traits\Common;
@@ -237,5 +238,48 @@ class ProductWarehouseHelper
         ];
     }
 
+    public function checkStock(ProductWarehouse $product_warehouse, array $data): array
+    {
+        $flag = true;
+        $message = null;
+        $size = null;
+        if ($product_warehouse->free_size_count - $data['free_size_count'] < 0) {
+            $flag = false;
+            $message[] = __('messages.free_size_not_enough');
+            $size[] = 'free_size_count';
+        }
+
+        if ($product_warehouse->size1_count - $data['size1_count'] < 0) {
+            $flag = false;
+            $message[] = __('messages.size1_not_enough');
+            $size[] = 'size1_count';
+        }
+
+        if ($product_warehouse->size2_count - $data['size2_count'] < 0) {
+            $flag = false;
+            $message[] = __('messages.size2_not_enough');
+            $size[] = 'size2_count';
+        }
+
+        if ($product_warehouse->size3_count - $data['size3_count'] < 0) {
+            $flag = false;
+            $message[] = __('messages.size3_not_enough');
+            $size[] = 'size3_count';
+        }
+
+        if ($product_warehouse->size4_count - $data['size4_count'] < 0) {
+            $flag = false;
+            $message[] = __('messages.size4_not_enough');
+            $size[] = 'size4_count';
+        }
+
+        return [
+            'result' => $flag,
+            'message' => $message,
+            'data' => $flag ? null : $product_warehouse->product->name,
+            'size' => $size
+        ];
+
+    }
 
 }

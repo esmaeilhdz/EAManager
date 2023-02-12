@@ -63,6 +63,26 @@ class ProductWarehouseRepository implements Interfaces\iProductWarehouse
     public function getProductWarehouseById($inputs, $select = [], $relation = []): mixed
     {
         try {
+            $product_warehouse = ProductWarehouse::where('id', $inputs['product_warehouse_id'])
+                ->where('product_id', $inputs['product_id']);
+
+            if (count($relation)) {
+                $product_warehouse = $product_warehouse->with($relation);
+            }
+
+            if (count($select)) {
+                $product_warehouse = $product_warehouse->select($select);
+            }
+
+            return $product_warehouse->first();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
+    public function getDestinationProductWarehouseById($inputs, $select = [], $relation = [])
+    {
+        try {
             $product_warehouse = ProductWarehouse::where('id', $inputs['warehouse_id'])
                 ->where('product_id', $inputs['product_id']);
 
@@ -84,6 +104,50 @@ class ProductWarehouseRepository implements Interfaces\iProductWarehouse
     {
         try {
             $product_warehouse = ProductWarehouse::where('product_id', $id);
+
+            if (count($relation)) {
+                $product_warehouse = $product_warehouse->with($relation);
+            }
+
+            if (count($select)) {
+                $product_warehouse = $product_warehouse->select($select);
+            }
+
+            return $product_warehouse->first();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
+    public function getById($id, $select = [], $relation = [])
+    {
+        try {
+            $product_warehouse = ProductWarehouse::where('id', $id);
+
+            if (count($relation)) {
+                $product_warehouse = $product_warehouse->with($relation);
+            }
+
+            if (count($select)) {
+                $product_warehouse = $product_warehouse->select($select);
+            }
+
+            return $product_warehouse->first();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
+    public function getByStockProduct($inputs, $data, $select = [], $relation = [])
+    {
+        try {
+            $product_warehouse = ProductWarehouse::where('product_id', $inputs['product_id'])
+                ->where('company_id', $inputs['company_id'])
+                ->where('free_size_count', '>=', $data['free_size_count'])
+                ->where('size1_count', '>=', $data['size1_count'])
+                ->where('size2_count', '>=', $data['size2_count'])
+                ->where('size3_count', '>=', $data['size3_count'])
+                ->where('size4_count', '>=', $data['size4_count']);
 
             if (count($relation)) {
                 $product_warehouse = $product_warehouse->with($relation);

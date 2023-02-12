@@ -33,6 +33,25 @@ class FactorProductRepository implements Interfaces\iFactorProduct
         }
     }
 
+    public function getByFactorId($factor_id, $select = [], $relation = [])
+    {
+        try {
+            $factor_product = FactorProduct::where('factor_id', $factor_id);
+
+            if ($select) {
+                $factor_product = $factor_product->select($select);
+            }
+
+            if ($relation) {
+                $factor_product = $factor_product->with($relation);
+            }
+
+            return $factor_product->get();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
     /**
      * ویرایش محصول فاکتور
      * @param $factor_product

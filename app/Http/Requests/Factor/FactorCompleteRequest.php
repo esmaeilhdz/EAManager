@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\RequestProductWarehouse;
+namespace App\Http\Requests\Factor;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class RequestProductWarehouseDetailRequest extends FormRequest
+class FactorCompleteRequest extends FormRequest
 {
 
     /**
@@ -16,9 +16,6 @@ class RequestProductWarehouseDetailRequest extends FormRequest
     {
         $this->merge([
             'code' => $this->code,
-            'warehouse_id' => $this->warehouse_id,
-            'product_warehouse_id' => $this->product_warehouse_id,
-            'id' => $this->id,
         ]);
     }
 
@@ -41,9 +38,7 @@ class RequestProductWarehouseDetailRequest extends FormRequest
     {
         return [
             'code' => 'required|string|size:32',
-            'warehouse_id' => 'required|numeric|min:1',
-            'product_warehouse_id' => 'required|numeric|min:1',
-            'id' => 'required|numeric|min:1',
+            'is_complete' => 'required|numeric|in:0,1'
         ];
     }
 }

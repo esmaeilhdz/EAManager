@@ -110,6 +110,17 @@ class FactorRepository implements Interfaces\iFactor
         }
     }
 
+    public function changeCompleteFactor($factor, $inputs)
+    {
+        try {
+            $factor->is_complete = $inputs['is_complete'];
+
+            return $factor->save();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
     /**
      * افزودن فاکتور
      * @param $inputs

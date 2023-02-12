@@ -72,7 +72,7 @@ class RequestProductWarehouseRepository implements Interfaces\iRequestProductWar
     {
         try {
             $request_product_warehouse = RequestProductWarehouse::where('id', $inputs['id'])
-                ->where('product_warehouse_id', $inputs['product_warehouse_id']);
+                ->where('product_warehouse_id', $inputs['warehouse_id']);
 
             if (count($relation)) {
                 $request_product_warehouse = $request_product_warehouse->with($relation);

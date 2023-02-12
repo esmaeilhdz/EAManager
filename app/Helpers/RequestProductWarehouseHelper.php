@@ -228,11 +228,23 @@ class RequestProductWarehouseHelper
             ];
         }
 
-        // انبار محصول
+        // انبار مبدا
         $inputs['product_id'] = $product->id;
         $select = ['id', 'free_size_count', 'size1_count', 'size2_count', 'size3_count', 'size4_count'];
         $product_warehouse = $this->product_warehouse_interface->getProductWarehouseById($inputs, $select);
         if (is_null($product_warehouse)) {
+            return [
+                'result' => false,
+                'message' => __('messages.record_not_found'),
+                'data' => null
+            ];
+        }
+
+        // انبار مقصد
+        $inputs['product_id'] = $product->id;
+        $select = ['id', 'free_size_count', 'size1_count', 'size2_count', 'size3_count', 'size4_count'];
+        $destination_product_warehouse = $this->product_warehouse_interface->getDestinationProductWarehouseById($inputs, $select);
+        if (is_null($destination_product_warehouse)) {
             return [
                 'result' => false,
                 'message' => __('messages.record_not_found'),
@@ -254,7 +266,7 @@ class RequestProductWarehouseHelper
 
         $user = Auth::user();
         $inputs = [
-            'product_warehouse_id' => $product_warehouse->id,
+            'product_warehouse_id' => $destination_product_warehouse->id,
             'free_size_count' => $request_product_warehouse->free_size_count,
             'size1_count' => $request_product_warehouse->size1_count,
             'size2_count' => $request_product_warehouse->size2_count,
@@ -284,13 +296,38 @@ class RequestProductWarehouseHelper
             $message = __('messages.size4_not_enough');
         } else {
             $inputs = [
-                'free_size_count' => $product_warehouse->free_size_count - $request_product_warehouse->free_size_count,
-                'size1_count' => $product_warehouse->size1_count - $request_product_warehouse->size1_count,
-                'size2_count' => $product_warehouse->size2_count - $request_product_warehouse->size2_count,
-                'size3_count' => $product_warehouse->size3_count - $request_product_warehouse->size3_count,
-                'size4_count' => $product_warehouse->size4_count - $request_product_warehouse->size4_count,
+                'free_size_count' => $product_warehouse->free_size_count,
+                'size1_count' => $product_warehouse->size1_count,
+                'size2_count' => $product_warehouse->size2_count,
+                'size3_count' => $product_warehouse->size3_count,
+                'size4_count' => $product_warehouse->size4_count,
             ];
+            if ($request_product_warehouse->free_size_count > 0) {
+                $inputs['free_size_count'] = $product_warehouse->free_size_count - $request_product_warehouse->free_size_count;
+            }
+            if ($request_product_warehouse->size1_count > 0) {
+                $inputs['size1_count'] = $product_warehouse->size1_count - $request_product_warehouse->size1_count;
+            }
+            if ($request_product_warehouse->size2_count > 0) {
+                $inputs['size2_count'] = $product_warehouse->size2_count - $request_product_warehouse->size2_count;
+            }
+            if ($request_product_warehouse->size3_count > 0) {
+                $inputs['size3_count'] = $product_warehouse->size3_count - $request_product_warehouse->size3_count;
+            }
+            if ($request_product_warehouse->size4_count > 0) {
+                $inputs['size4_count'] = $product_warehouse->size4_count - $request_product_warehouse->size4_count;
+            }
+
             $result[] = $this->product_warehouse_interface->editProductWarehouse($product_warehouse, $inputs);
+            $inputs = [
+                'sign' => 'plus',
+                'free_size_count' => $request_product_warehouse->free_size_count,
+                'size1_count' => $request_product_warehouse->size1_count,
+                'size2_count' => $request_product_warehouse->size2_count,
+                'size3_count' => $request_product_warehouse->size3_count,
+                'size4_count' => $request_product_warehouse->size4_count,
+            ];
+            $result[] = $this->product_warehouse_interface->editProductWarehouse($destination_product_warehouse, $inputs);
         }
 
         if (!in_array(false, $result)) {

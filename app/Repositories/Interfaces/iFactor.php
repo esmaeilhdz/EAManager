@@ -10,6 +10,8 @@ interface iFactor
 
     public function editFactor($factor, $inputs);
 
+    public function changeCompleteFactor($factor, $inputs);
+
     public function addFactor($inputs, $user);
 
     public function deleteFactor($factor);
