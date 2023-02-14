@@ -220,7 +220,7 @@ trait Common
     /**
      * Return Code of Unicode Text
      * @param String $u Unicode Text
-     * @return int : Code of Unicode Text
+     * @return float|int : Code of Unicode Text
      * @author Mohammad Reza Rassouli
      * @access public
      */
@@ -282,13 +282,12 @@ trait Common
                 ];
             }
         }
-        return
-            [
-                'condition_kind' => $condition_kind,
-                'table' => $table,
-                'search_value' => $search_value ?? '',
-                'fields' => $field
-            ];
+        return [
+            'condition_kind' => $condition_kind,
+            'table' => $table,
+            'search_value' => $search_value ?? '',
+            'fields' => $field
+        ];
     }
 
     /**
@@ -421,7 +420,7 @@ trait Common
         return $message;
     }
 
-    public function errorHandling(\Exception $e)
+    public function errorHandling(\Exception $e): string
     {
         $message = '';
         switch ($e->getCode()) {
@@ -485,6 +484,13 @@ trait Common
         };
     }
 
+    /**
+     * تبدیل code به id
+     * @param $resource
+     * @param $resource_id
+     * @return string
+     * @throws ApiException
+     */
     public function getResourceId($resource, $resource_id): string
     {
         try {
@@ -504,7 +510,13 @@ trait Common
         }
     }
 
-    public function getCurrentCompanyOfUser($user)
+    /**
+     * شرکت جاری کاربر
+     * @param $user
+     * @return int
+     * @throws ApiException
+     */
+    public function getCurrentCompanyOfUser($user): int
     {
         try {
             $person_company = $user->person->person_company->where('is_enable', 1)->first();

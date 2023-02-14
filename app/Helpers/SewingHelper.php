@@ -6,12 +6,13 @@ use App\Repositories\Interfaces\iProduct;
 use App\Repositories\Interfaces\iProductWarehouse;
 use App\Repositories\Interfaces\iSewing;
 use App\Traits\Common;
+use App\Traits\SewingTrait;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class SewingHelper
 {
-    use Common;
+    use Common, SewingTrait;
 
     // attributes
     public iSewing $sewing_interface;
@@ -162,29 +163,10 @@ class SewingHelper
             ];
         }
 
-        if ($inputs['count'] > $sewing->count) {
-            $params['free_size_count'] = $inputs['count'] - $sewing->count;
-            $params['size1_count'] = $inputs['count'] - $sewing->count;
-            $params['size2_count'] = $inputs['count'] - $sewing->count;
-            $params['size3_count'] = $inputs['count'] - $sewing->count;
-            $params['size4_count'] = $inputs['count'] - $sewing->count;
-            $params['sign'] = 'plus';
-        } elseif ($inputs['count'] < $sewing->count) {
-            $params['free_size_count'] = $sewing->count - $inputs['count'];
-            $params['size1_count'] = $sewing->count - $inputs['count'];
-            $params['size2_count'] = $sewing->count - $inputs['count'];
-            $params['size3_count'] = $sewing->count - $inputs['count'];
-            $params['size4_count'] = $sewing->count - $inputs['count'];
-            $params['sign'] = 'minus';
-        } else {
-            $params['free_size_count'] = $sewing->count;
-            $params['size1_count'] = $sewing->count;
-            $params['size2_count'] = $sewing->count;
-            $params['size3_count'] = $sewing->count;
-            $params['size4_count'] = $sewing->count;
-            $params['sign'] = 'equal';
-        }
+        // محاسبه تعداد دوخت برای ویرایش تعداد کالاهای انبار
+        $params = $this->calculateForProductWarehouse($sewing, $inputs);
 
+        // انبار
         $product_warehouse = $this->product_warehouse_interface->getByProductId($product->id);
         DB::beginTransaction();
         $result[] = $this->sewing_interface->editSewing($sewing, $inputs);

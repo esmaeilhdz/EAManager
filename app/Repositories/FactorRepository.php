@@ -35,7 +35,7 @@ class FactorRepository implements Interfaces\iFactor
                     'factor_no',
                     'has_return_permission',
                     'is_credit',
-                    'is_complete',
+                    'status',
                     'settlement_date',
                     'final_price',
                     'created_by',
@@ -51,6 +51,83 @@ class FactorRepository implements Interfaces\iFactor
                         });
                 })
                 ->orderByRaw($inputs['order_by'])
+                ->paginate($inputs['per_page']);
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
+    /**
+     * لیست فاکتورهای قابل بستن
+     * @param $inputs
+     * @return LengthAwarePaginator
+     * @throws ApiException
+     */
+    public function getCompletableFactors($inputs): LengthAwarePaginator
+    {
+        try {
+            // کالاهای فاکتورهای ناقص
+            $in_complete_products = Factor::select([
+                'factors.code',
+                'factors.factor_no',
+                'pw.product_id',
+                'fp.free_size_count',
+                'fp.size1_count',
+                'fp.size2_count',
+                'fp.size3_count',
+                'fp.size4_count'
+            ])
+                ->join('factor_products as fp', 'factors.id', '=', 'fp.factor_id')
+                ->join('product_warehouses as pw', 'pw.id', '=', 'fp.product_warehouse_id')
+                ->where('factors.status', 1)
+                ->get();
+
+            $where = '';
+            foreach ($in_complete_products as $item) {
+                $where .= "(
+                    product_id = $item->product_id
+                    AND free_size_count >= $item->free_size_count
+                    AND size1_count >= $item->size1_count
+                    AND size2_count >= $item->size2_count
+                    AND size3_count >= $item->size3_count
+                    AND size4_count >= $item->size4_count
+                ) AND ";
+            }
+            $where = rtrim($where, ' AND ');
+
+            return Factor::query()
+                ->with([
+                    'customer:id,name,mobile',
+                    'sale_period:id,name',
+                    'creator:id,person_id',
+                    'creator.person:id,name,family'
+                ])
+                ->select([
+                    'code',
+                    'customer_id',
+                    'sale_period_id',
+                    'factor_no',
+                    'has_return_permission',
+                    'is_credit',
+                    'status',
+                    'settlement_date',
+                    'final_price',
+                    'factors.created_by',
+                    'factors.created_at'
+                ])
+                ->where(function ($q) use ($inputs) {
+                    $q->whereRaw($inputs['where']['search']['condition'], $inputs['where']['search']['params'])
+                        ->orWhereHas('customer', function ($q) use ($inputs) {
+                            $q->whereRaw($inputs['where']['customer']['condition'], $inputs['where']['customer']['params']);
+                        })
+                        ->orWhereHas('sale_period', function ($q) use ($inputs) {
+                            $q->whereRaw($inputs['where']['sale_period']['condition'], $inputs['where']['sale_period']['params']);
+                        });
+                })
+                ->whereRaw($where)
+                ->where('status', 1)
+                ->orderByRaw($inputs['order_by'])
+                ->groupBy('factors.code')
                 ->paginate($inputs['per_page']);
         } catch (\Exception $e) {
             throw new ApiException($e);
@@ -99,7 +176,7 @@ class FactorRepository implements Interfaces\iFactor
             $factor->factor_no = $inputs['factor_no'];
             $factor->has_return_permission = $inputs['has_return_permission'];
             $factor->is_credit = $inputs['is_credit'];
-            $factor->is_complete = $inputs['is_complete'];
+            $factor->status = $inputs['status'];
             $factor->settlement_date = $inputs['settlement_date'];
             $factor->description = $inputs['description'];
             $factor->final_price = $inputs['final_price'];
@@ -110,10 +187,10 @@ class FactorRepository implements Interfaces\iFactor
         }
     }
 
-    public function changeCompleteFactor($factor, $inputs)
+    public function changeStatusFactor($factor, $inputs)
     {
         try {
-            $factor->is_complete = $inputs['is_complete'];
+            $factor->status = $inputs['status'];
 
             return $factor->save();
         } catch (\Exception $e) {
@@ -139,7 +216,7 @@ class FactorRepository implements Interfaces\iFactor
             $factor->factor_no = $inputs['factor_no'];
             $factor->has_return_permission = $inputs['has_return_permission'];
             $factor->is_credit = $inputs['is_credit'];
-            $factor->is_complete = $inputs['is_complete'];
+            $factor->status = $inputs['status'];
             $factor->settlement_date = $inputs['settlement_date'];
             $factor->description = $inputs['description'] ?? null;
             $factor->final_price = $inputs['final_price'];

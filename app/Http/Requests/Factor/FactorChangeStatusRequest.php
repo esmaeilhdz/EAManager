@@ -4,7 +4,7 @@ namespace App\Http\Requests\Factor;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class FactorCompleteRequest extends FormRequest
+class FactorChangeStatusRequest extends FormRequest
 {
 
     /**
@@ -38,7 +38,8 @@ class FactorCompleteRequest extends FormRequest
     {
         return [
             'code' => 'required|string|size:32',
-            'is_complete' => 'required|numeric|in:0,1'
+            'status' => 'required|numeric|in:1,2,3',
+            'description' => 'nullable|string'
         ];
     }
 }

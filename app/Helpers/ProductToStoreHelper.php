@@ -7,12 +7,13 @@ use App\Repositories\Interfaces\iProduct;
 use App\Repositories\Interfaces\iProductToStore;
 use App\Repositories\Interfaces\iProductWarehouse;
 use App\Traits\Common;
+use App\Traits\ProductToStoreTrait;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ProductToStoreHelper
 {
-    use Common;
+    use Common, ProductToStoreTrait;
 
     // attributes
     public iPlace $place_interface;
@@ -103,7 +104,7 @@ class ProductToStoreHelper
 
     /**
      * سرویس جزئیات ارسال کالا به فروشگاه
-     * @param $code
+     * @param $inputs
      * @return array
      */
     public function getProductToStoreDetail($inputs): array
@@ -177,6 +178,7 @@ class ProductToStoreHelper
             ];
         }
 
+        // داده ارسال کالا به انبار
         $select = ['id', 'free_size_count', 'size1_count', 'size2_count', 'size3_count', 'size4_count'];
         $product_to_store = $this->product_to_store_interface->getProductToStoreById($product_warehouse->id, $inputs['id'], $select);
         if (is_null($product_to_store)) {
@@ -187,84 +189,15 @@ class ProductToStoreHelper
             ];
         }
 
-        if ($inputs['free_size_count'] > $product_to_store->free_size_count) {
-            $params['free_size_count'] = $product_warehouse->free_size_count - ($inputs['free_size_count'] - $product_to_store->free_size_count);
-            if ($params['free_size_count'] < 0) {
-                return [
-                    'result' => false,
-                    'message' => __('messages.free_size_not_enough'),
-                    'data' => null
-                ];
-            }
-        } elseif ($inputs['free_size_count'] < $product_to_store->free_size_count) {
-            $params['free_size_count'] = $product_warehouse->free_size_count + ($product_to_store->free_size_count - $inputs['free_size_count']);
-        } else {
-            $params['free_size_count'] = $product_warehouse->free_size_count;
-        }
-
-        if ($inputs['size1_count'] > $product_to_store->size1_count) {
-            $params['size1_count'] = $product_warehouse->size1_count - ($inputs['size1_count'] - $product_to_store->size1_count);
-            if ($params['size1_count'] < 0) {
-                return [
-                    'result' => false,
-                    'message' => __('messages.size1_not_enough'),
-                    'data' => null
-                ];
-            }
-        } elseif ($inputs['size1_count'] < $product_to_store->size1_count) {
-            $params['size1_count'] = $product_warehouse->size1_count + ($product_to_store->size1_count - $inputs['size1_count']);
-        } else {
-            $params['size1_count'] = $product_warehouse->size1_count;
-        }
-
-        if ($inputs['size2_count'] > $product_to_store->size2_count) {
-            $params['size2_count'] = $product_warehouse->size2_count - ($inputs['size2_count'] - $product_to_store->size2_count);
-            if ($params['size2_count'] < 0) {
-                return [
-                    'result' => false,
-                    'message' => __('messages.size2_not_enough'),
-                    'data' => null
-                ];
-            }
-        } elseif ($inputs['size2_count'] < $product_to_store->size2_count) {
-            $params['size2_count'] = $product_warehouse->size2_count + ($product_to_store->size2_count - $inputs['size2_count']);
-        } else {
-            $params['size2_count'] = $product_warehouse->size2_count;
-        }
-
-        if ($inputs['size3_count'] > $product_to_store->size3_count) {
-            $params['size3_count'] = $product_warehouse->size3_count - ($inputs['size3_count'] - $product_to_store->size3_count);
-            if ($params['size3_count'] < 0) {
-                return [
-                    'result' => false,
-                    'message' => __('messages.size3_not_enough'),
-                    'data' => null
-                ];
-            }
-        } elseif ($inputs['size3_count'] < $product_to_store->size3_count) {
-            $params['size3_count'] = $product_warehouse->size3_count + ($product_to_store->size3_count - $inputs['size3_count']);
-        } else {
-            $params['size3_count'] = $product_warehouse->size3_count;
-        }
-
-        if ($inputs['size4_count'] > $product_to_store->size4_count) {
-            $params['size4_count'] = $product_warehouse->size4_count - ($inputs['size4_count'] - $product_to_store->size4_count);
-            if ($params['size4_count'] < 0) {
-                return [
-                    'result' => false,
-                    'message' => __('messages.size4_not_enough'),
-                    'data' => null
-                ];
-            }
-        } elseif ($inputs['size4_count'] < $product_to_store->size4_count) {
-            $params['size4_count'] = $product_warehouse->size4_count + ($product_to_store->size4_count - $inputs['size4_count']);
-        } else {
-            $params['size4_count'] = $product_warehouse->size4_count;
+        // محاسبه برای ویرایش آمار انبار
+        $result_calculate_product_warehouse = $this->calculateForProductWarehouse($inputs, $product_warehouse, $product_to_store);
+        if (!$result_calculate_product_warehouse['result']) {
+            return $result_calculate_product_warehouse;
         }
 
         DB::beginTransaction();
         $result[] = $this->product_to_store_interface->editProductToStore($product_to_store, $inputs);
-        $result[] = $this->product_warehouse_interface->editProductWarehouse($product_warehouse, $params);
+        $result[] = $this->product_warehouse_interface->editProductWarehouse($product_warehouse, $result_calculate_product_warehouse['data']);
 
         if (!in_array(false, $result)) {
             $flag = true;

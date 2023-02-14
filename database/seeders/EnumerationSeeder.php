@@ -54,7 +54,7 @@ class EnumerationSeeder extends Seeder
                 'enum_id' => 1,
                 'is_editable' => 1,
                 'created_by' => 1,
-            ],*/
+            ],
             [
                 'category_name' => 'notification_level',
                 'category_caption' => 'سطح اعلان',
@@ -84,6 +84,30 @@ class EnumerationSeeder extends Seeder
                 'category_caption' => 'سطح اعلان',
                 'enum_caption' => 'فوری',
                 'enum_id' => 4,
+                'is_editable' => 0,
+                'created_by' => 1,
+            ],*/
+            [
+                'category_name' => 'factor_status',
+                'category_caption' => 'وضعیت فاکتور',
+                'enum_caption' => 'ناقص',
+                'enum_id' => 1,
+                'is_editable' => 0,
+                'created_by' => 1,
+            ],
+            [
+                'category_name' => 'factor_status',
+                'category_caption' => 'وضعیت فاکتور',
+                'enum_caption' => 'کامل',
+                'enum_id' => 2,
+                'is_editable' => 0,
+                'created_by' => 1,
+            ],
+            [
+                'category_name' => 'factor_status',
+                'category_caption' => 'وضعیت فاکتور',
+                'enum_caption' => 'مرجوع',
+                'enum_id' => 3,
                 'is_editable' => 0,
                 'created_by' => 1,
             ],

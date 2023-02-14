@@ -177,27 +177,11 @@ class ProductWarehouseRepository implements Interfaces\iProductWarehouse
                 $product_warehouse->place_id = $inputs['place_id'];
             }
 
-            if (isset($inputs['sign'])) {
-                if ($inputs['sign'] == 'plus') {
-                    $product_warehouse->free_size_count += $inputs['free_size_count'];
-                    $product_warehouse->size1_count += $inputs['size1_count'];
-                    $product_warehouse->size2_count += $inputs['size2_count'];
-                    $product_warehouse->size3_count += $inputs['size3_count'];
-                    $product_warehouse->size4_count += $inputs['size4_count'];
-                } elseif ($inputs['sign'] == 'minus') {
-                    $product_warehouse->free_size_count -= $inputs['free_size_count'];
-                    $product_warehouse->size1_count -= $inputs['size1_count'];
-                    $product_warehouse->size2_count -= $inputs['size2_count'];
-                    $product_warehouse->size3_count -= $inputs['size3_count'];
-                    $product_warehouse->size4_count -= $inputs['size4_count'];
-                }
-            } else {
-                $product_warehouse->free_size_count = $inputs['free_size_count'];
-                $product_warehouse->size1_count = $inputs['size1_count'];
-                $product_warehouse->size2_count = $inputs['size2_count'];
-                $product_warehouse->size3_count = $inputs['size3_count'];
-                $product_warehouse->size4_count = $inputs['size4_count'];
-            }
+            $product_warehouse->free_size_count = $inputs['free_size_count'];
+            $product_warehouse->size1_count = $inputs['size1_count'];
+            $product_warehouse->size2_count = $inputs['size2_count'];
+            $product_warehouse->size3_count = $inputs['size3_count'];
+            $product_warehouse->size4_count = $inputs['size4_count'];
 
             if (isset($inputs['is_enable'])) {
                 $product_warehouse->is_enable = $inputs['is_enable'];

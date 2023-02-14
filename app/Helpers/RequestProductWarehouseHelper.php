@@ -7,12 +7,13 @@ use App\Repositories\Interfaces\iProductToStore;
 use App\Repositories\Interfaces\iProductWarehouse;
 use App\Repositories\Interfaces\iRequestProductWarehouse;
 use App\Traits\Common;
+use App\Traits\RequestProductWarehouseTrait;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class RequestProductWarehouseHelper
 {
-    use Common;
+    use Common, RequestProductWarehouseTrait;
 
     // attributes
     public iProduct $product_interface;
@@ -279,56 +280,14 @@ class RequestProductWarehouseHelper
         $result[] = $this->request_product_warehouse_interface->confirmRequestProductWarehouse($request_product_warehouse, $user);
         $result[] = $this->product_store_interface->addProductToStore($inputs, $user, true)['result'];
 
-        if ($product_warehouse->free_size_count - $request_product_warehouse->free_size_count < 0) {
-            $result[] = false;
-            $message = __('messages.free_size_not_enough');
-        } elseif ($product_warehouse->size1_count - $request_product_warehouse->size1_count < 0) {
-            $result[] = false;
-            $message = __('messages.size1_not_enough');
-        } elseif ($product_warehouse->size2_count - $request_product_warehouse->size2_count < 0) {
-            $result[] = false;
-            $message = __('messages.size2_not_enough');
-        } elseif ($product_warehouse->size3_count - $request_product_warehouse->size3_count < 0) {
-            $result[] = false;
-            $message = __('messages.size3_not_enough');
-        } elseif ($product_warehouse->size4_count - $request_product_warehouse->size4_count < 0) {
-            $result[] = false;
-            $message = __('messages.size4_not_enough');
-        } else {
-            $inputs = [
-                'free_size_count' => $product_warehouse->free_size_count,
-                'size1_count' => $product_warehouse->size1_count,
-                'size2_count' => $product_warehouse->size2_count,
-                'size3_count' => $product_warehouse->size3_count,
-                'size4_count' => $product_warehouse->size4_count,
-            ];
-            if ($request_product_warehouse->free_size_count > 0) {
-                $inputs['free_size_count'] = $product_warehouse->free_size_count - $request_product_warehouse->free_size_count;
-            }
-            if ($request_product_warehouse->size1_count > 0) {
-                $inputs['size1_count'] = $product_warehouse->size1_count - $request_product_warehouse->size1_count;
-            }
-            if ($request_product_warehouse->size2_count > 0) {
-                $inputs['size2_count'] = $product_warehouse->size2_count - $request_product_warehouse->size2_count;
-            }
-            if ($request_product_warehouse->size3_count > 0) {
-                $inputs['size3_count'] = $product_warehouse->size3_count - $request_product_warehouse->size3_count;
-            }
-            if ($request_product_warehouse->size4_count > 0) {
-                $inputs['size4_count'] = $product_warehouse->size4_count - $request_product_warehouse->size4_count;
-            }
-
-            $result[] = $this->product_warehouse_interface->editProductWarehouse($product_warehouse, $inputs);
-            $inputs = [
-                'sign' => 'plus',
-                'free_size_count' => $request_product_warehouse->free_size_count,
-                'size1_count' => $request_product_warehouse->size1_count,
-                'size2_count' => $request_product_warehouse->size2_count,
-                'size3_count' => $request_product_warehouse->size3_count,
-                'size4_count' => $request_product_warehouse->size4_count,
-            ];
-            $result[] = $this->product_warehouse_interface->editProductWarehouse($destination_product_warehouse, $inputs);
+        $result_calculate_product_warehouse = $this->calculateForProductWarehouse($product_warehouse, $request_product_warehouse);
+        if (!$result_calculate_product_warehouse['result']) {
+            DB::rollBack();
+            return $result_calculate_product_warehouse;
         }
+
+        $result[] = $this->product_warehouse_interface->editProductWarehouse($product_warehouse, $result_calculate_product_warehouse['data']['inputs_product_warehouse']);
+        $result[] = $this->product_warehouse_interface->editProductWarehouse($destination_product_warehouse, $result_calculate_product_warehouse['data']['inputs_request_product_warehouse']);
 
         if (!in_array(false, $result)) {
             $flag = true;

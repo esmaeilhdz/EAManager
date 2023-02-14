@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Facades\FactorFacade;
 use App\Http\Requests\Factor\FactorAddRequest;
-use App\Http\Requests\Factor\FactorCompleteRequest;
+use App\Http\Requests\Factor\FactorChangeStatusRequest;
 use App\Http\Requests\Factor\FactorDetailRequest;
 use App\Http\Requests\Factor\FactorEditRequest;
 use App\Http\Requests\Factor\FactorListRequest;
@@ -26,6 +26,15 @@ class FactorController extends Controller
         $this->cleanInput($inputs, array_keys($request->rules()));
 
         $result = FactorFacade::getFactors($inputs);
+        return $this->api_response->response($result['result'], $result['message'], $result['data']);
+    }
+
+    public function getCompletableFactors(FactorListRequest $request)
+    {
+        $inputs = $request->validated();
+        $this->cleanInput($inputs, array_keys($request->rules()));
+
+        $result = FactorFacade::getCompletableFactors($inputs);
         return $this->api_response->response($result['result'], $result['message'], $result['data']);
     }
 
@@ -59,15 +68,15 @@ class FactorController extends Controller
 
     /**
      * سرویس تغییر وضعیت تکمیل بودن فاکتور
-     * @param FactorDetailRequest $request
+     * @param FactorChangeStatusRequest $request
      * @return JsonResponse
      */
-    public function changeCompleteFactor(FactorCompleteRequest $request): JsonResponse
+    public function changeStatusFactor(FactorChangeStatusRequest $request): JsonResponse
     {
         $inputs = $request->validated();
         $this->cleanInput($inputs, array_keys($request->rules()));
 
-        $result = FactorFacade::changeCompleteFactor($inputs);
+        $result = FactorFacade::changeStatusFactor($inputs);
         return $this->api_response->response($result['result'], $result['message'], $result['data']);
     }
 

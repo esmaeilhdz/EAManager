@@ -45,13 +45,6 @@ class Factor extends Model
         );
     }
 
-    protected function isComplete(): Attribute
-    {
-        return Attribute::get(
-            get: fn ($value) => (bool) $value
-        );
-    }
-
 
     public function factor_products()
     {
@@ -66,6 +59,12 @@ class Factor extends Model
     public function sale_period()
     {
         return $this->hasOne(SalePeriod::class, 'id', 'sale_period_id');
+    }
+
+    public function status()
+    {
+        return $this->hasOne(Enumeration::class, 'enum_id', 'status')
+            ->where('category_name', 'factor_status');
     }
 
     public function customer()
