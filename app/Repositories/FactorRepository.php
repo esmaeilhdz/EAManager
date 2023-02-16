@@ -176,7 +176,7 @@ class FactorRepository implements Interfaces\iFactor
             $factor->factor_no = $inputs['factor_no'];
             $factor->has_return_permission = $inputs['has_return_permission'];
             $factor->is_credit = $inputs['is_credit'];
-            $factor->status = $inputs['status'];
+//            $factor->status = $inputs['status'];
             $factor->settlement_date = $inputs['settlement_date'];
             $factor->description = $inputs['description'];
             $factor->final_price = $inputs['final_price'];

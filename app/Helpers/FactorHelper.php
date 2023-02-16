@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Exceptions\ApiException;
 use App\Facades\ProductWarehouseFacade;
 use App\Repositories\Interfaces\iCustomer;
 use App\Repositories\Interfaces\iFactor;
@@ -322,23 +323,27 @@ class FactorHelper
 
         // محاسبه برای ویرایش آمار انبار
         $change_status_data = $this->changeStatusFactorHelper($inputs['status'], $factor);
-        foreach ($change_status_data as $param) {
+        if (!$change_status_data['result']) {
+            return $change_status_data;
+        }
+
+        foreach ($change_status_data['data']['params'] as $key => $param) {
             if (isset($param['sign'])) {
                 if ($param['sign'] == 'plus') {
-                    $param['free_size_count'] = $change_status_data['factor_products']->product_warehouse->free_size_count + $param['free_size_count'];
-                    $param['size1_count'] = $change_status_data['factor_products']->product_warehouse->size1_count + $param['size1_count'];
-                    $param['size2_count'] = $change_status_data['factor_products']->product_warehouse->size2_count + $param['size2_count'];
-                    $param['size3_count'] = $change_status_data['factor_products']->product_warehouse->size3_count + $param['size3_count'];
-                    $param['size4_count'] = $change_status_data['factor_products']->product_warehouse->size4_count + $param['size4_count'];
+                    $param['free_size_count'] = $change_status_data['data']['factor_products'][$key]->product_warehouse->free_size_count + $param['free_size_count'];
+                    $param['size1_count'] = $change_status_data['data']['factor_products'][$key]->product_warehouse->size1_count + $param['size1_count'];
+                    $param['size2_count'] = $change_status_data['data']['factor_products'][$key]->product_warehouse->size2_count + $param['size2_count'];
+                    $param['size3_count'] = $change_status_data['data']['factor_products'][$key]->product_warehouse->size3_count + $param['size3_count'];
+                    $param['size4_count'] = $change_status_data['data']['factor_products'][$key]->product_warehouse->size4_count + $param['size4_count'];
                 } elseif ($param['sign'] == 'minus') {
-                    $param['free_size_count'] = $change_status_data['factor_products']->product_warehouse->free_size_count - $param['free_size_count'];
-                    $param['size1_count'] = $change_status_data['factor_products']->product_warehouse->size1_count - $param['size1_count'];
-                    $param['size2_count'] = $change_status_data['factor_products']->product_warehouse->size2_count - $param['size2_count'];
-                    $param['size3_count'] = $change_status_data['factor_products']->product_warehouse->size3_count - $param['size3_count'];
-                    $param['size4_count'] = $change_status_data['factor_products']->product_warehouse->size4_count - $param['size4_count'];
+                    $param['free_size_count'] = $change_status_data['data']['factor_products'][$key]->product_warehouse->free_size_count - $param['free_size_count'];
+                    $param['size1_count'] = $change_status_data['data']['factor_products'][$key]->product_warehouse->size1_count - $param['size1_count'];
+                    $param['size2_count'] = $change_status_data['data']['factor_products'][$key]->product_warehouse->size2_count - $param['size2_count'];
+                    $param['size3_count'] = $change_status_data['data']['factor_products'][$key]->product_warehouse->size3_count - $param['size3_count'];
+                    $param['size4_count'] = $change_status_data['data']['factor_products'][$key]->product_warehouse->size4_count - $param['size4_count'];
                 }
             }
-            $result[] = $this->product_warehouse_interface->editProductWarehouse($change_status_data['factor_products']->product_warehouse, $param);
+            $result[] = $this->product_warehouse_interface->editProductWarehouse($change_status_data['data']['factor_products'][$key]->product_warehouse, $param);
         }
 
         if (!in_array(false, $result)) {
@@ -360,7 +365,7 @@ class FactorHelper
      * افزودن فاکتور
      * @param $inputs
      * @return array
-     * @throws \App\Exceptions\ApiException
+     * @throws ApiException
      */
     public function addFactor($inputs): array
     {
@@ -420,7 +425,7 @@ class FactorHelper
                         'product_id' => $product_warehouse_primary->product_id
                     ];
                     $select = ['id', 'product_id', 'free_size_count', 'size1_count', 'size2_count', 'size3_count', 'size4_count'];
-                    // انبار کالا به ازای موجود بودن تمام درخواست های کالا
+                    // انبار کالا به ازای موجود بودن تمام انبارهای کالا
                     $product_warehouse = $this->product_warehouse_interface->getByStockProduct($params, $product_item, $select);
                     if (is_null($product_warehouse)) {
                         DB::rollBack();
