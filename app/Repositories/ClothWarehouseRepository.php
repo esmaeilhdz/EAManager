@@ -15,7 +15,9 @@ class ClothWarehouseRepository implements Interfaces\iClothWarehouse
     public function editWarehouse($inputs)
     {
         try {
-            $cloth_warehouse = ClothWareHouse::where('cloth_id', $inputs['cloth_id'])->first();
+            $cloth_warehouse = ClothWareHouse::where('cloth_id', $inputs['cloth_id'])
+                ->where('place_id', $inputs['warehouse_place_id'])
+                ->first();
 
             if ($inputs['sign'] == 'plus') {
                 $cloth_warehouse->metre += $inputs['metre'];

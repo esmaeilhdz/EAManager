@@ -18,11 +18,15 @@ class ClothBuyObserver
      */
     public function created(ClothBuy $cloth_buy)
     {
-        $cloth_warehouse = ClothWareHouse::where('cloth_id', $cloth_buy->cloth_id)->first();
+        $cloth_warehouse = ClothWareHouse::where('cloth_id', $cloth_buy->cloth_id)
+            ->where('place_id', $cloth_buy->warehouse_place_id)
+            ->first();
+
         if (is_null($cloth_warehouse)) {
             $cloth_warehouse = new ClothWareHouse();
 
             $cloth_warehouse->cloth_id = $cloth_buy->cloth_id;
+            $cloth_warehouse->place_id = $cloth_buy->warehouse_place_id;
             $cloth_warehouse->metre = $cloth_buy->metre;
             $cloth_warehouse->roll_count = $cloth_buy->roll_count;
             $cloth_warehouse->created_by = $cloth_buy->created_by;
@@ -42,24 +46,6 @@ class ClothBuyObserver
      */
     public function updated(ClothBuy $cloth_buy)
     {
-//        $cloth_warehouse = ClothWareHouse::where('cloth_id', $cloth_buy->cloth_id)->first();
-
-        /*if ($cloth_buy->metre > $cloth_warehouse->metre) {
-            $metre = $cloth_buy->metre + $cloth_warehouse->metre;
-        } elseif ($cloth_buy->metre < $cloth_warehouse->metre) {
-            $metre = $cloth_buy->metre - $cloth_warehouse->metre;
-        }
-
-        if ($cloth_buy->roll_count > $cloth_warehouse->roll_count) {
-            $roll_count = $cloth_buy->roll_count + $cloth_warehouse->roll_count;
-        } elseif ($cloth_buy->roll_count < $cloth_warehouse->roll_count) {
-            $roll_count = $cloth_buy->roll_count - $cloth_warehouse->roll_count;
-        }*/
-
-        /*$cloth_warehouse->metre = $metre;
-        $cloth_warehouse->roll_count = $roll_count;
-
-        $cloth_warehouse->save();*/
     }
 
     /**

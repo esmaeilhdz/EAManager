@@ -39,11 +39,6 @@ class ProductWarehouse extends Model
         return $this->hasOne(Product::class, 'id', 'product_id');
     }
 
-    public function company()
-    {
-        return $this->hasOne(Company::class, 'id', 'company_id');
-    }
-
     public function creator()
     {
         return $this->hasOne(User::class, 'id', 'created_by');

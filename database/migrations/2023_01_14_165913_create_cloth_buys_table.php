@@ -17,7 +17,8 @@ class CreateClothBuysTable extends Migration
         Schema::create('cloth_buys', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('cloth_id')->index();
-            $table->unsignedBigInteger('place_id')->index()->comment('فروشنده');
+            $table->unsignedBigInteger('seller_place_id')->index()->comment('فروشنده');
+            $table->unsignedBigInteger('warehouse_place_id')->index()->comment('انبار');
             $table->unsignedInteger('metre');
             $table->unsignedTinyInteger('roll_count')->comment('تعداد طاقه');
             $table->date('receive_date')->comment('تاریخ دریافت پارچه');

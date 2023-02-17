@@ -55,4 +55,15 @@ trait FactorTrait
             ]
         ];
     }
+
+    public function prepareWarehouseToAddCompleteFactor($inputs, $product_warehouse, $product_item): array
+    {
+        $inputs['free_size_count'] = $product_warehouse->free_size_count - $product_item['free_size_count'];
+        $inputs['size1_count'] = $product_warehouse->size1_count - $product_item['size1_count'];
+        $inputs['size2_count'] = $product_warehouse->size2_count - $product_item['size2_count'];
+        $inputs['size3_count'] = $product_warehouse->size3_count - $product_item['size3_count'];
+        $inputs['size4_count'] = $product_warehouse->size4_count - $product_item['size4_count'];
+
+        return $inputs;
+    }
 }

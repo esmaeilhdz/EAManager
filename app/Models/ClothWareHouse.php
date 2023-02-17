@@ -10,4 +10,20 @@ class ClothWareHouse extends Model
     use HasFactory;
 
     protected $table = 'cloth_warehouses';
+
+
+    public function creator()
+    {
+        return $this->hasOne(User::class, 'id', 'created_by');
+    }
+
+    public function cloth()
+    {
+        return $this->hasOne(Cloth::class, 'id', 'cloth_id');
+    }
+
+    public function place()
+    {
+        return $this->hasOne(Place::class, 'id', 'place_id');
+    }
 }

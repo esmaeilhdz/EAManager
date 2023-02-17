@@ -67,7 +67,7 @@ class FactorRepository implements Interfaces\iFactor
     {
         try {
             // کالاهای فاکتورهای ناقص
-            $in_complete_products = Factor::select([
+            /*$in_complete_products = Factor::select([
                 'factors.code',
                 'factors.factor_no',
                 'pw.product_id',
@@ -93,7 +93,7 @@ class FactorRepository implements Interfaces\iFactor
                     AND size4_count >= $item->size4_count
                 ) AND ";
             }
-            $where = rtrim($where, ' AND ');
+            $where = rtrim($where, ' AND ');*/
 
             return Factor::query()
                 ->with([
@@ -115,6 +115,8 @@ class FactorRepository implements Interfaces\iFactor
                     'factors.created_by',
                     'factors.created_at'
                 ])
+                ->join('factor_products as fp', 'factors.id', '=', 'fp.factor_id')
+                ->join('product_warehouses as pw', 'pw.id', '=', 'fp.product_warehouse_id')
                 ->where(function ($q) use ($inputs) {
                     $q->whereRaw($inputs['where']['search']['condition'], $inputs['where']['search']['params'])
                         ->orWhereHas('customer', function ($q) use ($inputs) {
@@ -124,7 +126,7 @@ class FactorRepository implements Interfaces\iFactor
                             $q->whereRaw($inputs['where']['sale_period']['condition'], $inputs['where']['sale_period']['params']);
                         });
                 })
-                ->whereRaw($where)
+//                ->whereRaw($where)
                 ->where('status', 1)
                 ->orderByRaw($inputs['order_by'])
                 ->groupBy('factors.code')
@@ -187,10 +189,21 @@ class FactorRepository implements Interfaces\iFactor
         }
     }
 
-    public function changeStatusFactor($factor, $inputs)
+    /**
+     * تغییر وضعیت فاکتور
+     * @param $factor
+     * @param $inputs
+     * @return mixed
+     * @throws ApiException
+     */
+    public function changeStatusFactor($factor, $inputs): mixed
     {
         try {
             $factor->status = $inputs['status'];
+            // مرجوع فاکتور
+            if ($inputs['status'] == 3) {
+                $factor->returned_at = now();
+            }
 
             return $factor->save();
         } catch (\Exception $e) {
@@ -213,7 +226,7 @@ class FactorRepository implements Interfaces\iFactor
             $factor->code = $this->randomString();
             $factor->customer_id = $inputs['customer_id'];
             $factor->sale_period_id = $inputs['sale_period_id'];
-            $factor->factor_no = $inputs['factor_no'];
+            $factor->factor_no = 'FF-'.rand(1111111,9999999);
             $factor->has_return_permission = $inputs['has_return_permission'];
             $factor->is_credit = $inputs['is_credit'];
             $factor->status = $inputs['status'];

@@ -35,6 +35,11 @@ class Place extends Model
     }
 
 
+    public function company()
+    {
+        return $this->hasOne(Company::class, 'id', 'company_id');
+    }
+
     public function place_kind()
     {
         return $this->hasOne(Enumeration::class, 'enum_id', 'place_kind_id')

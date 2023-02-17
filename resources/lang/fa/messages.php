@@ -30,4 +30,5 @@ return [
     'customer_not_found' => 'مشتری یافت نشد.',
     'invoice_product_not_found' => 'محصول پیش فاکتور یافت نشد.',
     'factor_doesnt_has_return_permission' => 'این فاکتور اجازه مرجوع ندارد.',
+    'product_warehouse_not_found' => 'انبار کالا یافت نشد.',
 ];

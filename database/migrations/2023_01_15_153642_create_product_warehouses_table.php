@@ -16,7 +16,6 @@ class CreateProductWarehousesTable extends Migration
         Schema::dropIfExists('product_warehouses');
         Schema::create('product_warehouses', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('place_id');
             $table->unsignedInteger('free_size_count');
@@ -30,7 +29,6 @@ class CreateProductWarehousesTable extends Migration
 
             $table->engine = 'InnoDB';
 
-            $table->foreign('company_id')->references('id')->on('companies');
             $table->foreign('product_id')->references('id')->on('products');
             $table->foreign('place_id')->references('id')->on('places');
         });

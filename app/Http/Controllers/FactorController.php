@@ -29,7 +29,12 @@ class FactorController extends Controller
         return $this->api_response->response($result['result'], $result['message'], $result['data']);
     }
 
-    public function getCompletableFactors(FactorListRequest $request)
+    /**
+     * سرویس لیست فاکتورهای ناقص قابل کامل شدن
+     * @param FactorListRequest $request
+     * @return JsonResponse
+     */
+    public function getCompletableFactors(FactorListRequest $request): JsonResponse
     {
         $inputs = $request->validated();
         $this->cleanInput($inputs, array_keys($request->rules()));

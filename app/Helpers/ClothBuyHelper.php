@@ -128,6 +128,7 @@ class ClothBuyHelper
 
         $inputs['cloth_id'] = $cloth->id;
         $params['cloth_id'] = $cloth->id;
+        $params = array_merge($params, $inputs);
         $cloth_buy = $this->cloth_buy_interface->getClothBuyById($inputs);
         if (is_null($cloth_buy)) {
             return [

@@ -22,9 +22,9 @@ class FactorHelper
 
     // attributes
     public iFactor $factor_interface;
+    public iCustomer $customer_interface;
     public iFactorProduct $factor_product_interface;
     public iFactorPayment $factor_payment_interface;
-    public iCustomer $customer_interface;
     public iProductWarehouse $product_warehouse_interface;
     public iRequestProductWarehouse $request_product_interface;
 
@@ -410,11 +410,8 @@ class FactorHelper
                     ];
                 }
 
-                $inputs['free_size_count'] = $product_warehouse_primary->free_size_count - $product_item['free_size_count'];
-                $inputs['size1_count'] = $product_warehouse_primary->size1_count - $product_item['size1_count'];
-                $inputs['size2_count'] = $product_warehouse_primary->size2_count - $product_item['size2_count'];
-                $inputs['size3_count'] = $product_warehouse_primary->size3_count - $product_item['size3_count'];
-                $inputs['size4_count'] = $product_warehouse_primary->size4_count - $product_item['size4_count'];
+                $inputs = $this->prepareWarehouseToAddCompleteFactor($inputs, $product_warehouse_primary, $product_item);
+
                 $result[] = $this->product_warehouse_interface->editProductWarehouse($product_warehouse_primary, $inputs);
             } elseif ($inputs['status'] == 1) {
                 // درج فاکتور به صورت ناقص

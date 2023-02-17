@@ -17,6 +17,7 @@ class CreateClothWareHousesTable extends Migration
         Schema::create('cloth_warehouses', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('cloth_id');
+            $table->unsignedBigInteger('place_id');
             $table->unsignedInteger('metre');
             $table->unsignedInteger('roll_count')->comment('تعداد طاقه');
             $table->unsignedBigInteger('created_by');
@@ -25,6 +26,7 @@ class CreateClothWareHousesTable extends Migration
             $table->engine = 'InnoDB';
 
             $table->foreign('cloth_id')->references('id')->on('cloths');
+            $table->foreign('place_id')->references('id')->on('places');
         });
     }
 

@@ -17,6 +17,7 @@ class CreatePlacesTable extends Migration
         Schema::create('places', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->unsignedBigInteger('company_id');
             $table->unsignedTinyInteger('place_kind_id')->index()->comment('نوع مکان');
             $table->string('department_manager_name')->nullable()->comment('نام مسئول');
             $table->string('department_manager_national_code', 11)->nullable()->comment('کدملی مسئول');
@@ -27,6 +28,8 @@ class CreatePlacesTable extends Migration
             $table->timestamps();
 
             $table->engine = 'InnoDB';
+
+            $table->foreign('company_id')->references('id')->on('companies');
         });
     }
 

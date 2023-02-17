@@ -76,7 +76,8 @@ class ClothBuyRepository implements Interfaces\iClothBuy
     public function editClothBuy($cloth_buy, $inputs)
     {
         try {
-            $cloth_buy->place_id = $inputs['place_id'];
+            $cloth_buy->seller_place_id = $inputs['seller_place_id'];
+            $cloth_buy->warehouse_place_id = $inputs['warehouse_place_id'];
             $cloth_buy->metre = $inputs['metre'];
             $cloth_buy->roll_count = $inputs['roll_count'];
 
@@ -92,7 +93,8 @@ class ClothBuyRepository implements Interfaces\iClothBuy
             $cloth_buy = new ClothBuy();
 
             $cloth_buy->cloth_id = $inputs['cloth_id'];
-            $cloth_buy->place_id = $inputs['place_id'];
+            $cloth_buy->seller_place_id = $inputs['seller_place_id'];
+            $cloth_buy->warehouse_place_id = $inputs['warehouse_place_id'];
             $cloth_buy->metre = $inputs['metre'];
             $cloth_buy->roll_count = $inputs['roll_count'];
             $cloth_buy->receive_date = $inputs['receive_date'];

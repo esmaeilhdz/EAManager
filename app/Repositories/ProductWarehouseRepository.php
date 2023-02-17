@@ -44,7 +44,9 @@ class ProductWarehouseRepository implements Interfaces\iProductWarehouse
                     'created_at'
                 ])
                 ->where('product_id', $product_id)
-                ->where('company_id', $company_id)
+                ->whereHas('place', function ($q) use ($company_id) {
+                    $q->where('company_id', $company_id);
+                })
 //                ->whereRaw($inputs['where']['search']['condition'], $inputs['where']['search']['params'])
                 ->paginate($inputs['per_page']);
         } catch (\Exception $e) {
@@ -142,12 +144,14 @@ class ProductWarehouseRepository implements Interfaces\iProductWarehouse
     {
         try {
             $product_warehouse = ProductWarehouse::where('product_id', $inputs['product_id'])
-                ->where('company_id', $inputs['company_id'])
                 ->where('free_size_count', '>=', $data['free_size_count'])
                 ->where('size1_count', '>=', $data['size1_count'])
                 ->where('size2_count', '>=', $data['size2_count'])
                 ->where('size3_count', '>=', $data['size3_count'])
-                ->where('size4_count', '>=', $data['size4_count']);
+                ->where('size4_count', '>=', $data['size4_count'])
+                ->whereHas('place', function ($q) use ($inputs) {
+                    $q->where('company_id', $inputs['company_id']);
+                });
 
             if (count($relation)) {
                 $product_warehouse = $product_warehouse->with($relation);
@@ -220,11 +224,8 @@ class ProductWarehouseRepository implements Interfaces\iProductWarehouse
     public function addProductWarehouse($inputs, $user): array
     {
         try {
-            $company_id = $this->getCurrentCompanyOfUser($user);
-
             $product_warehouse = new ProductWarehouse();
 
-            $product_warehouse->company_id = $company_id;
             $product_warehouse->product_id = $inputs['product_id'];
             $product_warehouse->place_id = $inputs['place_id'];
             $product_warehouse->free_size_count = $inputs['free_size_count'];

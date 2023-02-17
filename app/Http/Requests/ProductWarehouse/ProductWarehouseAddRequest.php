@@ -38,7 +38,6 @@ class ProductWarehouseAddRequest extends FormRequest
     {
         return [
             'code' => 'required|string|size:32',
-            'company_id' => 'required|numeric|min:1',
             'place_id' => 'required|numeric|min:1',
             'free_size_count' => 'required|numeric|min:1',
             'size1_count' => 'required|numeric|min:1',
