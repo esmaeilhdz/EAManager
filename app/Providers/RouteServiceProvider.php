@@ -88,6 +88,8 @@ class RouteServiceProvider extends ServiceProvider
             $this->mapInvoice();
             // روت فاکتور
             $this->mapFactor();
+            // روت پیوست
+            $this->mapAttachment();
 
         });
     }
@@ -269,6 +271,15 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/factor.php'));
+
+    }
+
+    private function mapAttachment()
+    {
+        Route::prefix('api')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/attachment.php'));
 
     }
 

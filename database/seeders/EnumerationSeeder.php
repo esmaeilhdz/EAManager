@@ -86,7 +86,7 @@ class EnumerationSeeder extends Seeder
                 'enum_id' => 4,
                 'is_editable' => 0,
                 'created_by' => 1,
-            ],*/
+            ],
             [
                 'category_name' => 'factor_status',
                 'category_caption' => 'وضعیت فاکتور',
@@ -108,6 +108,14 @@ class EnumerationSeeder extends Seeder
                 'category_caption' => 'وضعیت فاکتور',
                 'enum_caption' => 'مرجوع',
                 'enum_id' => 3,
+                'is_editable' => 0,
+                'created_by' => 1,
+            ],*/
+            [
+                'category_name' => 'attachment_type',
+                'category_caption' => 'نوع پیوست',
+                'enum_caption' => 'عکس پرسنلی',
+                'enum_id' => 1,
                 'is_editable' => 0,
                 'created_by' => 1,
             ],
