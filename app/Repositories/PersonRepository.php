@@ -15,12 +15,14 @@ class PersonRepository implements Interfaces\iPerson
     /**
      * لیست افراد
      * @param $inputs
+     * @param $user
      * @return LengthAwarePaginator
      * @throws ApiException
      */
-    public function getPersons($inputs): LengthAwarePaginator
+    public function getPersons($inputs, $user): LengthAwarePaginator
     {
         try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
             return Person::query()
                 ->with([
                     'creator:id,person_id',
@@ -37,6 +39,10 @@ class PersonRepository implements Interfaces\iPerson
                     'created_at'
                 ])
                 ->whereRaw($inputs['where']['search']['condition'], $inputs['where']['search']['params'])
+                ->whereHas('person_company', function ($q) use ($company_id) {
+                    $q->where('company_id', $company_id);
+                })
+                ->orderByRaw($inputs['order_by'])
                 ->paginate($inputs['per_page']);
         } catch (\Exception $e) {
             throw new ApiException($e);

@@ -6,7 +6,7 @@ interface iProductWarehouse
 {
     public function getProductWarehouses($product_id, $inputs, $user);
 
-    public function getProductWarehouseById($inputs, $select = [], $relation = []);
+    public function getProductWarehouseById($inputs, $user, $select = [], $relation = []);
 
     public function getDestinationProductWarehouseById($inputs, $select = [], $relation = []);
 

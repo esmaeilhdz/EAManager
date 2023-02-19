@@ -100,10 +100,11 @@ class ProductWarehouseHelper
         }
 
         // انبار کالا
+        $user = Auth::user();
         $inputs['product_id'] = $product->id;
         $relation = ['color:enum_id,enum_caption'];
         $select = ['product_id', 'place_id', 'free_size_count', 'size1_count', 'size2_count', 'size3_count', 'size4_count', 'is_enable'];
-        $product_warehouse = $this->product_warehouse_interface->getProductWarehouseById($inputs, $select, $relation);
+        $product_warehouse = $this->product_warehouse_interface->getProductWarehouseById($inputs, $user, $select, $relation);
         if (is_null($product_warehouse)) {
             return [
                 'result' => false,

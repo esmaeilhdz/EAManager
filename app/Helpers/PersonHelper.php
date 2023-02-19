@@ -25,14 +25,16 @@ class PersonHelper
      */
     public function getPersons($inputs): array
     {
+        $user = Auth::user();
         $search_data = $param_array = [];
         $search_data[] = $this->GWC($inputs['search_txt'] ?? '', 'string:name;family;national_code;concat_ws(" ",name,family);replace(concat_ws("",name,family)," ","")');
         $inputs['where']['search']['condition'] = $this->generateWhereCondition($search_data, $param_array);
         $inputs['where']['search']['params'] = $param_array;
 
+        $inputs['order_by'] = $this->orderBy($inputs, 'people');
         $inputs['per_page'] = $this->calculatePerPage($inputs);
 
-        $persons = $this->person_interface->getPersons($inputs);
+        $persons = $this->person_interface->getPersons($inputs, $user);
 
         $persons->transform(function ($item) {
             return [

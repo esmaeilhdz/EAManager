@@ -50,6 +50,7 @@ class AccessoryBuyHelper
         $inputs['where']['place']['condition'] = $this->generateWhereCondition($search_data, $param_array);
         $inputs['where']['place']['params'] = $param_array;
 
+        $inputs['order_by'] = $this->orderBy($inputs, 'accessory_buys');
         $inputs['per_page'] = $this->calculatePerPage($inputs);
 
         $accessor_buys = $this->accessory_buy_interface->getAccessoryBuys($inputs);

@@ -51,6 +51,7 @@ class ClothBuyHelper
         $inputs['where']['place']['params'] = $param_array;
 
         $inputs['cloth_id'] = $cloth->id;
+        $inputs['order_by'] = $this->orderBy($inputs, 'cloth_buys');
         $inputs['per_page'] = $this->calculatePerPage($inputs);
 
         $clothes = $this->cloth_buy_interface->getClothBuys($inputs);

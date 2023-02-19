@@ -57,16 +57,21 @@ class ProductWarehouseRepository implements Interfaces\iProductWarehouse
     /**
      * جزئیات انبار کالا
      * @param $inputs
+     * @param $user
      * @param array $select
      * @param array $relation
      * @return mixed
      * @throws ApiException
      */
-    public function getProductWarehouseById($inputs, $select = [], $relation = []): mixed
+    public function getProductWarehouseById($inputs, $user, $select = [], $relation = []): mixed
     {
         try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
             $product_warehouse = ProductWarehouse::where('id', $inputs['product_warehouse_id'])
-                ->where('product_id', $inputs['product_id']);
+                ->where('product_id', $inputs['product_id'])
+                ->whereHas('place', function ($q) use ($company_id) {
+                    $q->where('company_id', $company_id);
+                });
 
             if (count($relation)) {
                 $product_warehouse = $product_warehouse->with($relation);

@@ -4,7 +4,7 @@ namespace App\Repositories\Interfaces;
 
 interface iPerson
 {
-    public function getPersons($inputs);
+    public function getPersons($inputs, $user);
 
     public function getPersonByCode($code, $select = []);
 

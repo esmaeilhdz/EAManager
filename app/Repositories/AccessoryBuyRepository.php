@@ -40,6 +40,7 @@ class AccessoryBuyRepository implements Interfaces\iAccessoryBuy
                     $q->whereRaw($inputs['where']['place']['condition'], $inputs['where']['place']['params']);
                 })
                 ->where('accessory_id', $inputs['accessory_id'])
+                ->orderByRaw($inputs['order_by'])
                 ->paginate($inputs['per_page']);
         } catch (\Exception $e) {
             throw new ApiException($e);

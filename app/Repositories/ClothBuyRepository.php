@@ -38,6 +38,7 @@ class ClothBuyRepository implements Interfaces\iClothBuy
                 ->whereHas('place', function ($q) use ($inputs) {
                     $q->whereRaw($inputs['where']['place']['condition'], $inputs['where']['place']['params']);
                 })
+                ->orderByRaw($inputs['order_by'])
                 ->paginate($inputs['per_page']);
         } catch (\Exception $e) {
             throw new ApiException($e);
