@@ -221,9 +221,11 @@ class FactorRepository implements Interfaces\iFactor
     public function addFactor($inputs, $user): array
     {
         try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
             $factor = new Factor();
 
             $factor->code = $this->randomString();
+            $factor->company_id = $company_id;
             $factor->customer_id = $inputs['customer_id'];
             $factor->sale_period_id = $inputs['sale_period_id'];
             $factor->factor_no = 'FF-'.rand(1111111,9999999);

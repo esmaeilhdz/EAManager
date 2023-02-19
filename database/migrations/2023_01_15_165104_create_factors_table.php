@@ -17,6 +17,7 @@ class CreateFactorsTable extends Migration
         Schema::create('factors', function (Blueprint $table) {
             $table->id();
             $table->string('code', 32)->unique();
+            $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('customer_id');
             $table->unsignedBigInteger('sale_period_id');
             $table->string('factor_no', 16)->unique();
@@ -32,6 +33,7 @@ class CreateFactorsTable extends Migration
 
             $table->engine = 'InnoDB';
 
+            $table->foreign('company_id')->references('id')->on('companies');
             $table->foreign('customer_id')->references('id')->on('customers');
             $table->foreign('sale_period_id')->references('id')->on('sale_periods');
         });

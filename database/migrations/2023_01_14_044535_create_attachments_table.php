@@ -16,7 +16,9 @@ class CreateAttachmentsTable extends Migration
         Schema::dropIfExists('attachments');
         Schema::create('attachments', function (Blueprint $table) {
             $table->id();
+            $table->string('code', 32)->unique();
             $table->morphs('model');
+            $table->unsignedBigInteger('parent_id')->index()->nullable();
             $table->unsignedTinyInteger('attachment_type_id')->index();
             $table->string('path');
             $table->string('file_name', 32);

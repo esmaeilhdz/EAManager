@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Exceptions\ApiException;
 use App\Repositories\Interfaces\iSalePeriod;
 use App\Traits\Common;
 use Illuminate\Support\Facades\Auth;
@@ -22,6 +23,7 @@ class SalePeriodHelper
      * لیست دوره های فروش
      * @param $inputs
      * @return array
+     * @throws ApiException
      */
     public function getSalePeriods($inputs): array
     {
@@ -30,6 +32,7 @@ class SalePeriodHelper
         $inputs['where']['search']['condition'] = $this->generateWhereCondition($search_data, $param_array);
         $inputs['where']['search']['params'] = $param_array;
 
+        $inputs['order_by'] = $this->orderBy($inputs, 'sale_periods');
         $inputs['per_page'] = $this->calculatePerPage($inputs);
 
         $sale_periods = $this->sale_period_interface->getSalePeriods($inputs);

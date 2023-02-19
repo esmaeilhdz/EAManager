@@ -60,7 +60,7 @@ class AccountHelper
 
     /**
      * جزئیات حساب
-     * @param $id
+     * @param $code
      * @return array
      */
     public function getAccountDetail($code): array

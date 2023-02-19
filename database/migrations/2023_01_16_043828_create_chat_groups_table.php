@@ -16,12 +16,15 @@ class CreateChatGroupsTable extends Migration
         Schema::dropIfExists('chat_groups');
         Schema::create('chat_groups', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('company_id');
             $table->string('name');
             $table->boolean('is_enable')->default(1)->index();
             $table->unsignedBigInteger('created_by');
             $table->timestamps();
 
             $table->engine = 'InnoDB';
+
+            $table->foreign('company_id')->references('id')->on('companies');
         });
     }
 

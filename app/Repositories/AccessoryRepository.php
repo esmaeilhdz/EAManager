@@ -96,8 +96,10 @@ class AccessoryRepository implements Interfaces\iAccessory
     public function addAccessory($inputs, $user): array
     {
         try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
             $accessory = new Accessory();
 
+            $accessory->company_id = $company_id;
             $accessory->name = $inputs['name'];
             $accessory->created_by = $user->id;
 

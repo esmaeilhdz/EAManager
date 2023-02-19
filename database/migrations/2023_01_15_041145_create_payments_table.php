@@ -18,6 +18,7 @@ class CreatePaymentsTable extends Migration
             $table->id();
             // بخاطر پرداختی های قبوض که به جدولی وصل نمی شود، nullable ساخته شد.
             $table->nullableMorphs('model');
+            $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('account_id');
             $table->unsignedTinyInteger('payment_type_id')->index()->comment('چک - نقد و...');
             $table->unsignedInteger('price')->comment('مبلغ هزینه شده');
@@ -28,6 +29,7 @@ class CreatePaymentsTable extends Migration
 
             $table->engine = 'InnoDB';
 
+            $table->foreign('company_id')->references('id')->on('companies');
             $table->foreign('account_id')->references('id')->on('accounts');
         });
     }

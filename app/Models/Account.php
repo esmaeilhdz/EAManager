@@ -2,13 +2,17 @@
 
 namespace App\Models;
 
+use App\Exceptions\ApiException;
+use App\Traits\Common;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Account extends Model
 {
-    use HasFactory;
+    use HasFactory, Common;
 
     protected $primaryKey = 'id';
 
@@ -22,6 +26,22 @@ class Account extends Model
                 'gregorian' => $value
             ],
         );
+    }
+
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     * @throws ApiException
+     */
+    protected static function booted()
+    {
+        $user = Auth::user();
+        $company_id = (new Account)->getCurrentCompanyOfUser($user);
+        static::addGlobalScope('company', function (Builder $builder) use ($company_id) {
+            $builder->where('company_id', $company_id);
+        });
     }
 
 

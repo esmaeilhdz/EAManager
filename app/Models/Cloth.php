@@ -2,13 +2,17 @@
 
 namespace App\Models;
 
+use App\Exceptions\ApiException;
+use App\Traits\Common;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Cloth extends Model
 {
-    use HasFactory;
+    use HasFactory, Common;
 
     protected $primaryKey = 'id';
     protected $hidden = ['id', 'color_id', 'created_by', 'updated_at'];
@@ -21,6 +25,22 @@ class Cloth extends Model
                 'gregorian' => $value
             ],
         );
+    }
+
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     * @throws ApiException
+     */
+    protected static function booted()
+    {
+        $user = Auth::user();
+        $company_id = (new Cloth)->getCurrentCompanyOfUser($user);
+        static::addGlobalScope('company', function (Builder $builder) use ($company_id) {
+            $builder->where('company_id', $company_id);
+        });
     }
 
 

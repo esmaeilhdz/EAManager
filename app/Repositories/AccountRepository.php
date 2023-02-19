@@ -83,9 +83,11 @@ class AccountRepository implements Interfaces\iAccount
     public function addAccount($inputs, $user)
     {
         try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
             $account = new Account();
 
             $account->code = $this->randomString();
+            $account->company_id = $company_id;
             $account->branch_name = $inputs['branch_name'];
             $account->account_no = $inputs['account_no'];
             $account->sheba_no = $inputs['sheba_no'];

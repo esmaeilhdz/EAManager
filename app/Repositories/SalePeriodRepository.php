@@ -72,8 +72,10 @@ class SalePeriodRepository implements Interfaces\iSalePeriod
     public function addSalePeriod($inputs, $user)
     {
         try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
             $sale_period = new SalePeriod();
 
+            $sale_period->company_id = $company_id;
             $sale_period->name = $inputs['name'];
             $sale_period->start_date = $inputs['start_date'];
             $sale_period->end_date = $inputs['end_date'];

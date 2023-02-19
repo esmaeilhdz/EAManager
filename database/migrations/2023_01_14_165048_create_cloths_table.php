@@ -17,12 +17,15 @@ class CreateClothsTable extends Migration
         Schema::create('cloths', function (Blueprint $table) {
             $table->id();
             $table->string('code', 32)->index()->unique();
+            $table->unsignedBigInteger('company_id');
             $table->string('name')->index();
             $table->unsignedTinyInteger('color_id')->index();
             $table->unsignedBigInteger('created_by');
             $table->timestamps();
 
             $table->engine = 'InnoDB';
+
+            $table->foreign('company_id')->references('id')->on('companies');
         });
     }
 

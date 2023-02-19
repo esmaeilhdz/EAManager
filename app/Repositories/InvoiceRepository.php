@@ -113,9 +113,11 @@ class InvoiceRepository implements Interfaces\iInvoice
     public function addInvoice($inputs, $user): array
     {
         try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
             $invoice = new Invoice();
 
             $invoice->code = $this->randomString();
+            $invoice->company_id = $company_id;
             $invoice->customer_id = $inputs['customer_id'] ?? null;
             $invoice->name = $inputs['name'] ?? null;
             $invoice->mobile = $inputs['mobile'] ?? null;

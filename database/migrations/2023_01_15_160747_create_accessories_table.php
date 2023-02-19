@@ -16,12 +16,15 @@ class CreateAccessoriesTable extends Migration
         Schema::dropIfExists('accessories');
         Schema::create('accessories', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('company_id');
             $table->string('name');
             $table->boolean('is_enable')->default(1);
             $table->unsignedBigInteger('created_by');
             $table->timestamps();
 
             $table->engine = 'InnoDB';
+
+            $table->foreign('company_id')->references('id')->on('companies');
         });
     }
 

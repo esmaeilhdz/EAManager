@@ -17,6 +17,7 @@ class CreateCustomersTable extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('parent_id')->nullable()->comment('معرف');
+            $table->unsignedBigInteger('company_id');
             $table->string('code', 32)->index()->unique();
             $table->string('name');
             $table->string('mobile', 11);
@@ -27,6 +28,7 @@ class CreateCustomersTable extends Migration
             $table->engine = 'InnoDB';
 
             $table->foreign('parent_id')->references('id')->on('customers');
+            $table->foreign('company_id')->references('id')->on('companies');
         });
     }
 

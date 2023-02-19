@@ -99,10 +99,12 @@ class ProductRepository implements Interfaces\iProduct
     public function addProduct($inputs, $user): array
     {
         try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
             $product = new Product();
 
             $product->code = $this->randomString();
             $product->internal_code = $this->randomProductCode(10);
+            $product->company_id = $company_id;
             $product->name = $inputs['name'];
             $product->cloth_id = $inputs['cloth_id'];
             $product->has_accessories = $inputs['has_accessories'];

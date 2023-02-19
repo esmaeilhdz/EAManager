@@ -69,9 +69,11 @@ class ClothRepository implements Interfaces\iCloth
     public function addCloth($inputs, $user): array
     {
         try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
             $cloth = new Cloth();
 
             $cloth->code = $this->randomString();
+            $cloth->company_id = $company_id;
             $cloth->name = $inputs['name'];
             $cloth->color_id = $inputs['color_id'];
             $cloth->created_by = $user->id;

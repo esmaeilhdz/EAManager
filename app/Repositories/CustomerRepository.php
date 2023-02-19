@@ -102,10 +102,12 @@ class CustomerRepository implements Interfaces\iCustomer
     public function addCustomer($inputs, $user): array
     {
         try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
             $customer = new Customer();
 
             $customer->code = $this->randomString();
             $customer->parent_id = $inputs['parent_id'] ?? null;
+            $customer->company_id = $company_id;
             $customer->name = $inputs['name'];
             $customer->mobile = $inputs['mobile'];
             $customer->score = $inputs['score'];

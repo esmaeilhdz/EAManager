@@ -16,12 +16,15 @@ class CreateDesignModelsTable extends Migration
         Schema::dropIfExists('design_models');
         Schema::create('design_models', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('company_id');
             $table->string('name');
             $table->boolean('is_confirm')->default(0)->index();
             $table->text('description')->nullable();
             $table->timestamps();
 
             $table->engine = 'InnoDB';
+
+            $table->foreign('company_id')->references('id')->on('companies');
         });
     }
 

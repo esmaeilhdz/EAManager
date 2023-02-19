@@ -17,6 +17,7 @@ class CreateAccountsTable extends Migration
         Schema::create('accounts', function (Blueprint $table) {
             $table->id();
             $table->string('code', 32)->unique()->index();
+            $table->unsignedBigInteger('company_id');
             $table->string('branch_name')->index()->comment(' نام شعبه بانک');
             $table->string('account_no', 100);
             $table->string('sheba_no', 30);
@@ -25,6 +26,8 @@ class CreateAccountsTable extends Migration
             $table->timestamps();
 
             $table->engine = 'InnoDB';
+
+            $table->foreign('company_id')->references('id')->on('companies');
         });
     }
 

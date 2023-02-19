@@ -17,6 +17,7 @@ class CreateInvoicesTable extends Migration
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
             $table->string('code', 32)->unique();
+            $table->unsignedBigInteger('company_id')->nullable();
             $table->unsignedBigInteger('customer_id')->nullable();
             $table->string('name')->nullable();
             $table->string('mobile', 11)->nullable();
@@ -26,6 +27,7 @@ class CreateInvoicesTable extends Migration
 
             $table->engine = 'InnoDB';
 
+            $table->foreign('company_id')->references('id')->on('companies');
             $table->foreign('customer_id')->references('id')->on('customers');
         });
     }
