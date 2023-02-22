@@ -165,4 +165,17 @@ class PaymentRepository implements Interfaces\iPayment
             throw new ApiException($e);
         }
     }
+
+    public function deletePaymentsResource($inputs, $user)
+    {
+        try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
+            return Payment::where('model_type', $inputs['model_type'])
+                ->where('model_id', $inputs['model_id'])
+                ->where('company_id', $company_id)
+                ->delete();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
 }

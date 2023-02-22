@@ -7,6 +7,7 @@ use App\Http\Requests\Payment\PaymentAddRequest;
 use App\Http\Requests\Payment\PaymentDetailRequest;
 use App\Http\Requests\Payment\PaymentEditRequest;
 use App\Http\Requests\Payment\PaymentListRequest;
+use App\Http\Requests\Payment\PaymentResourceDeleteRequest;
 use App\Http\Requests\Payment\PaymentResourceListRequest;
 use App\Traits\Common;
 use Illuminate\Http\JsonResponse;
@@ -97,6 +98,20 @@ class PaymentController extends Controller
         $this->cleanInput($inputs, array_keys($request->rules()));
 
         $result = PaymentFacade::deletePayment($inputs);
+        return $this->api_response->response($result['result'], $result['message'], $result['data']);
+    }
+
+    /**
+     * سرویس حذف پرداخت
+     * @param PaymentDetailRequest $request
+     * @return JsonResponse
+     */
+    public function deletePaymentsResource(PaymentResourceDeleteRequest $request): JsonResponse
+    {
+        $inputs = $request->validated();
+        $this->cleanInput($inputs, array_keys($request->rules()));
+
+        $result = PaymentFacade::deletePaymentsResource($inputs);
         return $this->api_response->response($result['result'], $result['message'], $result['data']);
     }
 }

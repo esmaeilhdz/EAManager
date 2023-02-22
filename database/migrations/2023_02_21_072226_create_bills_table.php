@@ -15,6 +15,7 @@ class CreateBillsTable extends Migration
     {
         Schema::create('bills', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('company_id');
             $table->unsignedTinyInteger('bill_type_id');
             $table->string('bill_id', 50)->comment('شناسه قبض');
             $table->string('payment_id', 50)->comment('شناسه پرداخت');
@@ -22,6 +23,8 @@ class CreateBillsTable extends Migration
             $table->timestamps();
 
             $table->engine = 'InnoDB';
+
+            $table->foreign('company_id')->references('id')->on('companies');
         });
     }
 

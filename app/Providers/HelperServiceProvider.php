@@ -7,6 +7,7 @@ use App\Helpers\AccessoryHelper;
 use App\Helpers\AccountHelper;
 use App\Helpers\AddressHelper;
 use App\Helpers\AttachmentHelper;
+use App\Helpers\BillHelper;
 use App\Helpers\ClothBuyHelper;
 use App\Helpers\ClothHelper;
 use App\Helpers\CustomerHelper;
@@ -58,6 +59,7 @@ class HelperServiceProvider extends ServiceProvider
         App::alias(FactorHelper::class, 'factor_helper');
         App::alias(AttachmentHelper::class, 'attachment_helper');
         App::alias(PaymentHelper::class, 'payment_helper');
+        App::alias(BillHelper::class, 'bill_helper');
     }
 
     /**

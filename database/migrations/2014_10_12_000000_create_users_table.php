@@ -30,7 +30,7 @@ class CreateUsersTable extends Migration
 
             $table->engine = 'InnoDB';
 
-            $table->foreign('person_id')->references('id')->on('persons');
+            $table->foreign('person_id')->references('id')->on('people');
         });
     }
 

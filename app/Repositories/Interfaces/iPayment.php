@@ -15,4 +15,6 @@ interface iPayment
     public function addPayment($inputs, $user);
 
     public function deletePayment($payment);
+
+    public function deletePaymentsResource($inputs, $user);
 }

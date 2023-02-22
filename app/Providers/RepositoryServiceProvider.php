@@ -8,6 +8,7 @@ use App\Repositories\AccessoryWarehouseRepository;
 use App\Repositories\AccountRepository;
 use App\Repositories\AddressRepository;
 use App\Repositories\AttachmentRepository;
+use App\Repositories\BillRepository;
 use App\Repositories\ClothBuyRepository;
 use App\Repositories\ClothRepository;
 use App\Repositories\ClothWarehouseRepository;
@@ -22,6 +23,7 @@ use App\Repositories\Interfaces\iAccessoryWarehouse;
 use App\Repositories\Interfaces\iAccount;
 use App\Repositories\Interfaces\iAddress;
 use App\Repositories\Interfaces\iAttachment;
+use App\Repositories\Interfaces\iBill;
 use App\Repositories\Interfaces\iCloth;
 use App\Repositories\Interfaces\iClothBuy;
 use App\Repositories\Interfaces\iClothWarehouse;
@@ -94,6 +96,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(iFactorPayment::class, FactorPaymentRepository::class);
         $this->app->bind(iAttachment::class, AttachmentRepository::class);
         $this->app->bind(iPayment::class, PaymentRepository::class);
+        $this->app->bind(iBill::class, BillRepository::class);
     }
 
     /**

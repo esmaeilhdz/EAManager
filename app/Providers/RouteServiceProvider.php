@@ -50,6 +50,8 @@ class RouteServiceProvider extends ServiceProvider
 
             // روت پرسنل
             $this->mapPerson();
+            // روت شرکت
+            $this->mapCompany();
             // روت مکان
             $this->mapPlace();
             // روت دوره فروش
@@ -92,6 +94,8 @@ class RouteServiceProvider extends ServiceProvider
             $this->mapAttachment();
             // روت پرداخت
             $this->mapPayment();
+            // روت قبوض
+            $this->mapBill();
 
         });
     }
@@ -102,6 +106,15 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/person.php'));
+
+    }
+
+    private function mapCompany()
+    {
+        Route::prefix('api')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/company.php'));
 
     }
 
@@ -291,6 +304,15 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/payment.php'));
+
+    }
+
+    private function mapBill()
+    {
+        Route::prefix('api')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/bill.php'));
 
     }
 

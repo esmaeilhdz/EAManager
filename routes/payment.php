@@ -9,5 +9,6 @@ Route::group(['prefix' => 'v1', 'middleware' => 'auth:sanctum'], function () {
     Route::get('{resource}/{resource_id}/payment/{id}', [PaymentController::class, 'getPaymentDetail']);
     Route::put('{resource}/{resource_id}/payment/{id}', [PaymentController::class, 'editPayment']);
     Route::post('{resource}/{resource_id}/payment', [PaymentController::class, 'addPayment']);
+    Route::delete('{resource}/{resource_id}/payment', [PaymentController::class, 'deletePaymentsResource']);
     Route::delete('{resource}/{resource_id}/payment/{id}', [PaymentController::class, 'deletePayment']);
 });

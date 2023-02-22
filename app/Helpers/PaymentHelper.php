@@ -228,4 +228,23 @@ class PaymentHelper
         ];
     }
 
+    /**
+     * @param $inputs
+     * @return array
+     * @throws ApiException
+     */
+    public function deletePaymentsResource($inputs): array
+    {
+        $user = Auth::user();
+        $inputs['model_type'] = $this->convertModelNameToNamespace($inputs['resource']);
+        $inputs['model_id'] = $this->getResourceId($inputs['resource'], $inputs['resource_id']);
+
+        $result = $this->payment_interface->deletePaymentsResource($inputs, $user);
+        return [
+            'result' => (bool) $result,
+            'message' => $result ? __('messages.success') : __('messages.fail'),
+            'data' => null
+        ];
+    }
+
 }
