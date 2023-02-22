@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSalePeriodsTable extends Migration
+class CreateBillsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,19 +13,15 @@ class CreateSalePeriodsTable extends Migration
      */
     public function up()
     {
-        Schema::dropIfExists('sale_periods');
-        Schema::create('sale_periods', function (Blueprint $table) {
+        Schema::create('bills', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('customer_id');
-            $table->string('name')->index();
-            $table->date('start_date')->index();
-            $table->date('end_date')->index();
+            $table->unsignedTinyInteger('bill_type_id');
+            $table->string('bill_id', 50)->comment('شناسه قبض');
+            $table->string('payment_id', 50)->comment('شناسه پرداخت');
             $table->unsignedBigInteger('created_by');
             $table->timestamps();
 
             $table->engine = 'InnoDB';
-
-            $table->foreign('company_id')->references('id')->on('companies');
         });
     }
 
@@ -36,6 +32,6 @@ class CreateSalePeriodsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sale_periods');
+        Schema::dropIfExists('bills');
     }
 }

@@ -23,7 +23,7 @@ class CreateChatGroupPersonsTable extends Migration
             $table->engine = 'InnoDB';
 
             $table->foreign('chat_group_id')->references('id')->on('chat_groups');
-            $table->foreign('person_id')->references('id')->on('persons');
+            $table->foreign('person_id')->references('id')->on('people');
         });
     }
 

@@ -481,6 +481,9 @@ trait Common
             'company' => \App\Models\Company::class,
             'person' => \App\Models\Person::class,
             'customer' => \App\Models\Customer::class,
+            'cloth_buy' => \App\Models\ClothBuy::class,
+            'accessory_buy' => \App\Models\AccessoryBuy::class,
+            'salary' => \App\Models\Salary::class,
         };
     }
 

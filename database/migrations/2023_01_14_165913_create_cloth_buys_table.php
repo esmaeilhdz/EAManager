@@ -28,7 +28,8 @@ class CreateClothBuysTable extends Migration
             $table->engine = 'InnoDB';
 
             $table->foreign('cloth_id')->references('id')->on('cloths');
-            $table->foreign('place_id')->references('id')->on('places');
+            $table->foreign('seller_place_id')->references('id')->on('places');
+            $table->foreign('warehouse_place_id')->references('id')->on('places');
         });
     }
 

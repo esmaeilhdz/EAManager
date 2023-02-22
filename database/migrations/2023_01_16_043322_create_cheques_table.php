@@ -27,7 +27,7 @@ class CreateChequesTable extends Migration
             $table->engine = 'InnoDB';
 
             $table->foreign('account_id')->references('id')->on('accounts');
-            $table->foreign('person_id')->references('id')->on('persons');
+            $table->foreign('person_id')->references('id')->on('people');
         });
     }
 

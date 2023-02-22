@@ -30,7 +30,6 @@ class CreateProductToStoresTable extends Migration
             $table->engine = 'InnoDB';
 
             $table->foreign('product_warehouse_id')->references('id')->on('product_warehouses');
-            $table->foreign('place_id')->references('id')->on('places');
         });
     }
 

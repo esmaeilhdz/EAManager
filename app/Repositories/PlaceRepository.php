@@ -109,9 +109,11 @@ class PlaceRepository implements Interfaces\iPlace
     public function addPlace($inputs, $user): array
     {
         try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
             $place = new Place();
 
             $place->name = $inputs['name'];
+            $place->company_id = $company_id;
             $place->place_kind_id = $inputs['place_kind_id'];
             $place->department_manager_name = $inputs['department_manager_name'];
             $place->department_manager_national_code = $inputs['department_manager_national_code'] ?? null;

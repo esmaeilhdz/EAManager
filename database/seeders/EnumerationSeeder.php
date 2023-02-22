@@ -15,7 +15,7 @@ class EnumerationSeeder extends Seeder
     public function run()
     {
         DB::table('enumerations')->insert([
-            /*[
+            [
                 'category_name' => 'place_kind',
                 'category_caption' => 'نوع مکان',
                 'enum_caption' => 'کارگاه داخلی',
@@ -110,13 +110,77 @@ class EnumerationSeeder extends Seeder
                 'enum_id' => 3,
                 'is_editable' => 0,
                 'created_by' => 1,
-            ],*/
+            ],
             [
                 'category_name' => 'attachment_type',
                 'category_caption' => 'نوع پیوست',
                 'enum_caption' => 'عکس پرسنلی',
                 'enum_id' => 1,
                 'is_editable' => 0,
+                'created_by' => 1,
+            ],
+            [
+                'category_name' => 'bill_type',
+                'category_caption' => 'نوع قبض',
+                'enum_caption' => 'قبض گاز',
+                'enum_id' => 1,
+                'is_editable' => 0,
+                'created_by' => 1,
+            ],
+            [
+                'category_name' => 'bill_type',
+                'category_caption' => 'نوع قبض',
+                'enum_caption' => 'قبض آب',
+                'enum_id' => 2,
+                'is_editable' => 0,
+                'created_by' => 1,
+            ],
+            [
+                'category_name' => 'bill_type',
+                'category_caption' => 'نوع قبض',
+                'enum_caption' => 'قبض تلفن',
+                'enum_id' => 3,
+                'is_editable' => 0,
+                'created_by' => 1,
+            ],
+            [
+                'category_name' => 'payment_type',
+                'category_caption' => 'نوع پرداخت',
+                'enum_caption' => 'حقوق',
+                'enum_id' => 1,
+                'is_editable' => 1,
+                'created_by' => 1,
+            ],
+            [
+                'category_name' => 'payment_type',
+                'category_caption' => 'نوع پرداخت',
+                'enum_caption' => 'پیک',
+                'enum_id' => 2,
+                'is_editable' => 1,
+                'created_by' => 1,
+            ],
+            [
+                'category_name' => 'payment_type',
+                'category_caption' => 'نوع پرداخت',
+                'enum_caption' => 'خرید پارچه',
+                'enum_id' => 3,
+                'is_editable' => 1,
+                'created_by' => 1,
+            ],
+            [
+                'category_name' => 'payment_type',
+                'category_caption' => 'نوع پرداخت',
+                'enum_caption' => 'خرید خرج کار',
+                'enum_id' => 4,
+                'is_editable' => 1,
+                'created_by' => 1,
+            ],
+            [
+                'category_name' => 'payment_type',
+                'category_caption' => 'نوع پرداخت',
+                'enum_caption' => 'اجاره',
+                'enum_id' => 5,
+                'is_editable' => 1,
                 'created_by' => 1,
             ],
         ]);

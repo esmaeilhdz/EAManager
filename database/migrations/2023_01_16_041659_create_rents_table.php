@@ -18,7 +18,6 @@ class CreateRentsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('place_id');
             $table->text('description')->nullable();
-            $table->unsignedInteger('final_price');
             $table->unsignedBigInteger('created_by');
             $table->timestamps();
 

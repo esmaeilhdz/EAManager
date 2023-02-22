@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             CompanySeeder::class,
             PersonCompanySeeder::class,
             EnumerationSeeder::class,
+            ProvinceCitySeeder::class,
         ]);
     }
 }

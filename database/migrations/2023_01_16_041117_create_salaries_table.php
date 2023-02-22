@@ -16,21 +16,21 @@ class CreateSalariesTable extends Migration
         Schema::dropIfExists('salaries');
         Schema::create('salaries', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('person_id');
             $table->date('from_date');
             $table->date('to_date');
             $table->unsignedInteger('reward_price')->comment('پاداش');
             $table->unsignedTinyInteger('overtime_hour')->comment('ساعت اضافه کار');
             $table->unsignedInteger('salary_deduction')->comment('کسر حقوق');
-            $table->unsignedTinyInteger('gate_id')->comment('درگاه بانک');
-            $table->string('payment_tracking_code', 50)->comment('کد پیگیری پرداخت');
             $table->text('description')->nullable();
             $table->unsignedBigInteger('created_by');
             $table->timestamps();
 
             $table->engine = 'InnoDB';
 
-            $table->foreign('person_id')->references('id')->on('persons');
+            $table->foreign('company_id')->references('id')->on('companies');
+            $table->foreign('person_id')->references('id')->on('people');
         });
     }
 
