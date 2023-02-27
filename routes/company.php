@@ -1,12 +1,12 @@
 <?php
 
-use App\Http\Controllers\PersonController;
+use App\Http\Controllers\CompanyController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1', 'middleware' => 'auth:sanctum'], function () {
-    Route::get('person', [PersonController::class, 'getPersons']);
-    Route::get('person/{code}', [PersonController::class, 'getPersonDetail']);
-    Route::put('person/{code}', [PersonController::class, 'editPerson']);
-    Route::post('person', [PersonController::class, 'addPerson']);
-    Route::delete('person/{code}', [PersonController::class, 'deletePerson']);
+    Route::get('company', [CompanyController::class, 'getCompanies']);
+    Route::get('company/{code}', [CompanyController::class, 'getCompanyDetail']);
+    Route::put('company/{code}', [CompanyController::class, 'editCompany']);
+    Route::post('company', [CompanyController::class, 'addCompany']);
+    Route::delete('company/{code}', [CompanyController::class, 'deleteCompany']);
 });

@@ -12,6 +12,7 @@ use App\Repositories\BillRepository;
 use App\Repositories\ClothBuyRepository;
 use App\Repositories\ClothRepository;
 use App\Repositories\ClothWarehouseRepository;
+use App\Repositories\CompanyRepository;
 use App\Repositories\CustomerRepository;
 use App\Repositories\CuttingRepository;
 use App\Repositories\FactorPaymentRepository;
@@ -27,6 +28,7 @@ use App\Repositories\Interfaces\iBill;
 use App\Repositories\Interfaces\iCloth;
 use App\Repositories\Interfaces\iClothBuy;
 use App\Repositories\Interfaces\iClothWarehouse;
+use App\Repositories\Interfaces\iCompany;
 use App\Repositories\Interfaces\iCustomer;
 use App\Repositories\Interfaces\iCutting;
 use App\Repositories\Interfaces\iFactor;
@@ -97,6 +99,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(iAttachment::class, AttachmentRepository::class);
         $this->app->bind(iPayment::class, PaymentRepository::class);
         $this->app->bind(iBill::class, BillRepository::class);
+        $this->app->bind(iCompany::class, CompanyRepository::class);
     }
 
     /**
