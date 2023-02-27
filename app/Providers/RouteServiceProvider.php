@@ -98,6 +98,8 @@ class RouteServiceProvider extends ServiceProvider
             $this->mapPayment();
             // روت قبوض
             $this->mapBill();
+            // روت طراحی مدل
+            $this->mapDesignModel();
 
         });
     }
@@ -324,6 +326,15 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/bill.php'));
+
+    }
+
+    private function mapDesignModel()
+    {
+        Route::prefix('api')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/design_model.php'));
 
     }
 

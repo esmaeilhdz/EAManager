@@ -32,4 +32,5 @@ return [
     'factor_doesnt_has_return_permission' => 'این فاکتور اجازه مرجوع ندارد.',
     'product_warehouse_not_found' => 'انبار کالا یافت نشد.',
     'file_upload_failed' => 'آپلود فایل انجام نشد.',
+    'has_chat_cannot_delete' => 'به دلیل وجود چت برای این داده، قادر به حذف آن نیستید.',
 ];

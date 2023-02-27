@@ -13,6 +13,7 @@ use App\Helpers\ClothHelper;
 use App\Helpers\CompanyHelper;
 use App\Helpers\CustomerHelper;
 use App\Helpers\CuttingHelper;
+use App\Helpers\DesignModelHelper;
 use App\Helpers\FactorHelper;
 use App\Helpers\InvoiceHelper;
 use App\Helpers\NotifHelper;
@@ -64,6 +65,7 @@ class HelperServiceProvider extends ServiceProvider
         App::alias(BillHelper::class, 'bill_helper');
         App::alias(CompanyHelper::class, 'company_helper');
         App::alias(SalaryHelper::class, 'salary_helper');
+        App::alias(DesignModelHelper::class, 'design_model_helper');
     }
 
     /**

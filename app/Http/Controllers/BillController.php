@@ -11,7 +11,8 @@ use App\Traits\Common;
 use Illuminate\Http\JsonResponse;
 
 class BillController extends Controller
-{use Common;
+{
+    use Common;
 
     /**
      * سرویس لیست قبض ها

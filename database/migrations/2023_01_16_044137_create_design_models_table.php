@@ -20,6 +20,7 @@ class CreateDesignModelsTable extends Migration
             $table->string('name');
             $table->boolean('is_confirm')->default(0)->index();
             $table->text('description')->nullable();
+            $table->unsignedBigInteger('created_by');
             $table->timestamps();
 
             $table->engine = 'InnoDB';
