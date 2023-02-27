@@ -20,6 +20,7 @@ class CreateCompaniesTable extends Migration
             $table->string('code', 32)->index()->unique();
             $table->string('name')->index();
             $table->boolean('is_enable')->index()->default(1);
+            $table->softDeletes();
             $table->unsignedBigInteger('created_by');
             $table->timestamps();
 

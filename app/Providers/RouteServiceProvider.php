@@ -50,6 +50,8 @@ class RouteServiceProvider extends ServiceProvider
 
             // روت پرسنل
             $this->mapPerson();
+            // روت حقوق پرسنل
+            $this->mapSalary();
             // روت شرکت
             $this->mapCompany();
             // روت مکان
@@ -106,6 +108,15 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/person.php'));
+
+    }
+
+    private function mapSalary()
+    {
+        Route::prefix('api')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/salary.php'));
 
     }
 

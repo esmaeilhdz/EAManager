@@ -17,6 +17,7 @@ use App\Helpers\FactorHelper;
 use App\Helpers\InvoiceHelper;
 use App\Helpers\NotifHelper;
 use App\Helpers\PaymentHelper;
+use App\Helpers\SalaryHelper;
 use App\Helpers\SalePeriodHelper;
 use App\Helpers\PersonHelper;
 use App\Helpers\PlaceHelper;
@@ -62,6 +63,7 @@ class HelperServiceProvider extends ServiceProvider
         App::alias(PaymentHelper::class, 'payment_helper');
         App::alias(BillHelper::class, 'bill_helper');
         App::alias(CompanyHelper::class, 'company_helper');
+        App::alias(SalaryHelper::class, 'salary_helper');
     }
 
     /**

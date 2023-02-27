@@ -38,6 +38,7 @@ use App\Repositories\Interfaces\iInvoice;
 use App\Repositories\Interfaces\iInvoiceProduct;
 use App\Repositories\Interfaces\iNotif;
 use App\Repositories\Interfaces\iPayment;
+use App\Repositories\Interfaces\iSalary;
 use App\Repositories\Interfaces\iSalePeriod;
 use App\Repositories\Interfaces\iPerson;
 use App\Repositories\Interfaces\iPlace;
@@ -51,6 +52,7 @@ use App\Repositories\InvoiceProductRepository;
 use App\Repositories\InvoiceRepository;
 use App\Repositories\NotifRepository;
 use App\Repositories\PaymentRepository;
+use App\Repositories\SalaryRepository;
 use App\Repositories\SalePeriodRepository;
 use App\Repositories\PersonRepository;
 use App\Repositories\PlaceRepository;
@@ -100,6 +102,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(iPayment::class, PaymentRepository::class);
         $this->app->bind(iBill::class, BillRepository::class);
         $this->app->bind(iCompany::class, CompanyRepository::class);
+        $this->app->bind(iSalary::class, SalaryRepository::class);
     }
 
     /**
