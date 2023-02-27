@@ -52,7 +52,7 @@ class SalaryRepository implements Interfaces\iSalary
     }
 
     /**
-     * لیست افراد
+     * لیست حقوق های فرد
      * @param $inputs
      * @param $user
      * @return LengthAwarePaginator
