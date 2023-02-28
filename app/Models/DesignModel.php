@@ -10,7 +10,7 @@ class DesignModel extends Model
 {
     use HasFactory;
 
-    protected $hidden = ['created_by', 'updated_at'];
+    protected $hidden = ['company_id', 'created_by', 'updated_at'];
 
     protected function createdAt(): Attribute
     {

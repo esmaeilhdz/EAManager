@@ -102,6 +102,8 @@ class RouteServiceProvider extends ServiceProvider
             $this->mapDesignModel();
             // روت گروه چت
             $this->mapChatGroup();
+            // روت افراد گروه چت
+            $this->mapChatGroupPerson();
 
         });
     }
@@ -346,6 +348,15 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/chat_group.php'));
+
+    }
+
+    private function mapChatGroupPerson()
+    {
+        Route::prefix('api')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/chat_group_person.php'));
 
     }
 

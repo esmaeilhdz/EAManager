@@ -18,6 +18,7 @@ class CreateChatGroupPersonsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('chat_group_id');
             $table->unsignedBigInteger('person_id');
+            $table->unsignedBigInteger('created_by');
             $table->timestamps();
 
             $table->engine = 'InnoDB';

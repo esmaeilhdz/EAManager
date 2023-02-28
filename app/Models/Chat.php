@@ -9,7 +9,9 @@ class Chat extends Model
 {
     use HasFactory;
 
-    public function chat()
+    protected $hidden = ['model_type', 'model_id'];
+
+    public function model()
     {
         return $this->morphTo();
     }
