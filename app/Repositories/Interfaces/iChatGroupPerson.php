@@ -10,5 +10,5 @@ interface iChatGroupPerson
 
     public function addChatGroupPerson($inputs, $user);
 
-    public function deleteChatGroupPerson($id);
+    public function deleteChatGroupPerson($chat_group_person);
 }

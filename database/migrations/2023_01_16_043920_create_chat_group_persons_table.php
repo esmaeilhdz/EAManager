@@ -25,6 +25,7 @@ class CreateChatGroupPersonsTable extends Migration
 
             $table->foreign('chat_group_id')->references('id')->on('chat_groups');
             $table->foreign('person_id')->references('id')->on('people');
+            $table->unique(['chat_group_id', 'person_id']);
         });
     }
 

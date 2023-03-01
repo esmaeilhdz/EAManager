@@ -6,6 +6,19 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class ChatGroupPersonAddRequest extends FormRequest
 {
+
+    /**
+     * Prepare the data for validation.
+     *
+     * @return void
+     */
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'chat_group_id' => $this->chat_group_id,
+        ]);
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -13,7 +26,7 @@ class ChatGroupPersonAddRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +37,8 @@ class ChatGroupPersonAddRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'chat_group_id' => 'required|numeric|min:1',
+            'person_code' => 'required|string|size:32',
         ];
     }
 }

@@ -51,6 +51,11 @@ class Product extends Model
     }
 
 
+    public function chat()
+    {
+        return $this->morphMany(Chat::class, 'model');
+    }
+
     public function creator()
     {
         return $this->hasOne(User::class, 'id', 'created_by');

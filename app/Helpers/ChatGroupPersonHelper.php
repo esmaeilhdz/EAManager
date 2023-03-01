@@ -79,7 +79,7 @@ class ChatGroupPersonHelper
 
     /**
      * جزئیات فرد گروه چت
-     * @param $id
+     * @param $inputs
      * @return array
      */
     public function getChatGroupPersonDetail($inputs): array
@@ -109,6 +109,24 @@ class ChatGroupPersonHelper
             ];
         }
 
+        foreach ($chat_group_person->chat as $chat) {
+            $model_name = $chat->model->name;
+            unset($chat->model);
+            switch ($chat->model_type) {
+                case is_numeric(strpos($chat->model_type, 'Design')):
+                    $model_caption = 'طراحی مدل';
+                break;
+                case is_numeric(strpos($chat->model_type, 'Product')):
+                    $model_caption = 'کالا';
+                break;
+                default:
+                    $model_caption = null;
+            }
+
+            $chat['model_caption'] = $model_caption;
+            $chat['model_name'] = $model_name;
+        }
+
         return [
             'result' => true,
             'message' => __('messages.success'),
@@ -123,7 +141,26 @@ class ChatGroupPersonHelper
      */
     public function addChatGroupPerson($inputs): array
     {
+        $person = $this->person_interface->getPersonByCode($inputs['person_code'], ['id']);
+        if (is_null($person)) {
+            return [
+                'result' => false,
+                'message' => __('messages.record_not_found'),
+                'data' => null
+            ];
+        }
+
+        $inputs['person_id'] = $person->id;
         $user = Auth::user();
+        $chat_group = $this->chat_group_interface->getChatGroupById($inputs['chat_group_id'], $user, ['name']);
+        if (is_null($chat_group)) {
+            return [
+                'result' => false,
+                'message' => __('messages.record_not_found'),
+                'data' => null
+            ];
+        }
+
         $result = $this->chat_group_person_interface->addChatGroupPerson($inputs, $user);
         return [
             'result' => $result['result'],
@@ -133,12 +170,23 @@ class ChatGroupPersonHelper
     }
 
     /**
+     * حذف فرد از گروه چت
      * @param $id
      * @return array
      */
-    public function deleteChatGroupPerson($id): array
+    public function deleteChatGroupPerson($inputs): array
     {
-        $chat_group_person = $this->chat_group_person_interface->getChatGroupPersonById($id);
+        $user = Auth::user();
+        $chat_group = $this->chat_group_interface->getChatGroupById($inputs['chat_group_id'], $user, ['name']);
+        if (is_null($chat_group)) {
+            return [
+                'result' => false,
+                'message' => __('messages.record_not_found'),
+                'data' => null
+            ];
+        }
+
+        $chat_group_person = $this->chat_group_person_interface->getChatGroupPersonById($inputs);
         if (is_null($chat_group_person)) {
             return [
                 'result' => false,
@@ -147,7 +195,7 @@ class ChatGroupPersonHelper
             ];
         }
 
-        $result = $this->chat_group_person_interface->deleteChatGroupPerson($id);
+        $result = $this->chat_group_person_interface->deleteChatGroupPerson($chat_group_person);
         return [
             'result' => (bool) $result,
             'message' => $result ? __('messages.success') : __('messages.fail'),

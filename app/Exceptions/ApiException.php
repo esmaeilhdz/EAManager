@@ -10,19 +10,19 @@ class ApiException extends Exception
 {
     use Common;
 
-    // پیغام تولید شده دستی در کنترلر
-    public $custom_message;
+    // پیغام تولید شده دستی
+    public string $custom_message;
 
-    // exception تولید شده در catch
-    public $e;
+    public Exception $e;
 
     public function __construct($e = null, $has_lang = false)
     {
         parent::__construct();
-        $this->custom_message = $this->errorHandling($e);
+        $this->message = $this->errorHandling($e);
+        abort(400, $this->message);
         $this->e = $e;
         if ($has_lang) {
-            $this->custom_message = __('messages.' . $this->custom_message);
+            $this->message = __('messages.' . $this->custom_message);
         }
     }
 
@@ -38,10 +38,5 @@ class ApiException extends Exception
         } else {
             Log::error($this->getMessage());
         }
-    }
-
-    public function getMessageByLang()
-    {
-        return $this->custom_message;
     }
 }

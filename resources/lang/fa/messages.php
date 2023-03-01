@@ -34,4 +34,7 @@ return [
     'file_upload_failed' => 'آپلود فایل انجام نشد.',
     'has_chat_cannot_delete' => 'به دلیل وجود چت برای این داده، قادر به حذف آن نیستید.',
     'group_chat_has_member_delete_error' => 'به دلیل وجود عضو در این گروه، قادر به حذف آن نیستید.',
+    'data_duplicate' => 'شما قادر به درج داده تکراری نیستید.',
+    'this_values_is_duplicated' => 'مقدار وارد شده تکراری است.',
+    'this_record_used' => 'به دلیل استفاده شدن این داده، قادر به حذف آن نیستید.',
 ];

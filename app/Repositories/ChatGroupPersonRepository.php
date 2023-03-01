@@ -60,30 +60,13 @@ class ChatGroupPersonRepository implements Interfaces\iChatGroupPerson
         }
     }
 
-    public function editChatGroupPerson($inputs)
-    {
-        try {
-            return ChatGroupPerson::where('id', $inputs['id'])
-                ->update([
-                    'name' => $inputs['name'],
-                    'start_date' => $inputs['start_date'],
-                    'end_date' => $inputs['end_date']
-                ]);
-        } catch (\Exception $e) {
-            throw new ApiException($e);
-        }
-    }
-
     public function addChatGroupPerson($inputs, $user)
     {
         try {
-            $company_id = $this->getCurrentCompanyOfUser($user);
             $chat_group_person = new ChatGroupPerson();
 
-            $chat_group_person->company_id = $company_id;
-            $chat_group_person->name = $inputs['name'];
-            $chat_group_person->start_date = $inputs['start_date'];
-            $chat_group_person->end_date = $inputs['end_date'];
+            $chat_group_person->chat_group_id = $inputs['chat_group_id'];
+            $chat_group_person->person_id = $inputs['person_id'];
             $chat_group_person->created_by = $user->id;
 
             $result = $chat_group_person->save();
@@ -97,10 +80,10 @@ class ChatGroupPersonRepository implements Interfaces\iChatGroupPerson
         }
     }
 
-    public function deleteChatGroupPerson($id)
+    public function deleteChatGroupPerson($chat_group_person)
     {
         try {
-            return ChatGroupPerson::where('id', $id)->delete();
+            return $chat_group_person->delete();
         } catch (\Exception $e) {
             throw new ApiException($e);
         }
