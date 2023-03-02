@@ -485,6 +485,7 @@ trait Common
             'accessory_buy' => \App\Models\AccessoryBuy::class,
             'salary' => \App\Models\Salary::class,
             'bill' => \App\Models\Bill::class,
+            'design_model' => \App\Models\DesignModel::class,
         };
     }
 

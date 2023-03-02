@@ -29,6 +29,11 @@ class ChatGroupPerson extends Model
         return $this->hasMany(Chat::class, 'chat_group_person_id', 'id');
     }
 
+    public function chat_group()
+    {
+        return $this->hasOne(ChatGroup::class, 'id', 'chat_group_id');
+    }
+
     public function person()
     {
         return $this->hasOne(Person::class, 'id', 'person_id');

@@ -11,6 +11,7 @@ use App\Repositories\AttachmentRepository;
 use App\Repositories\BillRepository;
 use App\Repositories\ChatGroupPersonRepository;
 use App\Repositories\ChatGroupRepository;
+use App\Repositories\ChatRepository;
 use App\Repositories\ClothBuyRepository;
 use App\Repositories\ClothRepository;
 use App\Repositories\ClothWarehouseRepository;
@@ -28,6 +29,7 @@ use App\Repositories\Interfaces\iAccount;
 use App\Repositories\Interfaces\iAddress;
 use App\Repositories\Interfaces\iAttachment;
 use App\Repositories\Interfaces\iBill;
+use App\Repositories\Interfaces\iChat;
 use App\Repositories\Interfaces\iChatGroup;
 use App\Repositories\Interfaces\iChatGroupPerson;
 use App\Repositories\Interfaces\iCloth;
@@ -112,6 +114,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(iDesignModel::class, DesignModelRepository::class);
         $this->app->bind(iChatGroup::class, ChatGroupRepository::class);
         $this->app->bind(iChatGroupPerson::class, ChatGroupPersonRepository::class);
+        $this->app->bind(iChat::class, ChatRepository::class);
     }
 
     /**

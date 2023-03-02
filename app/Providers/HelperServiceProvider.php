@@ -10,6 +10,7 @@ use App\Helpers\AttachmentHelper;
 use App\Helpers\BillHelper;
 use App\Helpers\ChatGroupHelper;
 use App\Helpers\ChatGroupPersonHelper;
+use App\Helpers\ChatHelper;
 use App\Helpers\ClothBuyHelper;
 use App\Helpers\ClothHelper;
 use App\Helpers\CompanyHelper;
@@ -70,6 +71,7 @@ class HelperServiceProvider extends ServiceProvider
         App::alias(DesignModelHelper::class, 'design_model_helper');
         App::alias(ChatGroupHelper::class, 'chat_group_helper');
         App::alias(ChatGroupPersonHelper::class, 'chat_group_person_helper');
+        App::alias(ChatHelper::class, 'chat_helper');
     }
 
     /**
