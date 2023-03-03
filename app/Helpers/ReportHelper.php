@@ -33,17 +33,20 @@ class ReportHelper
 
         $customers->transform(function ($item) {
             $factors = null;
+            $sum = 0;
             foreach ($item->factor as $factor) {
                 $factors[] = [
                     'factor_no' => $factor->factor_no,
                     'final_price' => $factor->final_price
                 ];
+                $sum += $factor->final_price;
             }
             return [
                 'code' => $item->code,
                 'name' => $item->name,
                 'mobile' => $item->mobile,
                 'score' => $item->score,
+                'final_debtor' => $sum,
                 'factors' => $factors
             ];
         });
