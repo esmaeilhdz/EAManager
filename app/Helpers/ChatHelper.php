@@ -6,7 +6,6 @@ use App\Exceptions\ApiException;
 use App\Repositories\Interfaces\iChat;
 use App\Traits\Common;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class ChatHelper
 {
@@ -76,18 +75,20 @@ class ChatHelper
 
         $chat = $this->chat_interface->getChatById($inputs, $user, ['content']);
         if (is_null($chat)) {
-            return [
+            $return = [
                 'result' => false,
                 'message' => __('messages.record_not_found'),
                 'data' => null
             ];
+        } else {
+            $return = [
+                'result' => true,
+                'message' => __('messages.success'),
+                'data' => $chat
+            ];
         }
 
-        return [
-            'result' => true,
-            'message' => __('messages.success'),
-            'data' => $chat
-        ];
+        return $return;
     }
 
 }

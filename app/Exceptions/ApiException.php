@@ -19,11 +19,12 @@ class ApiException extends Exception
     {
         parent::__construct();
         $this->message = $this->errorHandling($e);
-        abort(400, $this->message);
+        Log::error($e->getMessage());
         $this->e = $e;
         if ($has_lang) {
             $this->message = __('messages.' . $this->custom_message);
         }
+        abort(400, $this->message);
     }
 
     /**
@@ -33,10 +34,6 @@ class ApiException extends Exception
      */
     public function report()
     {
-        if ($this->e) {
-            Log::error($this->e->getMessage());
-        } else {
-            Log::error($this->getMessage());
-        }
+        Log::error($this->e->getMessage());
     }
 }

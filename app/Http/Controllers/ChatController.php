@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Facades\ChatFacade;
-use App\Http\Requests\Chat\ChatAddRequest;
 use App\Http\Requests\Chat\ChatDetailRequest;
-use App\Http\Requests\Chat\ChatEditRequest;
 use App\Http\Requests\Chat\ChatListRequest;
 use App\Traits\Common;
 use Illuminate\Http\JsonResponse;
