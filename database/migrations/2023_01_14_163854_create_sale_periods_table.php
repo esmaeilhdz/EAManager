@@ -17,7 +17,6 @@ class CreateSalePeriodsTable extends Migration
         Schema::create('sale_periods', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('company_id');
-            $table->unsignedBigInteger('customer_id');
             $table->string('name')->index();
             $table->date('start_date')->index();
             $table->date('end_date')->index();
@@ -27,7 +26,6 @@ class CreateSalePeriodsTable extends Migration
             $table->engine = 'InnoDB';
 
             $table->foreign('company_id')->references('id')->on('companies');
-            $table->foreign('customer_id')->references('id')->on('customers');
         });
     }
 

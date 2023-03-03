@@ -102,6 +102,8 @@ class RouteServiceProvider extends ServiceProvider
             $this->mapDesignModel();
             // روت دسته چت
             $this->mapChats();
+            // روت گزارش ها
+            $this->mapReport();
 
         });
     }
@@ -356,6 +358,15 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/chat.php'));
+
+    }
+
+    private function mapReport()
+    {
+        Route::prefix('api')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/report.php'));
 
     }
 

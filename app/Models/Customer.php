@@ -42,6 +42,11 @@ class Customer extends Model
     }
 
 
+    public function factor()
+    {
+        return $this->hasMany(Factor::class, 'customer_id', 'id');
+    }
+
     public function parent()
     {
         return $this->hasOne(Customer::class, 'id', 'parent_id');

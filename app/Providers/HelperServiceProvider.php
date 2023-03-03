@@ -21,6 +21,7 @@ use App\Helpers\FactorHelper;
 use App\Helpers\InvoiceHelper;
 use App\Helpers\NotifHelper;
 use App\Helpers\PaymentHelper;
+use App\Helpers\ReportHelper;
 use App\Helpers\SalaryHelper;
 use App\Helpers\SalePeriodHelper;
 use App\Helpers\PersonHelper;
@@ -72,6 +73,7 @@ class HelperServiceProvider extends ServiceProvider
         App::alias(ChatGroupHelper::class, 'chat_group_helper');
         App::alias(ChatGroupPersonHelper::class, 'chat_group_person_helper');
         App::alias(ChatHelper::class, 'chat_helper');
+        App::alias(ReportHelper::class, 'report_helper');
     }
 
     /**
