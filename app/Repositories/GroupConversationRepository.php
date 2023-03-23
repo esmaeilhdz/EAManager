@@ -3,11 +3,11 @@
 namespace App\Repositories;
 
 use App\Exceptions\ApiException;
-use App\Models\ChatGroup;
+use App\Models\GroupConversation;
 use App\Traits\Common;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-class ChatGroupRepository implements Interfaces\iChatGroup
+class GroupConversationRepository implements Interfaces\iGroupConversation
 {
     use Common;
 
@@ -18,11 +18,11 @@ class ChatGroupRepository implements Interfaces\iChatGroup
      * @return LengthAwarePaginator
      * @throws ApiException
      */
-    public function getChatGroups($inputs, $user): LengthAwarePaginator
+    public function getGroupConversations($inputs, $user): LengthAwarePaginator
     {
         try {
             $company_id = $this->getCurrentCompanyOfUser($user);
-            return ChatGroup::with([
+            return GroupConversation::with([
                 'creator:id,person_id',
                 'creator.person:id,name,family',
             ])
@@ -46,7 +46,7 @@ class ChatGroupRepository implements Interfaces\iChatGroup
     {
         try {
             $company_id = $this->getCurrentCompanyOfUser($user);
-            $chat_group = ChatGroup::where('id', $id)
+            $chat_group = GroupConversation::where('id', $id)
                 ->where('company_id', $company_id);
 
             if (count($relation)) {
@@ -79,7 +79,7 @@ class ChatGroupRepository implements Interfaces\iChatGroup
     {
         try {
             $company_id = $this->getCurrentCompanyOfUser($user);
-            $chat_group = new ChatGroup();
+            $chat_group = new GroupConversation();
 
             $chat_group->company_id = $company_id;
             $chat_group->name = $inputs['name'];

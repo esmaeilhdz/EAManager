@@ -59,22 +59,16 @@ class PersonRepository implements Interfaces\iPerson
     public function getPersonByCode($code, $select = []): mixed
     {
         try {
-            $person = Person::query()
-                ->with([
-                    'creator:id,person_id',
-                    'creator.person' => function ($q) {
-                        $q->select(DB::raw("
-                            id,
-                            concat_ws(' ', name, family) as full_name
-                        "));
-                    }
-                ]);
+            $person = Person::with([
+                'creator:id,person_id',
+                'creator.person:name,family'
+            ]);
 
             if (count($select)) {
                 $person = $person->select($select);
             }
-                return $person->whereCode($code)
-                ->first();
+
+            return $person->whereCode($code)->first();
         } catch (\Exception $e) {
             throw new ApiException($e);
         }

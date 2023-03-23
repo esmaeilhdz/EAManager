@@ -3,7 +3,7 @@
 namespace App\Helpers;
 
 use App\Exceptions\ApiException;
-use App\Repositories\Interfaces\iChatGroup;
+use App\Repositories\Interfaces\iGroupConversation;
 use App\Repositories\Interfaces\iChatGroupPerson;
 use App\Repositories\Interfaces\iPerson;
 use App\Traits\Common;
@@ -15,13 +15,13 @@ class ChatGroupPersonHelper
 
     // attributes
     public iPerson $person_interface;
-    public iChatGroup $chat_group_interface;
+    public iGroupConversation $chat_group_interface;
     public iChatGroupPerson $chat_group_person_interface;
 
     public function __construct(
-        iPerson $person_interface,
-        iChatGroup $chat_group_interface,
-        iChatGroupPerson $chat_group_person_interface
+        iPerson            $person_interface,
+        iGroupConversation $chat_group_interface,
+        iChatGroupPerson   $chat_group_person_interface
     )
     {
         $this->person_interface = $person_interface;
@@ -171,7 +171,7 @@ class ChatGroupPersonHelper
 
     /**
      * حذف فرد از گروه چت
-     * @param $id
+     * @param $inputs
      * @return array
      */
     public function deleteChatGroupPerson($inputs): array

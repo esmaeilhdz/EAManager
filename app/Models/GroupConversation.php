@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ChatGroup extends Model
+class GroupConversation extends Model
 {
     use HasFactory;
 
@@ -30,7 +30,7 @@ class ChatGroup extends Model
     }
 
 
-    public function chat_group_persons()
+    public function chat_group_users()
     {
         return $this->hasMany(ChatGroupPerson::class, 'chat_group_id', 'id');
     }

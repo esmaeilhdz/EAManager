@@ -61,7 +61,7 @@ class PersonHelper
 
     /**
      * سرویس جزئیات فرد
-     * @param $inputs
+     * @param $code
      * @return array
      */
     public function getPersonDetail($code): array

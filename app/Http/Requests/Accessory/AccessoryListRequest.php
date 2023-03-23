@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Accessory;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class AccessoryListRequest extends FormRequest
 {

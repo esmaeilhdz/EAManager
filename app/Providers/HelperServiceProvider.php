@@ -8,7 +8,7 @@ use App\Helpers\AccountHelper;
 use App\Helpers\AddressHelper;
 use App\Helpers\AttachmentHelper;
 use App\Helpers\BillHelper;
-use App\Helpers\ChatGroupHelper;
+use App\Helpers\GroupConversationHelper;
 use App\Helpers\ChatGroupPersonHelper;
 use App\Helpers\ChatHelper;
 use App\Helpers\ClothBuyHelper;
@@ -70,7 +70,7 @@ class HelperServiceProvider extends ServiceProvider
         App::alias(CompanyHelper::class, 'company_helper');
         App::alias(SalaryHelper::class, 'salary_helper');
         App::alias(DesignModelHelper::class, 'design_model_helper');
-        App::alias(ChatGroupHelper::class, 'chat_group_helper');
+        App::alias(GroupConversationHelper::class, 'group_conversation_helper');
         App::alias(ChatGroupPersonHelper::class, 'chat_group_person_helper');
         App::alias(ChatHelper::class, 'chat_helper');
         App::alias(ReportHelper::class, 'report_helper');

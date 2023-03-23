@@ -2,9 +2,9 @@
 
 namespace App\Repositories\Interfaces;
 
-interface iChatGroup
+interface iGroupConversation
 {
-    public function getChatGroups($inputs, $user);
+    public function getGroupConversations($inputs, $user);
 
     public function getChatGroupById($id, $user, $select = [], $relation = []);
 
