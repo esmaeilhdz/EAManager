@@ -4,9 +4,15 @@ use App\Http\Controllers\ClothController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1', 'middleware' => 'auth:sanctum'], function () {
-    Route::get('cloth', [ClothController::class, 'getClothes']);
-    Route::get('cloth/{code}', [ClothController::class, 'getClothDetail']);
-    Route::put('cloth/{code}', [ClothController::class, 'editCloth']);
-    Route::post('cloth', [ClothController::class, 'addCloth']);
-    Route::delete('cloth/{code}', [ClothController::class, 'deleteCloth']);
+    Route::group(['middleware' => ['permission:admin-cloth|edit-cloth|view-cloth']], function () {
+        Route::get('cloth', [ClothController::class, 'getClothes']);
+        Route::get('cloth/{code}', [ClothController::class, 'getClothDetail']);
+    });
+    Route::group(['middleware' => ['permission:admin-cloth|edit-cloth']], function () {
+        Route::put('cloth/{code}', [ClothController::class, 'editCloth']);
+    });
+    Route::group(['middleware' => ['permission:admin-cloth']], function () {
+        Route::post('cloth', [ClothController::class, 'addCloth']);
+        Route::delete('cloth/{code}', [ClothController::class, 'deleteCloth']);
+    });
 });

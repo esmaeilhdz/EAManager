@@ -17,6 +17,7 @@ class RolePermissionSeeder extends Seeder
     public function run()
     {
         $role = Role::create(['name' => 'super_admin', 'guard_name' => 'api']);
+//        $role = Role::find(1);
 
         $resources = [
             'person',
@@ -44,6 +45,8 @@ class RolePermissionSeeder extends Seeder
             'sale_periods',
             'swing',
             'user',
+            'customer',
+            'report',
         ];
 
         foreach ($resources as $resource) {
