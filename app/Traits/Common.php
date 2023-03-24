@@ -536,24 +536,32 @@ trait Common
      * این تابع آرایه یک سطحی ای را که دارای ساختار پدر و فرزندی است تبدیل به یک آرایه درختی چند سطحی می کند.
      * @param array $elements
      * @param int $parent_id
+     * @param array $unset_fields
      * @return array
      */
-    public function buildTree(array $elements, int $parent_id = 0): array
+    public function buildTree(array $elements, int $parent_id = 0, array $unset_fields = []): array
     {
         $branch = [];
 
         foreach ($elements as $element) {
             if ($element['parent_id'] == $parent_id) {
-                $children = $this->buildTree($elements, $element['id']);
+                $children = $this->buildTree($elements, $element['id'], $unset_fields);
 
                 if ($children) {
                     $element['children'] = $children;
                 }
+
+                if (count($unset_fields)) {
+                    foreach ($unset_fields as $unset_field) {
+                        unset($element[$unset_field]);
+                    }
+                }
+
                 $branch[$element['id']] = $element;
             }
         }
 
-        return $branch;
+        return array_values($branch);
     }
 
     /**

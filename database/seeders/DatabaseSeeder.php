@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             EnumerationSeeder::class,
             ProvinceCitySeeder::class,
             RolePermissionSeeder::class,
+            MenuSeeder::class,
         ]);
     }
 }

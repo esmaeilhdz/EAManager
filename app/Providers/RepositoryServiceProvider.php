@@ -44,6 +44,7 @@ use App\Repositories\Interfaces\iFactorPayment;
 use App\Repositories\Interfaces\iFactorProduct;
 use App\Repositories\Interfaces\iInvoice;
 use App\Repositories\Interfaces\iInvoiceProduct;
+use App\Repositories\Interfaces\iMenu;
 use App\Repositories\Interfaces\iNotif;
 use App\Repositories\Interfaces\iPayment;
 use App\Repositories\Interfaces\iReport;
@@ -59,6 +60,7 @@ use App\Repositories\Interfaces\iRequestProductWarehouse;
 use App\Repositories\Interfaces\iSewing;
 use App\Repositories\InvoiceProductRepository;
 use App\Repositories\InvoiceRepository;
+use App\Repositories\MenuRepository;
 use App\Repositories\NotifRepository;
 use App\Repositories\PaymentRepository;
 use App\Repositories\ReportRepository;
@@ -118,6 +120,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(iChatGroupPerson::class, ChatGroupPersonRepository::class);
         $this->app->bind(iChat::class, ChatRepository::class);
         $this->app->bind(iReport::class, ReportRepository::class);
+        $this->app->bind(iMenu::class, MenuRepository::class);
     }
 
     /**

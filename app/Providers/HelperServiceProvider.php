@@ -19,6 +19,7 @@ use App\Helpers\CuttingHelper;
 use App\Helpers\DesignModelHelper;
 use App\Helpers\FactorHelper;
 use App\Helpers\InvoiceHelper;
+use App\Helpers\MenuHelper;
 use App\Helpers\NotifHelper;
 use App\Helpers\PaymentHelper;
 use App\Helpers\ReportHelper;
@@ -74,6 +75,7 @@ class HelperServiceProvider extends ServiceProvider
         App::alias(ChatGroupPersonHelper::class, 'chat_group_person_helper');
         App::alias(ChatHelper::class, 'chat_helper');
         App::alias(ReportHelper::class, 'report_helper');
+        App::alias(MenuHelper::class, 'menu_helper');
     }
 
     /**

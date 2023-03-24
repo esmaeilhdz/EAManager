@@ -43,7 +43,7 @@ class RolePermissionSeeder extends Seeder
             'return_factor',
             'salary',
             'sale_periods',
-            'swing',
+            'sewing',
             'user',
             'customer',
             'report',
