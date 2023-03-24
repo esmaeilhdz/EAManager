@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -34,6 +35,11 @@ class User extends Authenticatable
         'person_id',
         'password',
         'remember_token',
+        'email_verified_at',
+        'api_token',
+        'token_expire_at',
+        'created_by',
+        'updated_at',
     ];
 
     /**
@@ -45,10 +51,26 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    protected function createdAt(): Attribute
+    {
+        return Attribute::get(
+            get: fn ($value) => [
+                'jalali' => jdate($value)->format('Y/m/d H:i'),
+                'gregorian' => $value
+            ],
+        );
+    }
+
     protected $guard_name = 'api';
+
 
     public function person()
     {
         return $this->hasOne(Person::class, 'id', 'person_id');
+    }
+
+    public function creator()
+    {
+        return $this->hasOne(User::class, 'id', 'created_by');
     }
 }

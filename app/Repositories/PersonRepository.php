@@ -56,6 +56,31 @@ class PersonRepository implements Interfaces\iPerson
      * @return mixed
      * @throws ApiException
      */
+    public function getPersonById($id, $select = []): mixed
+    {
+        try {
+            $person = Person::with([
+                'creator:id,person_id',
+                'creator.person:name,family'
+            ]);
+
+            if (count($select)) {
+                $person = $person->select($select);
+            }
+
+            return $person->where('id', $id)->first();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
+    /**
+     * جزئیات فرد
+     * @param $code
+     * @param array $select
+     * @return mixed
+     * @throws ApiException
+     */
     public function getPersonByCode($code, $select = []): mixed
     {
         try {

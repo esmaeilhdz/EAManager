@@ -55,7 +55,7 @@ class MenuHelper
     {
         $user = Auth::user();
         $menu = $this->menu_interface->getMenu();
-//        $menu = $this->checkMenuPermission($menu, $user);
+        $menu = $this->checkMenuPermission($menu, $user);
         $menu = $menu->toArray();
         $menu = $this->buildTree($menu, 0, ['parent_id', 'has_permission']);
 

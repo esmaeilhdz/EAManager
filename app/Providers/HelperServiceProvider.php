@@ -33,6 +33,7 @@ use App\Helpers\ProductToStoreHelper;
 use App\Helpers\ProductWarehouseHelper;
 use App\Helpers\RequestProductWarehouseHelper;
 use App\Helpers\SewingHelper;
+use App\Helpers\UserHelper;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
 
@@ -76,6 +77,7 @@ class HelperServiceProvider extends ServiceProvider
         App::alias(ChatHelper::class, 'chat_helper');
         App::alias(ReportHelper::class, 'report_helper');
         App::alias(MenuHelper::class, 'menu_helper');
+        App::alias(UserHelper::class, 'user_helper');
     }
 
     /**

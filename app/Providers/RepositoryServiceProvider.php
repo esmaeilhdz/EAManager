@@ -58,6 +58,7 @@ use App\Repositories\Interfaces\iProductToStore;
 use App\Repositories\Interfaces\iProductWarehouse;
 use App\Repositories\Interfaces\iRequestProductWarehouse;
 use App\Repositories\Interfaces\iSewing;
+use App\Repositories\Interfaces\iUser;
 use App\Repositories\InvoiceProductRepository;
 use App\Repositories\InvoiceRepository;
 use App\Repositories\MenuRepository;
@@ -74,6 +75,7 @@ use App\Repositories\ProductToStoreRepository;
 use App\Repositories\ProductWarehouseRepository;
 use App\Repositories\RequestProductWarehouseRepository;
 use App\Repositories\SewingRepository;
+use App\Repositories\UserRepository;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -121,6 +123,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(iChat::class, ChatRepository::class);
         $this->app->bind(iReport::class, ReportRepository::class);
         $this->app->bind(iMenu::class, MenuRepository::class);
+        $this->app->bind(iUser::class, UserRepository::class);
     }
 
     /**

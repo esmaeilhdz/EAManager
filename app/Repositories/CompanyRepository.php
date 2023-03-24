@@ -27,8 +27,8 @@ class CompanyRepository implements Interfaces\iCompany
 
             return Company::query()
                 ->with([
-                    'creator:id,company_id',
-                    'creator.company:id,name,family',
+                    'creator:id,person_id',
+                    'creator.person:id,name,family',
                     'parent:id,code,name'
                 ])
                 ->select([
