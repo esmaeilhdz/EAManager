@@ -58,6 +58,13 @@ class MenuHelper
         $menu = $this->checkMenuPermission($menu, $user);
         $menu = $menu->toArray();
         $menu = $this->buildTree($menu, 0, ['parent_id', 'has_permission']);
+        foreach ($menu as $key => $menu_item) {
+            if (is_null($menu_item['route_name'])) {
+                if (!isset($menu_item['children'])) {
+                    unset($menu[$key]);
+                }
+            }
+        }
 
         return [
             'result' => true,
