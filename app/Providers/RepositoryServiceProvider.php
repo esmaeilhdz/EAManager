@@ -48,6 +48,7 @@ use App\Repositories\Interfaces\iMenu;
 use App\Repositories\Interfaces\iNotif;
 use App\Repositories\Interfaces\iPayment;
 use App\Repositories\Interfaces\iReport;
+use App\Repositories\Interfaces\iRole;
 use App\Repositories\Interfaces\iSalary;
 use App\Repositories\Interfaces\iSalePeriod;
 use App\Repositories\Interfaces\iPerson;
@@ -65,6 +66,7 @@ use App\Repositories\MenuRepository;
 use App\Repositories\NotifRepository;
 use App\Repositories\PaymentRepository;
 use App\Repositories\ReportRepository;
+use App\Repositories\RoleRepository;
 use App\Repositories\SalaryRepository;
 use App\Repositories\SalePeriodRepository;
 use App\Repositories\PersonRepository;
@@ -124,6 +126,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(iReport::class, ReportRepository::class);
         $this->app->bind(iMenu::class, MenuRepository::class);
         $this->app->bind(iUser::class, UserRepository::class);
+        $this->app->bind(iRole::class, RoleRepository::class);
     }
 
     /**

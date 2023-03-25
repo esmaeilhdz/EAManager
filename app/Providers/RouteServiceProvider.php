@@ -106,6 +106,8 @@ class RouteServiceProvider extends ServiceProvider
             $this->mapReport();
             // روت کاربران
             $this->mapUser();
+            // روت نقش ها
+            $this->mapRole();
 
         });
     }
@@ -378,6 +380,15 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/user.php'));
+
+    }
+
+    private function mapRole()
+    {
+        Route::prefix('api')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/role.php'));
 
     }
 

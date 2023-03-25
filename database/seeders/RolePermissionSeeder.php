@@ -3,12 +3,15 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Traits\Common;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class RolePermissionSeeder extends Seeder
 {
+    use Common;
+
     /**
      * Run the database seeds.
      *
@@ -16,7 +19,12 @@ class RolePermissionSeeder extends Seeder
      */
     public function run()
     {
-        $role = Role::create(['name' => 'super_admin', 'guard_name' => 'api']);
+        $role = Role::create([
+            'code' => $this->randomString(),
+            'name' => 'super_admin',
+            'caption' => 'سوپر ادمین',
+            'guard_name' => 'api'
+        ]);
 //        $role = Role::find(1);
 
         $resources = [
@@ -47,6 +55,7 @@ class RolePermissionSeeder extends Seeder
             'user',
             'customer',
             'report',
+            'role',
         ];
 
         foreach ($resources as $resource) {
