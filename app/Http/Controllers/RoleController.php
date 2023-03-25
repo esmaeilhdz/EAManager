@@ -38,7 +38,7 @@ class RoleController extends Controller
         $inputs = $request->validated();
         $this->cleanInput($inputs, array_keys($request->rules()));
 
-        $result = RoleFacade::getRoleDetail($inputs['id']);
+        $result = RoleFacade::getRoleDetail($inputs['code']);
         return $this->api_response->response($result['result'], $result['message'], $result['data']);
     }
 

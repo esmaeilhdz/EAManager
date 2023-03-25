@@ -20,7 +20,7 @@ class RoleHelper
     }
 
     /**
-     * لیست قبض ها
+     * لیست نقش ها
      * @param $inputs
      * @return array
      */
@@ -58,20 +58,14 @@ class RoleHelper
     }
 
     /**
-     * جزئیات قبض
-     * @param $id
+     * جزئیات نقش
+     * @param $code
      * @return array
      */
-    public function getRoleDetail($id): array
+    public function getRoleDetail($code): array
     {
-        $user = Auth::user();
-        $select = ['id', 'role_type_id', 'role_id', 'payment_id'];
-        $relation = [
-            'role_type:enum_id,enum_caption',
-            'payment:model_type,model_id,account_id,payment_date,payment_tracking_code,description,price',
-            'payment.account:id,branch_name'
-        ];
-        $role = $this->role_interface->getRoleById($id, $user, $select, $relation);
+        $select = ['name', 'caption'];
+        $role = $this->role_interface->getRoleByCode($code, $select);
         if (is_null($role)) {
             return [
                 'result' => false,
@@ -88,14 +82,13 @@ class RoleHelper
     }
 
     /**
-     * ویرایش قبض
+     * ویرایش نقش
      * @param $inputs
      * @return array
      */
     public function editRole($inputs): array
     {
-        $user = Auth::user();
-        $role = $this->role_interface->getRoleById($inputs['id'], $user);
+        $role = $this->role_interface->getRoleByCode($inputs['code']);
         if (is_null($role)) {
             return [
                 'result' => false,
@@ -113,7 +106,7 @@ class RoleHelper
     }
 
     /**
-     * افزودن قبض
+     * افزودن نقش
      * @param $inputs
      * @return array
      */

@@ -39,7 +39,7 @@ class RoleRepository implements Interfaces\iRole
         }
     }
 
-    public function getRoleByCode($code, $user, $select = [], $relation = [])
+    public function getRoleByCode($code, $select = [], $relation = [])
     {
         try {
             $role = Role::whereCode($code);
@@ -62,9 +62,7 @@ class RoleRepository implements Interfaces\iRole
     public function editRole($role, $inputs)
     {
         try {
-            $role->role_type_id = $inputs['role_type_id'];
-            $role->role_id = $inputs['role_id'];
-            $role->payment_id = $inputs['role_type_id'];
+            $role->caption = $inputs['caption'];
 
             return $role->save();
         } catch (\Exception $e) {
@@ -75,20 +73,19 @@ class RoleRepository implements Interfaces\iRole
     public function addRole($inputs, $user)
     {
         try {
-            $company_id = $this->getCurrentCompanyOfUser($user);
             $role = new Role();
 
-            $role->company_id = $company_id;
-            $role->role_type_id = $inputs['role_type_id'];
-            $role->role_id = $inputs['role_id'];
-            $role->payment_id = $inputs['payment_id'];
+            $role->code = $this->randomString();
+            $role->name = $this->FaToEn($inputs['caption']);
+            $role->caption = $inputs['caption'];
+            $role->guard_name = $inputs['guard_name'];
             $role->created_by = $user->id;
 
             $result = $role->save();
 
             return [
                 'result' => $result,
-                'data' => $result ? $role->id : null
+                'data' => $result ? $role->code : null
             ];
         } catch (\Exception $e) {
             throw new ApiException($e);

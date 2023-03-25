@@ -13,7 +13,7 @@ class RoleAddRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,8 @@ class RoleAddRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'caption' => 'required|string',
+            'guard_name' => 'required|string|in:web,api'
         ];
     }
 }
