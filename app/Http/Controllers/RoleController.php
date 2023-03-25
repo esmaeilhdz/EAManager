@@ -69,18 +69,4 @@ class RoleController extends Controller
         $result = RoleFacade::addRole($inputs);
         return $this->api_response->response($result['result'], $result['message'], $result['data']);
     }
-
-    /**
-     * سرویس حذف نقش
-     * @param RoleDetailRequest $request
-     * @return JsonResponse
-     */
-    public function deleteRole(RoleDetailRequest $request): JsonResponse
-    {
-        $inputs = $request->validated();
-        $this->cleanInput($inputs, array_keys($request->rules()));
-
-        $result = RoleFacade::deleteRole($inputs['id']);
-        return $this->api_response->response($result['result'], $result['message'], $result['data']);
-    }
 }

@@ -11,6 +11,4 @@ interface iRole
     public function editRole($role, $inputs);
 
     public function addRole($inputs, $user);
-
-    public function deleteRole($role);
 }

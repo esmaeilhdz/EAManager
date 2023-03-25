@@ -91,13 +91,4 @@ class RoleRepository implements Interfaces\iRole
             throw new ApiException($e);
         }
     }
-
-    public function deleteRole($role)
-    {
-        try {
-            return $role->delete();
-        } catch (\Exception $e) {
-            throw new ApiException($e);
-        }
-    }
 }

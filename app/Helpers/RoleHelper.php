@@ -121,41 +121,4 @@ class RoleHelper
         ];
     }
 
-    /**
-     * @param $id
-     * @return array
-     */
-    public function deleteRole($id): array
-    {
-        $user = Auth::user();
-        $role = $this->role_interface->getRoleById($id, $user, ['id']);
-        if (is_null($role)) {
-            return [
-                'result' => false,
-                'message' => __('messages.record_not_found'),
-                'data' => null
-            ];
-        }
-
-        $inputs['model_type'] = $this->convertModelNameToNamespace('role');
-        $inputs['model_id'] = $id;
-        DB::beginTransaction();
-        $result[] = $this->role_interface->deleteRole($id);
-        $result[] = $this->payment_interface->deletePaymentsResource($inputs, $user);
-
-        if (!in_array(false, $result)) {
-            $flag = true;
-            DB::commit();
-        } else {
-            $flag = false;
-            DB::rollBack();
-        }
-
-        return [
-            'result' => $flag,
-            'message' => $flag ? __('messages.success') : __('messages.fail'),
-            'data' => null
-        ];
-    }
-
 }

@@ -13,6 +13,5 @@ Route::group(['prefix' => 'v1', 'middleware' => 'auth:sanctum'], function () {
     });
     Route::group(['middleware' => ['permission:admin-role']], function () {
         Route::post('role', [RoleController::class, 'addRole']);
-        Route::delete('role/{code}', [RoleController::class, 'deleteRole']);
     });
 });
