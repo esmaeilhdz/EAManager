@@ -6,9 +6,9 @@ interface iPerson
 {
     public function getPersons($inputs, $user);
 
-    public function getPersonById($id, $select = []);
+    public function getPersonById($id, $select = [], $relation = []);
 
-    public function getPersonByCode($code, $select = []);
+    public function getPersonByCode($code, $select = [], $relation = []);
 
     public function editPerson($inputs);
 

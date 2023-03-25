@@ -51,24 +51,26 @@ class PersonRepository implements Interfaces\iPerson
 
     /**
      * جزئیات فرد
-     * @param $code
+     * @param $id
      * @param array $select
+     * @param array $relation
      * @return mixed
      * @throws ApiException
      */
-    public function getPersonById($id, $select = []): mixed
+    public function getPersonById($id, $select = [], $relation = []): mixed
     {
         try {
-            $person = Person::with([
-                'creator:id,person_id',
-                'creator.person:name,family'
-            ]);
+            $person = Person::where('id', $id);
 
             if (count($select)) {
                 $person = $person->select($select);
             }
 
-            return $person->where('id', $id)->first();
+            if (count($relation)) {
+                $person = $person->with($relation);
+            }
+
+            return $person->first();
         } catch (\Exception $e) {
             throw new ApiException($e);
         }
@@ -78,22 +80,24 @@ class PersonRepository implements Interfaces\iPerson
      * جزئیات فرد
      * @param $code
      * @param array $select
+     * @param array $relation
      * @return mixed
      * @throws ApiException
      */
-    public function getPersonByCode($code, $select = []): mixed
+    public function getPersonByCode($code, $select = [], $relation = []): mixed
     {
         try {
-            $person = Person::with([
-                'creator:id,person_id',
-                'creator.person:name,family'
-            ]);
+            $person = Person::whereCode($code);
 
             if (count($select)) {
                 $person = $person->select($select);
             }
 
-            return $person->whereCode($code)->first();
+            if (count($relation)) {
+                $person = $person->with($relation);
+            }
+
+            return $person->first();
         } catch (\Exception $e) {
             throw new ApiException($e);
         }

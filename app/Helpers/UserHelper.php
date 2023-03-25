@@ -92,11 +92,27 @@ class UserHelper
     {
         $user = Auth::user();
 
-        $person = $this->person_interface->getPersonById($user->person_id, ['id', 'name', 'family']);
+        $select = ['id', 'name', 'family', 'score'];
+        $relation = [
+            'attachment' => function ($q) {
+                $q->select(['path', 'file_name', 'ext'])
+                    ->where('attachment_type_id', 1)
+                    ->where('type', 'avatar');
+            }
+        ];
+        $person = $this->person_interface->getPersonById($user->person_id, $select, $relation);
+
+        if (count($person->attachment)) {
+            $avatar_address = env('APP_URL') . DIRECTORY_SEPARATOR . $person->attachment->path . DIRECTORY_SEPARATOR . $person->attachment->file_name . '.' . $person->attachment->ext;
+        } else {
+            $avatar_address = env('APP_URL') . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'person_no_pic.png';
+        }
 
         $result = [
             'name' => $person->name,
-            'family' => $person->family
+            'family' => $person->family,
+            'score' => $person->score,
+            'avatar' => $avatar_address
         ];
 
         return [

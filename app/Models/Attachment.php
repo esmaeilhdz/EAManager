@@ -11,6 +11,11 @@ class Attachment extends Model
     use HasFactory;
     protected $hidden = ['model_type', 'model_id', 'original_file_name', 'updated_at'];
 
+    public function attachment()
+    {
+        return $this->morphTo();
+    }
+
     protected function createdAt(): Attribute
     {
         return Attribute::get(

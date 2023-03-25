@@ -34,4 +34,9 @@ class Person extends Model
     {
         return $this->hasMany(PersonCompany::class);
     }
+
+    public function attachment()
+    {
+        return $this->morphMany(Attachment::class, 'model');
+    }
 }
