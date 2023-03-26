@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\PermissionGroup;
 use App\Models\User;
 use App\Traits\Common;
 use Illuminate\Database\Seeder;
@@ -23,47 +24,67 @@ class RolePermissionSeeder extends Seeder
             'code' => $this->randomString(),
             'name' => 'super_admin',
             'caption' => 'سوپر ادمین',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
+            'created_by' => 1,
         ]);
 //        $role = Role::find(1);
 
         $resources = [
-            'person',
-            'accessory',
-            'account',
-            'address',
-            'attachment',
-            'bill',
-            'chat',
-            'cheque',
-            'cloth',
-            'company',
-            'cutting',
-            'design_model',
-            'notif',
-            'invoice',
-            'factor',
-            'payment',
-            'place',
-            'product',
-            'rent',
-            'request_product_from_warehouse',
-            'return_factor',
-            'salary',
-            'sale_periods',
-            'sewing',
-            'user',
-            'customer',
-            'report',
-            'role',
+            'person' => 'اشخاص',
+            'accessory' => 'خرج کار',
+            'account' => 'حساب ها',
+            'address' => 'آدرس',
+            'attachment' => 'پیوست',
+            'bill' => 'قبوض',
+            'chat' => 'چت',
+            'cheque' => 'چک',
+            'cloth' => 'پارچه',
+            'company' => 'شرکت',
+            'cutting' => 'برش',
+            'design_model' => 'طراحی مدل',
+            'notif' => 'اعلان',
+            'invoice' => 'پیش فاکتور',
+            'factor' => 'فاکتور',
+            'payment' => 'پرداخت',
+            'place' => 'مکان',
+            'product' => 'محصول',
+            'rent' => 'اجاره',
+            'request_product_from_warehouse' => 'درخواست کالا از انبار',
+            'return_factor' => 'مرجوع کالا',
+            'salary' => 'حقوق',
+            'sale_periods' => 'دوره فروش',
+            'sewing' => 'دوخت',
+            'user' => 'کاربر',
+            'customer' => 'مشتری',
+            'report' => 'گزارش',
+            'role' => 'نقش',
         ];
 
-        foreach ($resources as $resource) {
-            $permission = Permission::create(['name' => "admin-$resource", 'guard_name' => 'api']);
+        foreach ($resources as $resource => $caption) {
+            $permission_group = new PermissionGroup();
+
+            $permission_group->name = $resource;
+            $permission_group->caption = $caption;
+
+            $permission_group->save();
+
+            $permission = Permission::create([
+                'permission_group_id' => $permission_group->id,
+                'name' => "admin-$resource",
+                'guard_name' => 'api'
+            ]);
             $role->givePermissionTo($permission);
 
-            Permission::create(['name' => "edit-$resource", 'guard_name' => 'api']);
-            Permission::create(['name' => "view-$resource", 'guard_name' => 'api']);
+            Permission::create([
+                'permission_group_id' => $permission_group->id,
+                'name' => "edit-$resource",
+                'guard_name' => 'api'
+            ]);
+            Permission::create([
+                'permission_group_id' => $permission_group->id,
+                'name' => "view-$resource",
+                'guard_name' => 'api'
+            ]);
 
         }
 
