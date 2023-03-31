@@ -60,6 +60,36 @@ class PersonHelper
     }
 
     /**
+     * سرویس افراد برای کومبو
+     * @param $inputs
+     * @return array
+     */
+    public function getPersonsCombo($inputs): array
+    {
+        $user = Auth::user();
+        $search_data = $param_array = [];
+        $search_data[] = $this->GWC($inputs['search_txt'] ?? '', 'string:name;family;concat_ws(" ",name,family);replace(concat_ws("",name,family)," ","")');
+        $inputs['where']['search']['condition'] = $this->generateWhereCondition($search_data, $param_array);
+        $inputs['where']['search']['params'] = $param_array;
+
+        $inputs['order_by'] = $this->orderBy($inputs, 'people');
+        $persons = $this->person_interface->getPersonsCombo($inputs, $user);
+
+        $persons->transform(function ($item) {
+            return [
+                'code' => $item->code,
+                'full_name' => $item->name . ' ' . $item->family,
+            ];
+        });
+
+        return [
+            'result' => true,
+            'message' => __('messages.success'),
+            'data' => $persons
+        ];
+    }
+
+    /**
      * سرویس جزئیات فرد
      * @param $code
      * @return array

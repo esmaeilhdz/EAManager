@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 Route::group(['prefix' => 'v1', 'middleware' => 'auth:sanctum'], function () {
     Route::group(['middleware' => ['permission:admin-person|edit-person|view-person']], function () {
         Route::get('person', [PersonController::class, 'getPersons']);
+        Route::get('person_combo', [PersonController::class, 'getPersonsCombo']);
         Route::get('person/{code}', [PersonController::class, 'getPersonDetail']);
     });
     Route::group(['middleware' => ['permission:admin-person|edit-person']], function () {

@@ -158,6 +158,8 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'search_txt' => 'جستجو'
+    ],
 
 ];

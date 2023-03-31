@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Facades\PersonFacade;
 use App\Facades\PlaceFacade;
 use App\Http\Requests\Person\PersonAddRequest;
+use App\Http\Requests\Person\PersonComboRequest;
 use App\Http\Requests\Person\PersonEditRequest;
 use App\Http\Requests\Person\PersonListRequest;
 use App\Http\Requests\Person\PersonDetailRequest;
@@ -26,6 +27,20 @@ class PersonController extends Controller
         $this->cleanInput($inputs, array_keys($request->rules()));
 
         $result = PersonFacade::getPersons($inputs);
+        return $this->api_response->response($result['result'], $result['message'], $result['data']);
+    }
+
+    /**
+     * سرویس افراد برای کومبو
+     * @param PersonComboRequest $request
+     * @return JsonResponse
+     */
+    public function getPersonsCombo(PersonComboRequest $request): JsonResponse
+    {
+        $inputs = $request->validated();
+        $this->cleanInput($inputs, array_keys($request->rules()));
+
+        $result = PersonFacade::getPersonsCombo($inputs);
         return $this->api_response->response($result['result'], $result['message'], $result['data']);
     }
 

@@ -8,6 +8,6 @@ Route::group(['prefix' => 'v1', 'middleware' => 'auth:sanctum'], function () {
         Route::get('role/{code}/permission', [PermissionController::class, 'getRolePermissions']);
     });
     Route::group(['middleware' => ['permission:admin-role|edit-role']], function () {
-        Route::put('role/{code}/Permission/{id}', [PermissionController::class, 'editRolePermissions']);
+        Route::put('role/{code}/permission/{id}', [PermissionController::class, 'editRolePermissions']);
     });
 });

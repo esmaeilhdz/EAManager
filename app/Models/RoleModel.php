@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\RoleTrait;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 
 class RoleModel extends Role
 {
+    use RoleTrait;
 
     protected $hidden = ['id', 'updated_at'];
 
@@ -18,6 +22,17 @@ class RoleModel extends Role
                 'gregorian' => $value
             ],
         );
+    }
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::addGlobalScope('accessRole', function (Builder $builder) {
+            $role_ids = $this->getRolesByUser(Auth::user());
+            $builder->whereIn('id', $role_ids);
+        });
     }
 
     public function creator()

@@ -9,11 +9,31 @@ use App\Traits\Common;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class PermissionRepository implements Interfaces\iPermission
 {
     use Common;
+
+    public function getPermissionById($permission_id)
+    {
+        try {
+            return Permission::select(['id', 'name'])->find($permission_id);
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
+    public function getPermissionByName($permission_name)
+    {
+        try {
+            return Permission::select(['id', 'name'])->where('name', $permission_name)->first();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
 
     /**
      * پرمیشن های یک نقش
@@ -40,8 +60,39 @@ class PermissionRepository implements Interfaces\iPermission
         }
     }
 
-    public function editRolePermissions($inputs)
+    public function addRolePermission($role_id, $permission_id): bool
     {
-        // TODO: Implement editRolePermissions() method.
+        try {
+            return DB::table('role_has_permissions')->insert([
+                [
+                    'role_id' => $role_id,
+                    'permission_id' => $permission_id
+                ]
+            ]);
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
+    public function deleteRolePermission($role_id, $permission_id): int
+    {
+        try {
+            return DB::table('role_has_permissions')->where('role_id', $role_id)
+                ->where('permission_id', $permission_id)
+                ->delete();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
+    public function deleteRolePermissions($role_id, $permission_ids): int
+    {
+        try {
+            return DB::table('role_has_permissions')->where('role_id', $role_id)
+                ->whereIn('permission_id', $permission_ids)
+                ->delete();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
     }
 }

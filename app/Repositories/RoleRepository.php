@@ -42,7 +42,7 @@ class RoleRepository implements Interfaces\iRole
     public function getRoleByCode($code, $select = [], $relation = [])
     {
         try {
-            $role = Role::whereCode($code);
+            $role = RoleModel::whereCode($code);
 
             if (count($select)) {
                 $role = $role->select($select);
@@ -73,7 +73,7 @@ class RoleRepository implements Interfaces\iRole
     public function addRole($inputs, $user)
     {
         try {
-            $role = new Role();
+            $role = new RoleModel();
 
             $role->code = $this->randomString();
             $role->name = $this->FaToEn($inputs['caption']);

@@ -49,6 +49,27 @@ class PersonRepository implements Interfaces\iPerson
         }
     }
 
+    public function getPersonsCombo($inputs, $user)
+    {
+        try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
+            return Person::select([
+                    'code',
+                    'name',
+                    'family'
+                ])
+                ->whereRaw($inputs['where']['search']['condition'], $inputs['where']['search']['params'])
+                ->whereHas('person_company', function ($q) use ($company_id) {
+                    $q->where('company_id', $company_id);
+                })
+                ->orderByRaw($inputs['order_by'])
+                ->limit(20)
+                ->get();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
     /**
      * جزئیات فرد
      * @param $id
