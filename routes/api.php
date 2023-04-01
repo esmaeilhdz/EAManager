@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\GeneralController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PersonController;
 use Illuminate\Support\Facades\Route;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group(['prefix' => 'v1'], function () {
+    Route::get('date', [GeneralController::class, 'getDate']);
     Route::get('captcha', [AuthController::class, 'getCaptcha']);
     Route::post('login', [AuthController::class, 'login']);
 });
