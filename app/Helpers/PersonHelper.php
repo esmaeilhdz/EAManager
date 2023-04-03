@@ -2,9 +2,12 @@
 
 namespace App\Helpers;
 
+use App\Repositories\Interfaces\iCompany;
 use App\Repositories\Interfaces\iPerson;
+use App\Repositories\Interfaces\iPersonCompany;
 use App\Traits\Common;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class PersonHelper
 {
@@ -12,10 +15,18 @@ class PersonHelper
 
     // attributes
     public iPerson $person_interface;
+    public iCompany $company_interface;
+    public iPersonCompany $person_company_interface;
 
-    public function __construct(iPerson $person_interface)
+    public function __construct(
+        iPerson $person_interface,
+        iCompany $company_interface,
+        iPersonCompany $person_company_interface,
+    )
     {
         $this->person_interface = $person_interface;
+        $this->company_interface = $company_interface;
+        $this->person_company_interface = $person_company_interface;
     }
 
     /**
@@ -143,12 +154,36 @@ class PersonHelper
      */
     public function addPerson($inputs): array
     {
+        $company = $this->company_interface->getCompanyByCode($inputs['company_code'], ['id']);
+        if (is_null($company)) {
+            return [
+                'result' => false,
+                'message' => __('messages.company_not_found'),
+                'data' => null
+            ];
+        }
+        $inputs['company_id'] = $company->id;
+
+        DB::beginTransaction();
         $user = Auth::user();
-        $result = $this->person_interface->addPerson($inputs, $user);
+        $add_person_result = $this->person_interface->addPerson($inputs, $user);
+        $result[] = $add_person_result['result'];
+        $inputs['person_id'] = $add_person_result['data']->id;
+
+        $result[] = $this->person_company_interface->addPersonCompany($inputs)['result'];
+
+        if (!in_array(false, $result)) {
+            $flag = true;
+            DB::commit();
+        } else {
+            $flag = false;
+            DB::rollBack();
+        }
+
         return [
-            'result' => $result['result'],
-            'message' => $result['result'] ? __('messages.success') : __('messages.fail'),
-            'data' => $result['data']
+            'result' => $flag,
+            'message' => $flag ? __('messages.success') : __('messages.fail'),
+            'data' => $add_person_result['data']->code
         ];
     }
 

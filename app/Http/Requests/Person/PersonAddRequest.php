@@ -33,6 +33,12 @@ class PersonAddRequest extends FormRequest
             'identity' => 'required|string|max:10',
             'passport_no' => 'nullable|string',
             'score' => 'nullable|numeric|min:0',
+            'company_code' => 'required|string|size:32',
+            'start_work_date' => 'required|date',
+            'end_work_date' => 'nullable|date',
+            'suggest_salary' => 'required|numeric|min:1',
+            'daily_income' => 'required|numeric|min:1',
+            'position' => 'required|string',
         ];
     }
 }

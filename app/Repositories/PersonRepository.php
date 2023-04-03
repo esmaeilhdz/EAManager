@@ -181,7 +181,7 @@ class PersonRepository implements Interfaces\iPerson
 
             return [
                 'result' => $result,
-                'data' => $result ? $person->code : null
+                'data' => $result ? $person : null
             ];
 
         } catch (\Exception $e) {
