@@ -8,6 +8,6 @@ class GeneralController extends Controller
 {
     public function getDate()
     {
-        return $this->api_response->response(true, 'success', date('Y-m-d'));
+//        return $this->api_response->response(true, 'success', date('Y-m-d'));
     }
 }
