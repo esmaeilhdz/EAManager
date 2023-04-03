@@ -10,7 +10,7 @@ class PersonCompanyRepository implements Interfaces\iPersonCompany
 {
     use Common;
 
-    public function addPersonCompany($inputs)
+    public function addPersonCompany($inputs, $user)
     {
         try {
             $person_company = new PersonCompany();
@@ -22,6 +22,7 @@ class PersonCompanyRepository implements Interfaces\iPersonCompany
             $person_company->suggest_salary = $inputs['suggest_salary'];
             $person_company->daily_income = $inputs['daily_income'];
             $person_company->position = $inputs['position'];
+            $person_company->created_by = $user->id;
 
             $result = $person_company->save();
 

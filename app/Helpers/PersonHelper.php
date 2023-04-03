@@ -170,7 +170,7 @@ class PersonHelper
         $result[] = $add_person_result['result'];
         $inputs['person_id'] = $add_person_result['data']->id;
 
-        $result[] = $this->person_company_interface->addPersonCompany($inputs)['result'];
+        $result[] = $this->person_company_interface->addPersonCompany($inputs, $user)['result'];
 
         if (!in_array(false, $result)) {
             $flag = true;
