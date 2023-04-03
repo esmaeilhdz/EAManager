@@ -47,6 +47,26 @@ class CompanyRepository implements Interfaces\iCompany
         }
     }
 
+    public function getCompanyCombo($inputs, $user)
+    {
+        try {
+            $company_ids = $this->getChildIdsOfMyCompany($user);
+
+            return Company::query()
+                ->select([
+                    'code',
+                    'name'
+                ])
+                ->whereIn('id', $company_ids)
+                ->whereRaw($inputs['where']['search']['condition'], $inputs['where']['search']['params'])
+                ->orderByRaw($inputs['order_by'])
+                ->limit(20)
+                ->get();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
     /**
      * جزئیات شرکت
      * @param $code

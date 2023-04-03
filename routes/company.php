@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 Route::group(['prefix' => 'v1', 'middleware' => 'auth:sanctum'], function () {
     Route::group(['middleware' => ['permission:admin-company|edit-company|view-company']], function () {
         Route::get('company', [CompanyController::class, 'getCompanies']);
+        Route::get('company_combo', [CompanyController::class, 'getCompanyCombo']);
         Route::get('company/{code}', [CompanyController::class, 'getCompanyDetail']);
     });
     Route::group(['middleware' => ['permission:admin-company|edit-company']], function () {

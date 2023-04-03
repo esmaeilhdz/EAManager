@@ -57,6 +57,24 @@ class CompanyHelper
         ];
     }
 
+    public function getCompanyCombo($inputs)
+    {
+        $user = Auth::user();
+        $search_data = $param_array = [];
+        $search_data[] = $this->GWC($inputs['search_txt'] ?? '', 'string:name');
+        $inputs['where']['search']['condition'] = $this->generateWhereCondition($search_data, $param_array);
+        $inputs['where']['search']['params'] = $param_array;
+
+        $inputs['order_by'] = $this->orderBy($inputs, 'companies');
+        $companies = $this->company_interface->getCompanyCombo($inputs, $user);
+
+        return [
+            'result' => true,
+            'message' => __('messages.success'),
+            'data' => $companies
+        ];
+    }
+
     /**
      * سرویس جزئیات شرکت
      * @param $code

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Facades\CompanyFacade;
 use App\Http\Requests\Company\CompanyAddRequest;
+use App\Http\Requests\Company\CompanyComboRequest;
 use App\Http\Requests\Company\CompanyDetailRequest;
 use App\Http\Requests\Company\CompanyEditRequest;
 use App\Http\Requests\Company\CompanyListRequest;
@@ -25,6 +26,15 @@ class CompanyController extends Controller
         $this->cleanInput($inputs, array_keys($request->rules()));
 
         $result = CompanyFacade::getCompanies($inputs);
+        return $this->api_response->response($result['result'], $result['message'], $result['data']);
+    }
+
+    public function getCompanyCombo(CompanyComboRequest $request)
+    {
+        $inputs = $request->validated();
+        $this->cleanInput($inputs, array_keys($request->rules()));
+
+        $result = CompanyFacade::getCompanyCombo($inputs);
         return $this->api_response->response($result['result'], $result['message'], $result['data']);
     }
 
