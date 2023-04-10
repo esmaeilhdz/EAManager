@@ -108,6 +108,8 @@ class RouteServiceProvider extends ServiceProvider
             $this->mapUser();
             // روت نقش ها
             $this->mapRole();
+            // روت ارتباط شخص و شرکت
+            $this->mapPersonCompany();
 
         });
     }
@@ -395,6 +397,14 @@ class RouteServiceProvider extends ServiceProvider
             ->namespace($this->namespace)
             ->group(base_path('routes/permission.php'));
 
+    }
+
+    private function mapPersonCompany()
+    {
+        Route::prefix('api')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/person_company.php'));
     }
 
     /**

@@ -23,6 +23,7 @@ use App\Helpers\MenuHelper;
 use App\Helpers\NotifHelper;
 use App\Helpers\PaymentHelper;
 use App\Helpers\PermissionHelper;
+use App\Helpers\PersonCompanyHelper;
 use App\Helpers\ReportHelper;
 use App\Helpers\RoleHelper;
 use App\Helpers\SalaryHelper;
@@ -82,6 +83,7 @@ class HelperServiceProvider extends ServiceProvider
         App::alias(UserHelper::class, 'user_helper');
         App::alias(RoleHelper::class, 'role_helper');
         App::alias(PermissionHelper::class, 'permission_helper');
+        App::alias(PersonCompanyHelper::class, 'person_company_helper');
     }
 
     /**

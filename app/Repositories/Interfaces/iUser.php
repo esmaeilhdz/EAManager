@@ -10,7 +10,7 @@ interface iUser
 
     public function editUser($inputs, $user);
 
-    public function addUser($inputs, $user);
+    public function addUser($inputs, $user_login);
 
     public function deleteUser($user);
 }

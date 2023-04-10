@@ -129,7 +129,6 @@ class CompanyRepository implements Interfaces\iCompany
             $company->code = $this->randomString();
             $company->parent_id = $inputs['parent_id'];
             $company->name = $inputs['name'];
-            $company->is_enable = $inputs['is_enable'];
             $company->created_by = $user->id;
 
             $result = $company->save();

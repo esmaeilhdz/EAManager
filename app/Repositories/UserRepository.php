@@ -99,7 +99,7 @@ class UserRepository implements Interfaces\iUser
      * @return array
      * @throws ApiException
      */
-    public function addUser($inputs, $user): array
+    public function addUser($inputs, $user_login): array
     {
         try {
             $user = new User();
@@ -109,7 +109,7 @@ class UserRepository implements Interfaces\iUser
             $user->email = $inputs['email'] ?? null;
             $user->mobile = $inputs['mobile'];
             $user->password = Hash::make($inputs['password']);
-            $user->created_by = $user->id;
+            $user->created_by = $user_login->id;
 
             $result = $user->save();
 

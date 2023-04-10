@@ -10,6 +10,32 @@ class PersonCompanyRepository implements Interfaces\iPersonCompany
 {
     use Common;
 
+    public function getCompaniesOfPerson($inputs, $user)
+    {
+        try {
+            return PersonCompany::with([
+                'company:id,name,code',
+                'creator:id,person_id',
+                'creator.person:id,name,family'
+            ])
+                ->select([
+                    'person_id',
+                    'company_id',
+                    'start_work_date',
+                    'end_work_date',
+                    'suggest_salary',
+                    'daily_income',
+                    'position',
+                    'is_enable',
+                    'created_by'
+                ])
+                ->where('person_id', $inputs['person_id'])
+                ->get();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
     public function addPersonCompany($inputs, $user)
     {
         try {

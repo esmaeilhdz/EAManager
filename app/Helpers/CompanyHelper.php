@@ -40,6 +40,7 @@ class CompanyHelper
             return [
                 'code' => $item->code,
                 'name' => $item->name,
+                'parent' => $item->parent->name,
                 'is_enable' => $item->is_enable,
                 'creator' => is_null($item->creator->person) ? null : [
                     'company' => [
