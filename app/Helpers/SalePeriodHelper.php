@@ -39,6 +39,7 @@ class SalePeriodHelper
 
         $sale_periods->transform(function ($item) {
             return [
+                'id' => $item->id,
                 'name' => $item->name,
                 'start_date' => $item->start_date,
                 'end_date' => $item->end_date,
