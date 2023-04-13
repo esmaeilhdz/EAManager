@@ -14,9 +14,9 @@ class AddColumnPermissionsTable extends Migration
     public function up()
     {
         Schema::table('permissions', function (Blueprint $table) {
-//            $table->unsignedBigInteger('permission_group_id')->after('id');
+            $table->unsignedBigInteger('permission_group_id')->after('id');
 
-//            $table->foreign('permission_group_id')->references('id')->on('permission_groups');
+            $table->foreign('permission_group_id')->references('id')->on('permission_groups');
         });
     }
 
