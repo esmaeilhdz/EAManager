@@ -107,7 +107,15 @@ class PersonHelper
      */
     public function getPersonDetail($code): array
     {
-        $person = $this->person_interface->getPersonByCode($code);
+        $select = ['id', 'internal_code', 'name', 'family', 'father_name', 'national_code', 'identity', 'passport_no', 'score'];
+        $relation = [
+            'attachment' => function ($q) {
+                $q->select(['model_type', 'model_id', 'path', 'file_name', 'ext'])
+                    ->where('type', 'thumb')
+                    ->where('attachment_type_id', 1);
+            }
+        ];
+        $person = $this->person_interface->getPersonByCode($code, $select, $relation);
         if (is_null($person)) {
             return [
                 'result' => false,
@@ -116,10 +124,25 @@ class PersonHelper
             ];
         }
 
+        $result['internal_code'] = $person->internal_code;
+        $result['name'] = $person->name;
+        $result['family'] = $person->family;
+        $result['father_name'] = $person->father_name;
+        $result['national_code'] = $person->national_code;
+        $result['identity'] = $person->identity;
+        $result['passport_no'] = $person->passport_no;
+        $result['score'] = $person->score;
+
+        $attachment_path = null;
+        if (count($person->attachment)) {
+            $attachment_path = env('APP_URL') . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . $person->attachment[0]->path . DIRECTORY_SEPARATOR . $person->attachment[0]->file_name . '.' . $person->attachment[0]->ext;
+        }
+        $result['attachment']['path'] = $attachment_path;
+
         return [
             'result' => true,
             'message' => __('messages.success'),
-            'data' => $person
+            'data' => $result
         ];
     }
 
