@@ -106,21 +106,23 @@ class PersonCompanyHelper
             ];
         }
 
+        $person_company = $this->person_company_interface->getPersonCompanyDetail($person->id, $company->id);
+
         return [
             'result' => true,
             'message' => __('messages.success'),
-            'data' => $person
+            'data' => $person_company
         ];
     }
 
     /**
-     * سرویس ویرایش فرد
+     * سرویس ویرایش ارتباط شرکت و فرد
      * @param $inputs
      * @return array
      */
-    public function editPerson($inputs): array
+    public function editPersonCompany($inputs): array
     {
-        $person = $this->person_interface->getPersonByCode($inputs['code']);
+        $person = $this->person_interface->getPersonByCode($inputs['person_code'], ['id']);
         if (is_null($person)) {
             return [
                 'result' => false,
@@ -129,21 +131,6 @@ class PersonCompanyHelper
             ];
         }
 
-        $result = $this->person_interface->editPerson($inputs);
-        return [
-            'result' => (bool) $result,
-            'message' => $result ? __('messages.success') : __('messages.fail'),
-            'data' => null
-        ];
-    }
-
-    /**
-     * سرویس افزودن فرد
-     * @param $inputs
-     * @return array
-     */
-    public function addPerson($inputs): array
-    {
         $company = $this->company_interface->getCompanyByCode($inputs['company_code'], ['id']);
         if (is_null($company)) {
             return [
@@ -152,39 +139,25 @@ class PersonCompanyHelper
                 'data' => null
             ];
         }
-        $inputs['company_id'] = $company->id;
 
-        DB::beginTransaction();
-        $user = Auth::user();
-        $add_person_result = $this->person_interface->addPerson($inputs, $user);
-        $result[] = $add_person_result['result'];
-        $inputs['person_id'] = $add_person_result['data']->id;
+        $person_company = $this->person_company_interface->getPersonCompanyDetail($person->id, $company->id);
 
-        $result[] = $this->person_company_interface->addPersonCompany($inputs, $user)['result'];
-
-        if (!in_array(false, $result)) {
-            $flag = true;
-            DB::commit();
-        } else {
-            $flag = false;
-            DB::rollBack();
-        }
-
+        $result = $this->person_company_interface->editPersonCompany($inputs, $person_company);
         return [
-            'result' => $flag,
-            'message' => $flag ? __('messages.success') : __('messages.fail'),
-            'data' => $add_person_result['data']->code
+            'result' => (bool) $result,
+            'message' => $result ? __('messages.success') : __('messages.fail'),
+            'data' => null
         ];
     }
 
     /**
-     * سرویس حذف فرد
+     * سرویس ویرایش وضعیت ارتباط شرکت و فرد
      * @param $inputs
      * @return array
      */
-    public function deletePerson($inputs): array
+    public function changePersonCompany($inputs): array
     {
-        $person = $this->person_interface->getPersonByCode($inputs['code'], ['id']);
+        $person = $this->person_interface->getPersonByCode($inputs['person_code'], ['id']);
         if (is_null($person)) {
             return [
                 'result' => false,
@@ -193,7 +166,97 @@ class PersonCompanyHelper
             ];
         }
 
-        $result = $this->person_interface->deletePerson($person->id);
+        $company = $this->company_interface->getCompanyByCode($inputs['company_code'], ['id']);
+        if (is_null($company)) {
+            return [
+                'result' => false,
+                'message' => __('messages.company_not_found'),
+                'data' => null
+            ];
+        }
+
+        $person_company = $this->person_company_interface->getPersonCompanyDetail($person->id, $company->id);
+
+        $result = $this->person_company_interface->changePersonCompany($inputs, $person_company);
+        return [
+            'result' => (bool) $result,
+            'message' => $result ? __('messages.success') : __('messages.fail'),
+            'data' => null
+        ];
+    }
+
+    /**
+     * سرویس افزودن ارتباط شرکت و فرد
+     * @param $inputs
+     * @return array
+     */
+    public function addPersonCompany($inputs): array
+    {
+        $person = $this->person_interface->getPersonByCode($inputs['person_code'], ['id']);
+        if (is_null($person)) {
+            return [
+                'result' => false,
+                'message' => __('messages.record_not_found'),
+                'data' => null
+            ];
+        }
+
+        $company = $this->company_interface->getCompanyByCode($inputs['company_code'], ['id']);
+        if (is_null($company)) {
+            return [
+                'result' => false,
+                'message' => __('messages.company_not_found'),
+                'data' => null
+            ];
+        }
+        $inputs['person_id'] = $person->id;
+        $inputs['company_id'] = $company->id;
+
+        $user = Auth::user();
+        $result = $this->person_company_interface->addPersonCompany($inputs, $user);
+
+        return [
+            'result' => $result['result'],
+            'message' => $result['result'] ? __('messages.success') : __('messages.fail'),
+            'data' => $result['data']
+        ];
+    }
+
+    /**
+     * سرویس حذف ارتباط شرکت و فرد
+     * @param $inputs
+     * @return array
+     */
+    public function deletePersonCompany($inputs): array
+    {
+        $person = $this->person_interface->getPersonByCode($inputs['person_code'], ['id']);
+        if (is_null($person)) {
+            return [
+                'result' => false,
+                'message' => __('messages.record_not_found'),
+                'data' => null
+            ];
+        }
+
+        $company = $this->company_interface->getCompanyByCode($inputs['company_code'], ['id']);
+        if (is_null($company)) {
+            return [
+                'result' => false,
+                'message' => __('messages.company_not_found'),
+                'data' => null
+            ];
+        }
+
+        $person_company = $this->person_company_interface->getPersonCompanyDetail($person->id, $company->id);
+        if (is_null($person_company)) {
+            return [
+                'result' => false,
+                'message' => __('messages.record_not_found'),
+                'data' => null
+            ];
+        }
+
+        $result = $this->person_company_interface->deletePersonCompany($person_company);
         return [
             'result' => (bool) $result,
             'message' => $result ? __('messages.success') : __('messages.fail'),

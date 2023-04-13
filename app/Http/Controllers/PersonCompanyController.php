@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Facades\PersonCompanyFacade;
+use App\Http\Requests\PersonCompany\PersonCompanyAddRequest;
+use App\Http\Requests\PersonCompany\PersonCompanyChangeRequest;
 use App\Http\Requests\PersonCompany\PersonCompanyDetailRequest;
 use App\Http\Requests\PersonCompany\PersonCompanyEditRequest;
 use App\Http\Requests\PersonCompany\PersonCompanyListRequest;
@@ -40,44 +42,56 @@ class PersonCompanyController extends Controller
     }
 
     /**
-     * سرویس ویرایش خرید خرج کار
+     * سرویس ویرایش ارتباط شرکت و شخص
      * @param PersonCompanyEditRequest $request
      * @return JsonResponse
      */
-    public function editAccessoryBuy(PersonCompanyEditRequest $request): JsonResponse
+    public function editPersonCompany(PersonCompanyEditRequest $request): JsonResponse
     {
         $inputs = $request->validated();
         $this->cleanInput($inputs, array_keys($request->rules()));
 
-        $result = PersonCompanyFacade::editAccessoryBuy($inputs);
+        $result = PersonCompanyFacade::editPersonCompany($inputs);
         return $this->api_response->response($result['result'], $result['message'], $result['data']);
     }
 
     /**
-     * سرویس افزودن خرید خرج کار
-     * @param AccessoryBuyAddRequest $request
+     * سرویس ویرایش وضعیت ارتباط شرکت و شخص
+     * @param PersonCompanyChangeRequest $request
      * @return JsonResponse
      */
-    public function addAccessoryBuy(AccessoryBuyAddRequest $request): JsonResponse
+    public function changePersonCompany(PersonCompanyChangeRequest $request): JsonResponse
     {
         $inputs = $request->validated();
-        $this->cleanInput($inputs, array_keys($request->rules()));
 
-        $result = PersonCompanyFacade::addAccessoryBuy($inputs);
+        $result = PersonCompanyFacade::changePersonCompany($inputs);
         return $this->api_response->response($result['result'], $result['message'], $result['data']);
     }
 
     /**
-     * سرویس حذف خرید خرج کار
-     * @param AccessoryBuyDetailRequest $request
+     * سرویس افزودن ارتباط شرکت و شخص
+     * @param PersonCompanyAddRequest $request
      * @return JsonResponse
      */
-    public function deleteAccessoryBuy(AccessoryBuyDetailRequest $request): JsonResponse
+    public function addPersonCompany(PersonCompanyAddRequest $request): JsonResponse
     {
         $inputs = $request->validated();
         $this->cleanInput($inputs, array_keys($request->rules()));
 
-        $result = PersonCompanyFacade::deleteAccessoryBuy($inputs);
+        $result = PersonCompanyFacade::addPersonCompany($inputs);
+        return $this->api_response->response($result['result'], $result['message'], $result['data']);
+    }
+
+    /**
+     * سرویس حذف ارتباط شرکت و شخص
+     * @param PersonCompanyDetailRequest $request
+     * @return JsonResponse
+     */
+    public function deletePersonCompany(PersonCompanyDetailRequest $request): JsonResponse
+    {
+        $inputs = $request->validated();
+
+        $result = PersonCompanyFacade::deletePersonCompany($inputs);
         return $this->api_response->response($result['result'], $result['message'], $result['data']);
     }
 }

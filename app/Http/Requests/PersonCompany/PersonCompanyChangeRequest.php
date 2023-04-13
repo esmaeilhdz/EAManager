@@ -4,7 +4,7 @@ namespace App\Http\Requests\PersonCompany;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PersonCompanyAddRequest extends FormRequest
+class PersonCompanyChangeRequest extends FormRequest
 {
 
     /**
@@ -16,6 +16,7 @@ class PersonCompanyAddRequest extends FormRequest
     {
         $this->merge([
             'person_code' => $this->person_code,
+            'company_code' => $this->company_code,
         ]);
     }
 
@@ -39,11 +40,7 @@ class PersonCompanyAddRequest extends FormRequest
         return [
             'person_code' => 'required|string|size:32',
             'company_code' => 'required|string|size:32',
-            'start_work_date' => 'required|date',
-            'end_work_date' => 'nullable|date',
-            'suggest_salary' => 'required|numeric',
-            'daily_income' => 'required|numeric',
-            'position' => 'required|string',
+            'is_enable' => 'required|numeric|in:0,1',
         ];
     }
 }

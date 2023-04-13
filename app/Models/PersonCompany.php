@@ -11,7 +11,7 @@ class PersonCompany extends Model
     use HasFactory;
 
     protected $primaryKey = 'id';
-    protected $hidden = ['person_id', 'company_id'];
+    protected $hidden = ['id', 'person_id', 'company_id'];
 
     protected function createdAt(): Attribute
     {

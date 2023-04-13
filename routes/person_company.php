@@ -10,6 +10,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'auth:sanctum'], function () {
     });
     Route::group(['middleware' => ['permission:admin-person|edit-person|admin-company|edit-company']], function () {
         Route::put('person/{person_code}/company/{company_code}', [PersonCompanyController::class, 'editPersonCompany']);
+        Route::patch('person/{person_code}/company/{company_code}', [PersonCompanyController::class, 'changePersonCompany']);
     });
     Route::group(['middleware' => ['permission:admin-person|admin-company']], function () {
         Route::post('person/{person_code}/company', [PersonCompanyController::class, 'addPersonCompany']);
