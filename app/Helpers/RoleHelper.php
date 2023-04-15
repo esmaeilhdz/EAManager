@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\RoleModel;
 use App\Repositories\Interfaces\iRole;
 use App\Traits\Common;
 use Illuminate\Support\Facades\Auth;
@@ -119,6 +120,24 @@ class RoleHelper
             'message' => $result['result'] ? __('messages.success') : __('messages.fail'),
             'data' => $result['data']
         ];
+    }
+
+    public function getRolesByUser($user)
+    {
+        $user_role_name = $user->getRoleNames()[0];
+        $user_role = RoleModel::select(['id', 'parent_id'])->whereName($user_role_name)->withoutGlobalScopes()->first();
+        $roles_array = RoleModel::query()->select(['id', 'parent_id'])->withoutGlobalScopes()->get()->all();
+
+        $parent_id = $user_role->parent_id;
+        if (is_null($user_role->parent_id)) {
+            $parent_id = 0;
+        }
+
+        $roles_array = $this->buildTree($roles_array, $parent_id);
+        $this->findInTree($roles_array, $user_role->id, $resource);
+        $role_ids = $this->convertTreeToArray($resource, $resource2);
+
+        return array_merge([$user_role->id], $role_ids);
     }
 
 }

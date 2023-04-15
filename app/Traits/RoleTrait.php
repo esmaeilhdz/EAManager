@@ -2,8 +2,16 @@
 
 namespace App\Traits;
 
+use App\Models\RoleModel;
+use Illuminate\Support\Facades\Auth;
+
 trait RoleTrait
 {
+
+    public function __construct()
+    {
+        parent::__construct();
+    }
 
     /**
      * این تابع آرایه یک سطحی ای را که دارای ساختار پدر و فرزندی است تبدیل به یک آرایه درختی چند سطحی می کند.
@@ -106,8 +114,14 @@ trait RoleTrait
 
     public function getRolesByUser($user)
     {
-        $user_role = $user->getRoles()[0]->toArray();
-        $roles = $this->buildTree($user_role, $user_role['parent_id'] ?? 0);
-        return $this->convertTreeToArray($roles, $role_ids);
+        $user_role_name = $user->getRoleNames()[0];
+        $user_role = RoleModel::select(['id', 'parent_id'])->whereName($user_role_name)->withoutGlobalScopes()->first();
+        $roles_array = RoleModel::query()->select(['id', 'parent_id'])->withoutGlobalScopes()->get()->all();
+
+        $roles_array = $this->buildTree($roles_array, $user_role->parent_id);
+        $this->findInTree($roles_array, $user_role->id, $resource);
+        $role_ids = $this->convertTreeToArray($resource, $resource2);
+
+        return array_merge([$user_role->id], $role_ids);
     }
 }

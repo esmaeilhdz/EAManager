@@ -18,6 +18,8 @@ return [
     'product_in_cart_already_exists' => 'محصول مورد نظر در سبد خرید وجود دارد.',
     'product_not_found' => 'محصول مورد نظر یافت نشد.',
     'record_not_found' => 'موردی برای نمایش وجود ندارد.',
+    'person_not_found' => 'شخص مورد نظر یافت نشد.',
+    'company_not_found' => 'شرکت مورد نظر یافت نشد.',
     'buy_success' => 'خرید با موفقیت ثبت شد.',
     'warehouse_not_found' => 'انبار وارد شده یافت نشد.',
     'free_size_not_enough' => 'فری سایز موجود نیست.',

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Facades\RoleFacade;
 use App\Traits\RoleTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -30,7 +31,7 @@ class RoleModel extends Role
     protected static function booted(): void
     {
         static::addGlobalScope('accessRole', function (Builder $builder) {
-            $role_ids = $this->getRolesByUser(Auth::user());
+            $role_ids = RoleFacade::getRolesByUser(Auth::user());
             $builder->whereIn('id', $role_ids);
         });
     }
