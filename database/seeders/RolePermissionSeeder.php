@@ -20,17 +20,17 @@ class RolePermissionSeeder extends Seeder
      */
     public function run()
     {
-        $role = Role::create([
+        /*$role = Role::create([
             'code' => $this->randomString(),
             'name' => 'super_admin',
             'caption' => 'سوپر ادمین',
             'guard_name' => 'api',
             'created_by' => 1,
-        ]);
-//        $role = Role::find(1);
+        ]);*/
+        $role = Role::find(1);
 
         $resources = [
-            'person' => 'اشخاص',
+            /*'person' => 'اشخاص',
             'accessory' => 'خرج کار',
             'account' => 'حساب ها',
             'address' => 'آدرس',
@@ -57,7 +57,8 @@ class RolePermissionSeeder extends Seeder
             'user' => 'کاربر',
             'customer' => 'مشتری',
             'report' => 'گزارش',
-            'role' => 'نقش',
+            'role' => 'نقش',*/
+            'enumeration' => 'مقادیر',
         ];
 
         foreach ($resources as $resource => $caption) {
@@ -88,7 +89,7 @@ class RolePermissionSeeder extends Seeder
 
         }
 
-        $user = User::find(2);
-        $user->assignRole($role);
+//        $user = User::find(2);
+//        $user->assignRole($role);
     }
 }

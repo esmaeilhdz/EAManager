@@ -10,6 +10,7 @@ use App\Repositories\AddressRepository;
 use App\Repositories\AttachmentRepository;
 use App\Repositories\BillRepository;
 use App\Repositories\ChatGroupPersonRepository;
+use App\Repositories\EnumerationRepository;
 use App\Repositories\GroupConversationRepository;
 use App\Repositories\ChatRepository;
 use App\Repositories\ClothBuyRepository;
@@ -30,6 +31,7 @@ use App\Repositories\Interfaces\iAddress;
 use App\Repositories\Interfaces\iAttachment;
 use App\Repositories\Interfaces\iBill;
 use App\Repositories\Interfaces\iChat;
+use App\Repositories\Interfaces\iEnumeration;
 use App\Repositories\Interfaces\iGroupConversation;
 use App\Repositories\Interfaces\iChatGroupPerson;
 use App\Repositories\Interfaces\iCloth;
@@ -133,6 +135,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(iRole::class, RoleRepository::class);
         $this->app->bind(iPermission::class, PermissionRepository::class);
         $this->app->bind(iPersonCompany::class, PersonCompanyRepository::class);
+        $this->app->bind(iEnumeration::class, EnumerationRepository::class);
     }
 
     /**

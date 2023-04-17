@@ -8,6 +8,7 @@ use App\Helpers\AccountHelper;
 use App\Helpers\AddressHelper;
 use App\Helpers\AttachmentHelper;
 use App\Helpers\BillHelper;
+use App\Helpers\EnumerationHelper;
 use App\Helpers\GroupConversationHelper;
 use App\Helpers\ChatGroupPersonHelper;
 use App\Helpers\ChatHelper;
@@ -84,6 +85,7 @@ class HelperServiceProvider extends ServiceProvider
         App::alias(RoleHelper::class, 'role_helper');
         App::alias(PermissionHelper::class, 'permission_helper');
         App::alias(PersonCompanyHelper::class, 'person_company_helper');
+        App::alias(EnumerationHelper::class, 'enumeration_helper');
     }
 
     /**

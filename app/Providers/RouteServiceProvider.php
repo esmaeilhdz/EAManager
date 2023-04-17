@@ -110,6 +110,8 @@ class RouteServiceProvider extends ServiceProvider
             $this->mapRole();
             // روت ارتباط شخص و شرکت
             $this->mapPersonCompany();
+            // روت مقادیر
+            $this->mapEnumeration();
 
         });
     }
@@ -405,6 +407,14 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/person_company.php'));
+    }
+
+    private function mapEnumeration()
+    {
+        Route::prefix('api')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/enumeration.php'));
     }
 
     /**
