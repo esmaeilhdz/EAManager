@@ -33,6 +33,7 @@ class CompanyRepository implements Interfaces\iCompany
                 ])
                 ->select([
                     'code',
+                    'parent_id',
                     'name',
                     'is_enable',
                     'created_by',

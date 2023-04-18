@@ -12,7 +12,7 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public $api_response;
+    public ApiResponse $api_response;
 
     public function __construct()
     {
