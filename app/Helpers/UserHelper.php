@@ -95,7 +95,7 @@ class UserHelper
         $select = ['id', 'name', 'family', 'score'];
         $relation = [
             'attachment' => function ($q) {
-                $q->select(['path', 'file_name', 'ext'])
+                $q->select(['model_type', 'model_id', 'path', 'file_name', 'ext'])
                     ->where('attachment_type_id', 1)
                     ->where('type', 'avatar');
             }
