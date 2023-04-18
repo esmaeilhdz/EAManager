@@ -23,8 +23,8 @@ class AccountRepository implements Interfaces\iAccount
             return Account::with([
                 'creator:id,person_id',
                 'creator.person:id,name,family',
-                'account_cheques:account_id' => function ($q) {
-                    $q->where('is_enable', 1);
+                'account_cheques' => function ($q) {
+                    $q->select(['account_id'])->where('is_enable', 1);
                 }
             ])
                 ->select([
