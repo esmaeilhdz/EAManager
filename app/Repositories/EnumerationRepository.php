@@ -103,6 +103,23 @@ class EnumerationRepository implements Interfaces\iEnumeration
         }
     }
 
+    public function getEnumerationAll()
+    {
+        try {
+            return Enumeration::select([
+                'category_name',
+                'category_caption',
+                'enum_caption',
+                'enum_id'
+            ])
+                ->where('is_enable', 1)
+                ->get()
+                ->groupBy('category_name');
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
     /**
      * ویرایش مقادیر
      * @param $enumeration

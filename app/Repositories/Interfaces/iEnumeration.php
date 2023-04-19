@@ -12,6 +12,8 @@ interface iEnumeration
 
     public function getEnumerationById($id, array $select = []);
 
+    public function getEnumerationAll();
+
     public function editEnumeration($enumeration, $inputs);
 
     public function addEnumeration($enumeration, $inputs, $user);

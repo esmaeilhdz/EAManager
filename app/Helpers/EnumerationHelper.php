@@ -91,6 +91,32 @@ class EnumerationHelper
         ];
     }
 
+    public function getEnumerationAll()
+    {
+        $enums = $this->enumeration_interface->getEnumerationAll();
+
+        $result = null;
+        foreach ($enums as $enum_items) {
+            foreach ($enum_items as $enum) {
+                $result[$enum->category_name]['category'] = [
+                    'name' => $enum->category_name,
+                    'caption' => $enum->category_caption,
+                ];
+                $result[$enum->category_name]['items'][] = [
+                    'id' => $enum->enum_id,
+                    'caption' => $enum->enum_caption
+                ];
+            }
+        }
+
+        return [
+            'result' => true,
+            'message' => __('messages.success'),
+            'data' => array_values($result)
+        ];
+
+    }
+
     /**
      * ویرایش مقادیر
      * @param $inputs

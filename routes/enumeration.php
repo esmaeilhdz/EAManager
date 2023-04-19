@@ -8,6 +8,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'auth:sanctum'], function () {
         Route::get('enumeration', [EnumerationController::class, 'getEnumerations']);
         Route::get('enumeration/{category_name}/grouped', [EnumerationController::class, 'getEnumerationGrouped']);
         Route::get('enumeration/{id}', [EnumerationController::class, 'getEnumerationDetail']);
+        Route::get('enum_all', [EnumerationController::class, 'getEnumerationAll']);
     });
     Route::group(['middleware' => ['permission:admin-enumeration|edit-enumeration']], function () {
         Route::put('enumeration/{category_name}', [EnumerationController::class, 'editEnumeration']);

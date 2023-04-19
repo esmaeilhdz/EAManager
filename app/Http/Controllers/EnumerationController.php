@@ -43,6 +43,12 @@ class EnumerationController extends Controller
         return $this->api_response->response($result['result'], $result['message'], $result['data']);
     }
 
+    public function getEnumerationAll()
+    {
+        $result = EnumerationFacade::getEnumerationAll();
+        return $this->api_response->response($result['result'], $result['message'], $result['data']);
+    }
+
     /**
      * سرویس ویرایش مقادیر
      * @param EnumerationEditRequest $request
