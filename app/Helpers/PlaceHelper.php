@@ -36,6 +36,7 @@ class PlaceHelper
 
         $places->transform(function ($item) {
             return [
+                'id' => $item->id,
                 'name' => $item->name,
                 'place_kind' => [
                     'id' => $item->place_kind_id,
