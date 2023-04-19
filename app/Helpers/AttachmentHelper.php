@@ -98,7 +98,9 @@ class AttachmentHelper
             $item['parent_id'] = $parent_id;
             $res = $this->attachment_interface->addAttachment($inputs, $item, $user);
             if ($item['type'] == 'original') {
-                $parent_id = $res['data'];
+                $parent_id = $res['data']['id'];
+            } elseif ($item['type'] == 'thumb') {
+                $data = $res['data']['path'];
             }
             $result[] = $res['result'];
         }
@@ -114,7 +116,7 @@ class AttachmentHelper
         return [
             'result' => $flag,
             'message' => $flag ? __('messages.success') : __('messages.fail'),
-            'data' => null
+            'data' => $data
         ];
     }
 

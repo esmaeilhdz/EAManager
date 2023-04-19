@@ -104,7 +104,10 @@ class AttachmentRepository implements Interfaces\iAttachment
 
             return [
                 'result' => $attachment->save(),
-                'data' => $attachment->id ?? null
+                'data' => [
+                    'id' => $attachment->code ?? null,
+                    'path' => env('APP_URL') . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . $attachment->path . DIRECTORY_SEPARATOR . $attachment->file_name . '.' . $attachment->ext,
+                ]
             ];
         } catch (\Exception $e) {
             throw new ApiException($e);
