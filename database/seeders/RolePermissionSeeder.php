@@ -56,8 +56,8 @@ class RolePermissionSeeder extends Seeder
             'sewing' => 'دوخت',
             'user' => 'کاربر',
             'customer' => 'مشتری',
-            'report' => 'گزارش',
-            'role' => 'نقش',*/
+            'report' => 'گزارش',*/
+            'role' => 'نقش',
             'enumeration' => 'مقادیر',
         ];
 
