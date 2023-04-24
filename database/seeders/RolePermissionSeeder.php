@@ -30,7 +30,7 @@ class RolePermissionSeeder extends Seeder
         $role = Role::find(1);
 
         $resources = [
-            /*'person' => 'اشخاص',
+            'person' => 'اشخاص',
             'accessory' => 'خرج کار',
             'account' => 'حساب ها',
             'address' => 'آدرس',
@@ -56,7 +56,7 @@ class RolePermissionSeeder extends Seeder
             'sewing' => 'دوخت',
             'user' => 'کاربر',
             'customer' => 'مشتری',
-            'report' => 'گزارش',*/
+            'report' => 'گزارش',
             'role' => 'نقش',
             'enumeration' => 'مقادیر',
         ];
