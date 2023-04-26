@@ -7,6 +7,7 @@ use App\Http\Requests\Company\CompanyAddRequest;
 use App\Http\Requests\Company\CompanyComboRequest;
 use App\Http\Requests\Company\CompanyDetailRequest;
 use App\Http\Requests\Company\CompanyEditRequest;
+use App\Http\Requests\Company\CompanyEditStatusRequest;
 use App\Http\Requests\Company\CompanyListRequest;
 use App\Traits\Common;
 use Illuminate\Http\JsonResponse;
@@ -63,6 +64,19 @@ class CompanyController extends Controller
         $this->cleanInput($inputs, array_keys($request->rules()));
 
         $result = CompanyFacade::editCompany($inputs);
+        return $this->api_response->response($result['result'], $result['message'], $result['data']);
+    }
+
+    /**
+     * سرویس ویرایش وضعیت شرکت
+     * @param CompanyEditStatusRequest $request
+     * @return JsonResponse
+     */
+    public function editCompanyStatus(CompanyEditStatusRequest $request): JsonResponse
+    {
+        $inputs = $request->validated();
+
+        $result = CompanyFacade::editCompanyStatus($inputs);
         return $this->api_response->response($result['result'], $result['message'], $result['data']);
     }
 

@@ -12,6 +12,8 @@ interface iCompany
 
     public function editCompany($company, $inputs);
 
+    public function editCompanyStatus($company, $inputs);
+
     public function addCompany($inputs, $user);
 
     public function deleteCompany($company);

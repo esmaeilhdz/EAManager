@@ -141,6 +141,30 @@ class CompanyHelper
     }
 
     /**
+     * سرویس ویرایش وضعیت شرکت
+     * @param $inputs
+     * @return array
+     */
+    public function editCompanyStatus($inputs): array
+    {
+        $company = $this->company_interface->getCompanyByCode($inputs['code'], ['id', 'is_enable']);
+        if (is_null($company)) {
+            return [
+                'result' => false,
+                'message' => __('messages.record_not_found'),
+                'data' => null
+            ];
+        }
+
+        $result = $this->company_interface->editCompanyStatus($company, $inputs);
+        return [
+            'result' => (bool)$result,
+            'message' => $result ? __('messages.success') : __('messages.fail'),
+            'data' => null
+        ];
+    }
+
+    /**
      * سرویس افزودن شرکت
      * @param $inputs
      * @return array

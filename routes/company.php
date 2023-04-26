@@ -11,6 +11,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'auth:sanctum'], function () {
     });
     Route::group(['middleware' => ['permission:admin-company|edit-company']], function () {
         Route::put('company/{code}', [CompanyController::class, 'editCompany']);
+        Route::patch('company/{code}', [CompanyController::class, 'editCompanyStatus']);
     });
     Route::group(['middleware' => ['permission:admin-company']], function () {
         Route::post('company', [CompanyController::class, 'addCompany']);

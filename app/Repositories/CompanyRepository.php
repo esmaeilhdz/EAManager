@@ -115,6 +115,17 @@ class CompanyRepository implements Interfaces\iCompany
         }
     }
 
+    public function editCompanyStatus($company, $inputs)
+    {
+        try {
+            $company->is_enable = $inputs['is_enable'];
+
+            return $company->save();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
     /**
      * افزودن شرکت
      * @param $inputs
