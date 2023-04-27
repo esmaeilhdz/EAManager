@@ -6,6 +6,8 @@ interface iRole
 {
     public function getRoles($inputs, $user);
 
+    public function getRoleTree($inputs, $user);
+
     public function getRoleByCode($code, $select = [], $relation = []);
 
     public function editRole($role, $inputs);

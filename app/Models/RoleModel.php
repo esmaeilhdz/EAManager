@@ -36,6 +36,13 @@ class RoleModel extends Role
         });
     }
 
+
+
+    public function children()
+    {
+        return $this->hasMany(RoleModel::class, 'parent_id', 'id');
+    }
+
     public function creator()
     {
         return $this->hasOne(User::class, 'id', 'created_by');

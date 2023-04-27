@@ -7,6 +7,7 @@ use App\Http\Requests\Role\RoleAddRequest;
 use App\Http\Requests\Role\RoleDetailRequest;
 use App\Http\Requests\Role\RoleEditRequest;
 use App\Http\Requests\Role\RoleListRequest;
+use App\Http\Requests\Role\RoleTreeRequest;
 use App\Traits\Common;
 use Illuminate\Http\JsonResponse;
 
@@ -25,6 +26,19 @@ class RoleController extends Controller
         $this->cleanInput($inputs, array_keys($request->rules()));
 
         $result = RoleFacade::getRoles($inputs);
+        return $this->api_response->response($result['result'], $result['message'], $result['data']);
+    }
+
+    /**
+     * سرویس نقش ها برای نمایش در درخت
+     * @param RoleTreeRequest $request
+     * @return JsonResponse
+     */
+    public function getRolesTree(RoleTreeRequest $request): JsonResponse
+    {
+        $inputs = $request->validated();
+
+        $result = RoleFacade::getRolesTree($inputs);
         return $this->api_response->response($result['result'], $result['message'], $result['data']);
     }
 

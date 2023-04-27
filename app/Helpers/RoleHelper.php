@@ -59,6 +59,40 @@ class RoleHelper
     }
 
     /**
+     * سرویس دیتای نقش ها برای نمایش درختی
+     * @param $inputs
+     * @return array
+     */
+    public function getRolesTree($inputs): array
+    {
+        $user = Auth::user();
+
+        $roles = $this->role_interface->getRoleTree($inputs, $user);
+
+        $roles->transform(function ($item) {
+            $children = null;
+            foreach ($item->children as $child) {
+                $children[] = [
+                    'code' => $child->code,
+                    'caption' => $child->caption,
+                ];
+            }
+            return [
+                'code' => $item->code,
+                'caption' => $item->caption,
+                'children' => $children
+            ];
+        });
+
+        return [
+            'result' => true,
+            'message' => __('messages.success'),
+            'data' => $roles
+        ];
+
+    }
+
+    /**
      * جزئیات نقش
      * @param $code
      * @return array

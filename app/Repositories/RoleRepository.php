@@ -6,6 +6,7 @@ use App\Exceptions\ApiException;
 use App\Models\RoleModel;
 use App\Traits\Common;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 use Spatie\Permission\Models\Role;
 
 class RoleRepository implements Interfaces\iRole
@@ -37,6 +38,37 @@ class RoleRepository implements Interfaces\iRole
         } catch (\Exception $e) {
             throw new ApiException($e);
         }
+    }
+
+    /**
+     * دیتای نقش ها برای نمایش درختی
+     * @param $inputs
+     * @param $user
+     * @return Collection|array
+     */
+    public function getRoleTree($inputs, $user): Collection|array
+    {
+        $roles = RoleModel::with([
+            'children' => function ($q) {
+                $q->select(['parent_id', 'code', 'name', 'caption'])->withoutGlobalScope('accessRole');
+            }
+        ])
+            ->select([
+                'id',
+                'parent_id',
+                'code',
+                'name',
+                'caption'
+            ]);
+
+        if (isset($inputs['parent_role_code'])) {
+            $roles = $roles->where('code', $inputs['parent_role_code']);
+        } else {
+            $user_role = $user->roles[0];
+            $roles = $roles->where('code', $user_role->code);
+        }
+
+        return $roles->withoutGlobalScope('accessRole')->get();
     }
 
     public function getRoleByCode($code, $select = [], $relation = [])
