@@ -14,7 +14,7 @@ class AddColumnRolesTable extends Migration
     public function up()
     {
         Schema::table('roles', function (Blueprint $table) {
-//            $table->unsignedBigInteger('parent_id')->after('id')->nullable();
+            $table->unsignedBigInteger('parent_id')->after('id')->nullable();
             $table->string('code', 32)->after('parent_id');
             $table->string('caption', 150)->after('name');
             $table->unsignedBigInteger('created_by')->after('guard_name');
