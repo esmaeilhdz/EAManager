@@ -49,7 +49,7 @@ class RoleController extends Controller
      */
     public function getRoleDetail(RoleDetailRequest $request): JsonResponse
     {
-        // test pull requests
+        // test1
         $inputs = $request->validated();
         $this->cleanInput($inputs, array_keys($request->rules()));
 
