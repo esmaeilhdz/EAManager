@@ -92,7 +92,7 @@ class UserHelper
     {
         $user = Auth::user();
 
-        $select = ['id', 'name', 'family', 'score'];
+        $select = ['id', 'code', 'name', 'family', 'score'];
         $relation = [
             'attachment' => function ($q) {
                 $q->select(['model_type', 'model_id', 'path', 'file_name', 'ext'])
@@ -109,6 +109,7 @@ class UserHelper
         }
 
         $result = [
+            'code' => $person->code,
             'name' => $person->name,
             'family' => $person->family,
             'score' => $person->score,
