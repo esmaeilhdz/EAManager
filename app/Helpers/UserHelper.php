@@ -103,7 +103,7 @@ class UserHelper
         $person = $this->person_interface->getPersonById($user->person_id, $select, $relation);
 
         if (count($person->attachment)) {
-            $avatar_address = env('APP_URL') . DIRECTORY_SEPARATOR . 'storage' . $person->attachment[0]->path . DIRECTORY_SEPARATOR . $person->attachment[0]->file_name . '.' . $person->attachment[0]->ext;
+            $avatar_address = env('APP_URL') . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . $person->attachment[0]->path . DIRECTORY_SEPARATOR . $person->attachment[0]->file_name . '.' . $person->attachment[0]->ext;
         } else {
             $avatar_address = env('APP_URL') . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'person_no_pic.png';
         }
