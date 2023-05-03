@@ -66,6 +66,8 @@ class AuthController extends Controller
             return $this->api_response->response(400, $this->structureValidationMessage($validator->getMessageBag()), null);
         }
 
+        $this->cleanInput($inputs, ['captcha', 'captcha_key', 'username', 'password']);
+
         $captcha = new Captcha();
         $result = $captcha->checkCaptcha($inputs['captcha'], $inputs['captcha_key']);
         if (!$result['result']) {
