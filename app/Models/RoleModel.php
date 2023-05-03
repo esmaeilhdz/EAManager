@@ -13,7 +13,7 @@ class RoleModel extends Role
 {
     use RoleTrait;
 
-    protected $hidden = ['id', 'updated_at'];
+    protected $hidden = ['updated_at'];
 
     protected function createdAt(): Attribute
     {
@@ -37,6 +37,11 @@ class RoleModel extends Role
     }
 
 
+
+    public function parent()
+    {
+        return $this->hasOne(RoleModel::class, 'id', 'parent_id');
+    }
 
     public function children()
     {

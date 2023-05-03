@@ -568,10 +568,10 @@ trait Common
      * این تابع یک node را درون درخت پیدا می کند و آن node و فرزندان آن را برمی گرداند
      * @param array $elements
      * @param $find_id
-     * @param $resource
+     * @param array $resource
      * @return mixed
      */
-    public function findInTree(array $elements, $find_id, &$resource): mixed
+    public function findInTree(array $elements, $find_id, array &$resource = []): mixed
     {
 
         foreach ($elements as $element) {
@@ -584,7 +584,7 @@ trait Common
             }
 
             if (isset($element['children'])) {
-                $this->find_in_tree($element['children'], $find_id, $resource);
+                $this->findInTree($element['children'], $find_id, $resource);
             }
         }
 
@@ -594,10 +594,10 @@ trait Common
     /**
      * این تابع تمام node های یک درخت را به یک آرایه یک سطحی تبدیل می کند
      * @param array $elements
-     * @param $resource
+     * @param array $resource
      * @return mixed
      */
-    public function convertTreeToArray(array $elements, &$resource): mixed
+    public function convertTreeToArray(array $elements, array &$resource = []): mixed
     {
 
         foreach ($elements as $element) {

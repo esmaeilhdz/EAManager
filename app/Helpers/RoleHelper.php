@@ -99,8 +99,11 @@ class RoleHelper
      */
     public function getRoleDetail($code): array
     {
-        $select = ['name', 'caption'];
-        $role = $this->role_interface->getRoleByCode($code, $select);
+        $select = ['parent_id', 'caption'];
+        $relation = [
+            'parent:id,code,caption'
+        ];
+        $role = $this->role_interface->getRoleByCode($code, $select, $relation);
         if (is_null($role)) {
             return [
                 'result' => false,
@@ -112,7 +115,13 @@ class RoleHelper
         return [
             'result' => true,
             'message' => __('messages.success'),
-            'data' => $role
+            'data' => [
+                'caption' => $role->caption,
+                'parent' => [
+                    'code' => $role->parent->code,
+                    'caption' => $role->parent->caption
+                ]
+            ]
         ];
     }
 
@@ -147,6 +156,18 @@ class RoleHelper
      */
     public function addRole($inputs): array
     {
+        if (isset($inputs['parent_role_code'])) {
+            $parent_role = RoleModel::select('id')->whereCode($inputs['parent_role_code'])->first();
+            if (is_null($parent_role)) {
+                return [
+                    'result' => false,
+                    'message' => __('messages.parent_role_not_found'),
+                    'data' => null
+                ];
+            }
+            $inputs['parent_id'] = $parent_role->id;
+        }
+
         $user = Auth::user();
         $result = $this->role_interface->addRole($inputs, $user);
         return [
@@ -158,9 +179,10 @@ class RoleHelper
 
     public function getRolesByUser($user)
     {
+        $resource = $resource2 = [];
         $user_role_name = $user->getRoleNames()[0];
         $user_role = RoleModel::select(['id', 'parent_id'])->whereName($user_role_name)->withoutGlobalScopes()->first();
-        $roles_array = RoleModel::query()->select(['id', 'parent_id'])->withoutGlobalScopes()->get()->all();
+        $roles_array = RoleModel::query()->select(['id', 'parent_id'])->withoutGlobalScopes()->get()->toArray();
 
         $parent_id = $user_role->parent_id;
         if (is_null($user_role->parent_id)) {

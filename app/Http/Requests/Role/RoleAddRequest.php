@@ -24,6 +24,7 @@ class RoleAddRequest extends FormRequest
     public function rules()
     {
         return [
+            'parent_role_code' => 'nullable|string|size:32',
             'caption' => 'required|string',
             'guard_name' => 'required|string|in:web,api'
         ];

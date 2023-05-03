@@ -107,6 +107,7 @@ class RoleRepository implements Interfaces\iRole
         try {
             $role = new RoleModel();
 
+            $role->parent_id = $inputs['parent_id'] ?? null;
             $role->code = $this->randomString();
             $role->name = $this->FaToEn($inputs['caption']);
             $role->caption = $inputs['caption'];
