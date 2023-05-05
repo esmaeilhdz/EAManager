@@ -20,6 +20,17 @@ class RoleHelper
         $this->role_interface = $role_interface;
     }
 
+    private function assignPermissionToRole(array $permissions, RoleModel $role): bool
+    {
+        $result = $role->syncPermissions($permissions);
+
+        if ($result instanceof RoleModel) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * لیست نقش ها
      * @param $inputs
@@ -156,8 +167,9 @@ class RoleHelper
      */
     public function addRole($inputs): array
     {
+        $parent_role_permissions = [];
         if (isset($inputs['parent_role_code'])) {
-            $parent_role = RoleModel::select('id')->whereCode($inputs['parent_role_code'])->first();
+            $parent_role = RoleModel::whereCode($inputs['parent_role_code'])->first();
             if (is_null($parent_role)) {
                 return [
                     'result' => false,
@@ -166,14 +178,28 @@ class RoleHelper
                 ];
             }
             $inputs['parent_id'] = $parent_role->id;
+            $parent_role_permissions = $parent_role->permissions->toArray();
+            $parent_role_permissions = array_column($parent_role_permissions, 'name');
         }
 
         $user = Auth::user();
-        $result = $this->role_interface->addRole($inputs, $user);
+        DB::beginTransaction();
+        $add_role_result = $this->role_interface->addRole($inputs, $user);
+        $result[] = $add_role_result['result'];
+        $result[] = $this->assignPermissionToRole($parent_role_permissions, $add_role_result['data']);
+
+        if (!in_array(false, $result)) {
+            $flag = true;
+            DB::commit();
+        } else {
+            $flag = false;
+            DB::rollBack();
+        }
+
         return [
-            'result' => $result['result'],
-            'message' => $result['result'] ? __('messages.success') : __('messages.fail'),
-            'data' => $result['data']
+            'result' => $flag,
+            'message' => $flag ? __('messages.success') : __('messages.fail'),
+            'data' => $add_role_result['data']->code
         ];
     }
 

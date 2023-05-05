@@ -118,7 +118,7 @@ class RoleRepository implements Interfaces\iRole
 
             return [
                 'result' => $result,
-                'data' => $result ? $role->code : null
+                'data' => $result ? $role : null
             ];
         } catch (\Exception $e) {
             throw new ApiException($e);
