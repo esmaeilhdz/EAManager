@@ -128,7 +128,7 @@ class RoleHelper
             'message' => __('messages.success'),
             'data' => [
                 'caption' => $role->caption,
-                'parent' => [
+                'parent' => is_null($role->parent) ? null : [
                     'code' => $role->parent->code,
                     'caption' => $role->parent->caption
                 ]
