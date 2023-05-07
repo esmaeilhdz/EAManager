@@ -86,6 +86,7 @@ class RoleHelper
                 $children[] = [
                     'code' => $child->code,
                     'caption' => $child->caption,
+                    'has_child' => (bool) count($child->children)
                 ];
             }
             return [

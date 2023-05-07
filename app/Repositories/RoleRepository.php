@@ -50,8 +50,9 @@ class RoleRepository implements Interfaces\iRole
     {
         $roles = RoleModel::with([
             'children' => function ($q) {
-                $q->select(['parent_id', 'code', 'name', 'caption'])->withoutGlobalScope('accessRole');
-            }
+                $q->select(['id', 'parent_id', 'code', 'name', 'caption'])->withoutGlobalScope('accessRole');
+            },
+            'children.children:id,parent_id'
         ])
             ->select([
                 'id',
