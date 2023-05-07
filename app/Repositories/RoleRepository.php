@@ -50,8 +50,9 @@ class RoleRepository implements Interfaces\iRole
     {
         $roles = RoleModel::with([
             'children' => function ($q) {
-                $q->select(['parent_id', 'code', 'name', 'caption'])->withoutGlobalScope('accessRole');
-            }
+                $q->select(['id', 'parent_id', 'code', 'name', 'caption'])->withoutGlobalScope('accessRole');
+            },
+            'children.children:id,parent_id'
         ])
             ->select([
                 'id',
@@ -107,6 +108,7 @@ class RoleRepository implements Interfaces\iRole
         try {
             $role = new RoleModel();
 
+            $role->parent_id = $inputs['parent_id'] ?? null;
             $role->code = $this->randomString();
             $role->name = $this->FaToEn($inputs['caption']);
             $role->caption = $inputs['caption'];
@@ -117,7 +119,7 @@ class RoleRepository implements Interfaces\iRole
 
             return [
                 'result' => $result,
-                'data' => $result ? $role->code : null
+                'data' => $result ? $role : null
             ];
         } catch (\Exception $e) {
             throw new ApiException($e);

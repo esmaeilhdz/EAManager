@@ -66,6 +66,8 @@ class AuthController extends Controller
             return $this->api_response->response(400, $this->structureValidationMessage($validator->getMessageBag()), null);
         }
 
+        $this->cleanInput($inputs, ['captcha', 'captcha_key', 'username', 'password']);
+
         $captcha = new Captcha();
         $result = $captcha->checkCaptcha($inputs['captcha'], $inputs['captcha_key']);
         if (!$result['result']) {
@@ -73,8 +75,8 @@ class AuthController extends Controller
         }
 
         try {
-            if (!Auth::attempt(['mobile' => $request['username'], 'password' => $request['password']])) {
-                if (!Auth::attempt(['email' => $request['username'], 'password' => $request['password']])) {
+            if (!Auth::attempt(['mobile' => $inputs['username'], 'password' => $inputs['password']])) {
+                if (!Auth::attempt(['email' => $inputs['username'], 'password' => $inputs['password']])) {
                     return $this->api_response->response(401, __('messages.username_password_wrong'), null);
                 }
             }

@@ -20,6 +20,17 @@ class RoleHelper
         $this->role_interface = $role_interface;
     }
 
+    private function assignPermissionToRole(array $permissions, RoleModel $role): bool
+    {
+        $result = $role->syncPermissions($permissions);
+
+        if ($result instanceof RoleModel) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * لیست نقش ها
      * @param $inputs
@@ -75,6 +86,7 @@ class RoleHelper
                 $children[] = [
                     'code' => $child->code,
                     'caption' => $child->caption,
+                    'has_child' => (bool) count($child->children)
                 ];
             }
             return [
@@ -99,8 +111,11 @@ class RoleHelper
      */
     public function getRoleDetail($code): array
     {
-        $select = ['name', 'caption'];
-        $role = $this->role_interface->getRoleByCode($code, $select);
+        $select = ['parent_id', 'caption'];
+        $relation = [
+            'parent:id,code,caption'
+        ];
+        $role = $this->role_interface->getRoleByCode($code, $select, $relation);
         if (is_null($role)) {
             return [
                 'result' => false,
@@ -112,7 +127,13 @@ class RoleHelper
         return [
             'result' => true,
             'message' => __('messages.success'),
-            'data' => $role
+            'data' => [
+                'caption' => $role->caption,
+                'parent' => is_null($role->parent) ? null : [
+                    'code' => $role->parent->code,
+                    'caption' => $role->parent->caption
+                ]
+            ]
         ];
     }
 
@@ -147,20 +168,48 @@ class RoleHelper
      */
     public function addRole($inputs): array
     {
+        $parent_role_permissions = [];
+        if (isset($inputs['parent_role_code'])) {
+            $parent_role = RoleModel::whereCode($inputs['parent_role_code'])->first();
+            if (is_null($parent_role)) {
+                return [
+                    'result' => false,
+                    'message' => __('messages.parent_role_not_found'),
+                    'data' => null
+                ];
+            }
+            $inputs['parent_id'] = $parent_role->id;
+            $parent_role_permissions = $parent_role->permissions->toArray();
+            $parent_role_permissions = array_column($parent_role_permissions, 'name');
+        }
+
         $user = Auth::user();
-        $result = $this->role_interface->addRole($inputs, $user);
+        DB::beginTransaction();
+        $add_role_result = $this->role_interface->addRole($inputs, $user);
+        $result[] = $add_role_result['result'];
+        $result[] = $this->assignPermissionToRole($parent_role_permissions, $add_role_result['data']);
+
+        if (!in_array(false, $result)) {
+            $flag = true;
+            DB::commit();
+        } else {
+            $flag = false;
+            DB::rollBack();
+        }
+
         return [
-            'result' => $result['result'],
-            'message' => $result['result'] ? __('messages.success') : __('messages.fail'),
-            'data' => $result['data']
+            'result' => $flag,
+            'message' => $flag ? __('messages.success') : __('messages.fail'),
+            'data' => $add_role_result['data']->code
         ];
     }
 
     public function getRolesByUser($user)
     {
+        $resource = $resource2 = [];
         $user_role_name = $user->getRoleNames()[0];
         $user_role = RoleModel::select(['id', 'parent_id'])->whereName($user_role_name)->withoutGlobalScopes()->first();
-        $roles_array = RoleModel::query()->select(['id', 'parent_id'])->withoutGlobalScopes()->get()->all();
+        $roles_array = RoleModel::query()->select(['id', 'parent_id'])->withoutGlobalScopes()->get()->toArray();
 
         $parent_id = $user_role->parent_id;
         if (is_null($user_role->parent_id)) {
