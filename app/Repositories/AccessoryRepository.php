@@ -45,23 +45,25 @@ class AccessoryRepository implements Interfaces\iAccessory
     /**
      * جزئیات خرج کار
      * @param $id
+     * @param array $select
+     * @param array $relation
      * @return Builder|Builder[]|Collection|Model|null
      * @throws ApiException
      */
-    public function getAccessoryById($id): Model|Collection|Builder|array|null
+    public function getAccessoryById($id, $select = [], $relation = []): Model|Collection|Builder|array|null
     {
         try {
-            return Accessory::with([
-                'warehouse:accessory_id,count',
-                'accessoryBuys:accessory_id,place_id,count,created_at',
-                'accessoryBuys.place:id,name'
-            ])
-                ->select([
-                    'id',
-                    'name',
-                    'is_enable'
-                ])
-                ->find($id);
+            $accessory = Accessory::where('id', $id);
+
+            if (count($select)) {
+                $accessory = $accessory->select($select);
+            }
+
+            if (count($relation)) {
+                $accessory = $accessory->with($relation);
+            }
+
+            return $accessory->first();
         } catch (\Exception $e) {
             throw new ApiException($e);
         }
@@ -124,6 +126,17 @@ class AccessoryRepository implements Interfaces\iAccessory
     {
         try {
             return Accessory::where('id', $id)->delete();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
+    public function changeStatusAccessory($accessory, $inputs)
+    {
+        try {
+            $accessory->is_enable = $inputs['is_enable'];
+
+            return $accessory->save();
         } catch (\Exception $e) {
             throw new ApiException($e);
         }

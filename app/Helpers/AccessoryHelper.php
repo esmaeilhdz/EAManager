@@ -63,7 +63,13 @@ class AccessoryHelper
      */
     public function getAccessoryDetail($id): array
     {
-        $accessory = $this->accessory_interface->getAccessoryById($id);
+        $select = ['id', 'name', 'is_enable'];
+        $relation = [
+            'warehouse:accessory_id,count',
+            'accessoryBuys:accessory_id,place_id,count,created_at',
+            'accessoryBuys.place:id,name'
+        ];
+        $accessory = $this->accessory_interface->getAccessoryById($id, $select, $relation);
         if (is_null($accessory)) {
             return [
                 'result' => false,
@@ -96,6 +102,31 @@ class AccessoryHelper
         }
 
         $result = $this->accessory_interface->editAccessory($inputs);
+        return [
+            'result' => (bool) $result,
+            'message' => $result ? __('messages.success') : __('messages.fail'),
+            'data' => null
+        ];
+    }
+
+    /**
+     * ویرایش وضعیت خرج کار
+     * @param $inputs
+     * @return array
+     */
+    public function changeStatusAccessory($inputs): array
+    {
+        $select = ['id', 'is_enable'];
+        $accessory = $this->accessory_interface->getAccessoryById($inputs['id'], $select);
+        if (is_null($accessory)) {
+            return [
+                'result' => false,
+                'message' => __('messages.record_not_found'),
+                'data' => null
+            ];
+        }
+
+        $result = $this->accessory_interface->changeStatusAccessory($accessory, $inputs);
         return [
             'result' => (bool) $result,
             'message' => $result ? __('messages.success') : __('messages.fail'),

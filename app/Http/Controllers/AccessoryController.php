@@ -7,6 +7,7 @@ use App\Http\Requests\Accessory\AccessoryAddRequest;
 use App\Http\Requests\Accessory\AccessoryDetailRequest;
 use App\Http\Requests\Accessory\AccessoryEditRequest;
 use App\Http\Requests\Accessory\AccessoryListRequest;
+use App\Http\Requests\AccessoryEditStatusRequest;
 use App\Traits\Common;
 use Illuminate\Http\JsonResponse;
 
@@ -53,6 +54,19 @@ class AccessoryController extends Controller
         $this->cleanInput($inputs, array_keys($request->rules()));
 
         $result = AccessoryFacade::editAccessory($inputs);
+        return $this->api_response->response($result['result'], $result['message'], $result['data']);
+    }
+
+    /**
+     * سرویس تغییر وضعیت خرج کار
+     * @param AccessoryEditStatusRequest $request
+     * @return JsonResponse
+     */
+    public function changeStatusAccessory(AccessoryEditStatusRequest $request): JsonResponse
+    {
+        $inputs = $request->validated();
+
+        $result = AccessoryFacade::changeStatusAccessory($inputs);
         return $this->api_response->response($result['result'], $result['message'], $result['data']);
     }
 
