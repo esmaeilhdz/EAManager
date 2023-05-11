@@ -42,56 +42,25 @@ class PermissionHelper
 
         $permissions = $this->permission_interface->getRolePermissions($role->id);
 
-        $permissions->transform(function ($item) {
-            if ($item->permission_name == "admin-$item->name") {
-                $admin_permission_id = $item->permission_id;
-                $admin_selected = true;
-                $edit_permission_id = $item->permission_id + 1;
-                $edit_selected = false;
-                $view_permission_id = $item->permission_id + 2;
-                $view_selected = false;
-            } elseif ($item->permission_name == "edit-$item->name") {
-                $admin_permission_id = $item->permission_id - 1;
-                $admin_selected = false;
-                $edit_permission_id = $item->permission_id;
-                $edit_selected = true;
-                $view_permission_id = $item->permission_id + 1;
-                $view_selected = false;
-            } else {
-                $admin_permission_id = $item->permission_id - 2;
-                $admin_selected = false;
-                $edit_permission_id = $item->permission_id - 1;
-                $edit_selected = false;
-                $view_permission_id = $item->permission_id;
-                $view_selected = true;
-            }
-
-            return [
-                'permission_group' => [
-                    'caption' => $item->caption,
-                    'name' => $item->name,
-                    'permissions' => [
-                        'admin' => [
-                            'id' => $admin_permission_id,
-                            'selected' => $admin_selected
-                        ],
-                        'edit' => [
-                            'id' => $edit_permission_id,
-                            'selected' => $edit_selected
-                        ],
-                        'view' => [
-                            'id' => $view_permission_id,
-                            'selected' => $view_selected
-                        ]
-                    ]
-                ]
+        $return = null;
+        foreach ($permissions as $permission) {
+            $return[$permission->id]['resource'] = [
+                'caption' => $permission->caption,
+                'name' => $permission->name,
             ];
-        });
+
+            $permission_type = explode('-', $permission->permission_name)[0];
+
+            $return[$permission->id]['permissions'][$permission_type] = [
+                'id' => $permission->permission_id,
+                'selected' => (bool) !is_null($permission->role_id)
+            ];
+        }
 
         return [
             'result' => true,
             'message' => __('messages.success'),
-            'data' => $permissions
+            'data' => array_values($return)
         ];
 
     }
