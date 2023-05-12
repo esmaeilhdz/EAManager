@@ -79,6 +79,23 @@ class PlaceRepository implements Interfaces\iPlace
         }
     }
 
+    public function getPlaceCombo($inputs, $user)
+    {
+        try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
+            return Place::select([
+                'id',
+                'name',
+            ])
+                ->where('name', 'like', '%'.$inputs['search_txt'].'%')
+                ->where('company_id', $company_id)
+                ->limit(50)
+                ->get();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
     public function editPlace($inputs)
     {
         try {

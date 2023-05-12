@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Facades\PlaceFacade;
 use App\Http\Requests\Place\PlaceAddRequest;
+use App\Http\Requests\Place\PlaceComboRequest;
 use App\Http\Requests\Place\PlaceDetailRequest;
 use App\Http\Requests\Place\PlaceEditRequest;
 use App\Http\Requests\Place\PlaceListRequest;
@@ -39,6 +40,20 @@ class PlaceController extends Controller
         $this->cleanInput($inputs, array_keys($request->rules()));
 
         $result = PlaceFacade::getPlaceDetail($inputs['id']);
+        return $this->api_response->response($result['result'], $result['message'], $result['data']);
+    }
+
+    /**
+     * سرویس کامبوی مکان
+     * @param PlaceComboRequest $request
+     * @return JsonResponse
+     */
+    public function getPlaceCombo(PlaceComboRequest $request): JsonResponse
+    {
+        $inputs = $request->validated();
+        $this->cleanInput($inputs, array_keys($request->rules()));
+
+        $result = PlaceFacade::getPlaceCombo($inputs);
         return $this->api_response->response($result['result'], $result['message'], $result['data']);
     }
 

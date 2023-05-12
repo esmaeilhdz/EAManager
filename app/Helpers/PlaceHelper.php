@@ -91,6 +91,30 @@ class PlaceHelper
     }
 
     /**
+     * کامبوی مکان
+     * @param $inputs
+     * @return array
+     */
+    public function getPlaceCombo($inputs): array
+    {
+        $user = Auth::user();
+        $places = $this->place_interface->getPlaceCombo($inputs, $user);
+
+        $places->transform(function ($item) {
+            return [
+                'id' => $item->id,
+                'name' => $item->name
+            ];
+        });
+
+        return [
+            'result' => true,
+            'message' => __('messages.success'),
+            'data' => $places
+        ];
+    }
+
+    /**
      * ویرایش مکان
      * @param $inputs
      * @return array

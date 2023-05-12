@@ -7,6 +7,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'auth:sanctum'], function () {
     Route::group(['middleware' => ['permission:admin-place|edit-place|view-place']], function () {
         Route::get('place', [PlaceController::class, 'getPlaces']);
         Route::get('place/{id}', [PlaceController::class, 'getPlaceDetail']);
+        Route::get('place_combo', [PlaceController::class, 'getPlaceCombo']);
     });
     Route::group(['middleware' => ['permission:admin-place|edit-place']], function () {
         Route::put('place/{id}', [PlaceController::class, 'editPlace']);
