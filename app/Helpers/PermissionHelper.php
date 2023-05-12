@@ -73,7 +73,8 @@ class PermissionHelper
 
                     $permission_item[$permission_type] = [
                         'id' => $permission['id'],
-                        'selected' => $selected
+                        'selected' => $selected,
+                        'is_show' => true
                     ];
                     $return[$permission_group['id']]['permissions'] = $permission_item;
                 }
@@ -88,7 +89,8 @@ class PermissionHelper
                     $permission_type = explode('-', $permission['name'])[0];
                     $permission_item[$permission_type] = [
                         'id' => $permission['id'],
-                        'selected' => false
+                        'selected' => false,
+                        'is_show' => true
                     ];
                     $return[$permission_group['id']]['permissions'] = $permission_item;
                 }
