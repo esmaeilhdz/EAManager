@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Facades\RoleFacade;
 use App\Repositories\Interfaces\iPermission;
 use App\Repositories\Interfaces\iPermissionGroup;
 use App\Repositories\Interfaces\iRole;
@@ -76,8 +77,6 @@ class PermissionHelper
                     ];
                     $return[$permission_group['id']]['permissions'] = $permission_item;
                 }
-
-
             } else {
                 $permission_item = null;
                 $return[$permission_group['id']] = [
@@ -106,7 +105,7 @@ class PermissionHelper
 
     public function editRolePermissions($inputs): array
     {
-        $role = $this->role_interface->getRoleByCode($inputs['code'], ['id']);
+        $role = $this->role_interface->getRoleByCode($inputs['code'], ['id', 'parent_id']);
         if (is_null($role)) {
             return [
                 'result' => false,
@@ -124,12 +123,17 @@ class PermissionHelper
             ];
         }
 
-        list($resource, $permission_type) = explode('-', $permission->name);
+        list($permission_type, $resource) = explode('-', $permission->name);
 
         DB::beginTransaction();
         // delete permission
         if ($inputs['status'] == 0) {
             $result[] = $this->permission_interface->deleteRolePermission($role->id, $permission->id);
+            // delete this permission from all children of this role
+            $children_roles = RoleFacade::getAllChildrenRoles($role);
+            foreach ($children_roles as $children_role_id) {
+                $result[] = $this->permission_interface->deleteRolePermission($children_role_id, $permission->id);
+            }
         } elseif ($inputs['status'] == 1) {
             // edit permission
             if ($permission_type == 'admin') {
@@ -151,7 +155,10 @@ class PermissionHelper
                     $permission->id,
                 ];
             }
-            $result[] = $this->permission_interface->deleteRolePermissions($role->id, $permission_ids);
+            $res = $this->permission_interface->deleteRolePermissions($role->id, $permission_ids);
+            if ($res > 0) {
+                $result[] = $res;
+            }
             $result[] = $this->permission_interface->addRolePermission($role->id, $permission->id);
         } else {
             // add permission
