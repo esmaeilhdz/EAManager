@@ -58,7 +58,9 @@ class ClothBuyHelper
 
         $clothes->transform(function ($item) {
             return [
-                'place' => $item->place->name,
+                'id' => $item->id,
+                'seller_place' => $item->seller_place->name,
+                'warehouse_place' => $item->warehouse_place->name,
                 'metre' => $item->metre,
                 'roll_count' => $item->roll_count,
                 'receive_date' => $item->receive_date,
