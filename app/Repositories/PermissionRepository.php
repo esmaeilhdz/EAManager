@@ -49,14 +49,11 @@ class PermissionRepository implements Interfaces\iPermission
                 'permission_groups.caption',
                 'permission_groups.name',
                 'rhp.permission_id',
-                'rhp.role_id',
-                'p.id as permission_id',
                 'p.name as permission_name'
             ])
                 ->join('permissions as p', 'permission_groups.id', '=', 'p.permission_group_id')
-                ->leftjoin('role_has_permissions as rhp', 'p.id', '=', 'rhp.permission_id')
+                ->join('role_has_permissions as rhp', 'p.id', '=', 'rhp.permission_id')
                 ->where('rhp.role_id', $role_id)
-                ->orWhereNull('rhp.role_id')
                 ->get();
         } catch (\Exception $e) {
             throw new ApiException($e);

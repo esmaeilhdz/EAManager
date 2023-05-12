@@ -50,6 +50,7 @@ use App\Repositories\Interfaces\iMenu;
 use App\Repositories\Interfaces\iNotif;
 use App\Repositories\Interfaces\iPayment;
 use App\Repositories\Interfaces\iPermission;
+use App\Repositories\Interfaces\iPermissionGroup;
 use App\Repositories\Interfaces\iPersonCompany;
 use App\Repositories\Interfaces\iReport;
 use App\Repositories\Interfaces\iRole;
@@ -69,6 +70,7 @@ use App\Repositories\InvoiceRepository;
 use App\Repositories\MenuRepository;
 use App\Repositories\NotifRepository;
 use App\Repositories\PaymentRepository;
+use App\Repositories\PermissionGroupRepository;
 use App\Repositories\PermissionRepository;
 use App\Repositories\PersonCompanyRepository;
 use App\Repositories\ReportRepository;
@@ -136,6 +138,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(iPermission::class, PermissionRepository::class);
         $this->app->bind(iPersonCompany::class, PersonCompanyRepository::class);
         $this->app->bind(iEnumeration::class, EnumerationRepository::class);
+        $this->app->bind(iPermissionGroup::class, PermissionGroupRepository::class);
     }
 
     /**

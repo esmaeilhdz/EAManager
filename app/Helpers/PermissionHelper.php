@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Repositories\Interfaces\iPermission;
+use App\Repositories\Interfaces\iPermissionGroup;
 use App\Repositories\Interfaces\iRole;
 use App\Traits\Common;
 use Illuminate\Support\Facades\DB;
@@ -14,14 +15,17 @@ class PermissionHelper
     // attributes
     public iRole $role_interface;
     public iPermission $permission_interface;
+    public iPermissionGroup $permission_group_interface;
 
     public function __construct(
+        iPermissionGroup $permission_group_interface,
         iPermission $permission_interface,
         iRole $role_interface
     )
     {
         $this->role_interface = $role_interface;
         $this->permission_interface = $permission_interface;
+        $this->permission_group_interface = $permission_group_interface;
     }
 
     /**
@@ -40,21 +44,56 @@ class PermissionHelper
             ];
         }
 
-        $permissions = $this->permission_interface->getRolePermissions($role->id);
+        $relation = [
+            'permissions:id,permission_group_id,name'
+        ];
+        $permission_groups = $this->permission_group_interface->getPermissionGroups($relation)->toArray();
+        $permissions = $this->permission_interface->getRolePermissions($role->id)->toArray();
 
         $return = null;
-        foreach ($permissions as $permission) {
-            $return[$permission->id]['resource'] = [
-                'caption' => $permission->caption,
-                'name' => $permission->name,
-            ];
+        $permission_names = array_column($permissions, 'name');
+        foreach ($permission_groups as $permission_group) {
+            if (in_array($permission_group['name'], $permission_names)) {
+                $return[$permission_group['id']] = [
+                    'name' => $permission_group['name'],
+                    'caption' => $permission_group['caption'],
+                    'permissions' => []
+                ];
+                foreach ($permission_group['permissions'] as $permission) {
+                    list($permission_type, $resource) = explode('-', $permission['name']);
+                    $selected = false;
+                    $key = array_search($permission['name'], array_column($permissions, 'permission_name'));
+                    if (is_numeric($key)) {
+                        $permission_target = $permissions[$key];
+                        if ($permission['name'] == $permission_target['permission_name']) {
+                            $selected = true;
+                        }
+                    }
 
-            $permission_type = explode('-', $permission->permission_name)[0];
+                    $permission_item[$permission_type] = [
+                        'id' => $permission['id'],
+                        'selected' => $selected
+                    ];
+                    $return[$permission_group['id']]['permissions'] = $permission_item;
+                }
 
-            $return[$permission->id]['permissions'][$permission_type] = [
-                'id' => $permission->permission_id,
-                'selected' => (bool) !is_null($permission->role_id)
-            ];
+
+            } else {
+                $permission_item = null;
+                $return[$permission_group['id']] = [
+                    'name' => $permission_group['name'],
+                    'caption' => $permission_group['caption'],
+                    'permissions' => []
+                ];
+                foreach ($permission_group['permissions'] as $permission) {
+                    $permission_type = explode('-', $permission['name'])[0];
+                    $permission_item[$permission_type] = [
+                        'id' => $permission['id'],
+                        'selected' => false
+                    ];
+                    $return[$permission_group['id']]['permissions'] = $permission_item;
+                }
+            }
         }
 
         return [
