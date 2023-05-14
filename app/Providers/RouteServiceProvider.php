@@ -62,8 +62,6 @@ class RouteServiceProvider extends ServiceProvider
             $this->mapAccount();
             // روت پارچه ها
             $this->mapCloth();
-            // روت خرید پارچه
-            $this->mapClothBuy();
             // روت خرج کار
             $this->mapAccessory();
             // روت خرید خرج کار
@@ -177,14 +175,15 @@ class RouteServiceProvider extends ServiceProvider
             ->namespace($this->namespace)
             ->group(base_path('routes/cloth.php'));
 
-    }
-
-    private function mapClothBuy()
-    {
         Route::prefix('api')
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/cloth_buy.php'));
+
+        Route::prefix('api')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/cloth_warehouse.php'));
 
     }
 

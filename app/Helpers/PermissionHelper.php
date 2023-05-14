@@ -145,12 +145,15 @@ class PermissionHelper
                     $this->permission_interface->getPermissionByName("view-$resource")->id,
                 ];
             } elseif ($permission_type == 'edit') {
+                // todo: all children roles must change "admin" permission to "edit"
+
                 $permission_ids = [
                     $this->permission_interface->getPermissionByName("admin-$resource")->id,
                     $permission->id,
                     $this->permission_interface->getPermissionByName("view-$resource")->id,
                 ];
             } else {
+                // todo: all children roles must change "admin", "edit" permission to "view"
                 $permission_ids = [
                     $this->permission_interface->getPermissionByName("admin-$resource")->id,
                     $this->permission_interface->getPermissionByName("edit-$resource")->id,
