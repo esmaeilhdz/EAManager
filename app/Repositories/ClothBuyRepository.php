@@ -90,6 +90,7 @@ class ClothBuyRepository implements Interfaces\iClothBuy
             $cloth_buy->warehouse_place_id = $inputs['warehouse_place_id'];
             $cloth_buy->metre = $inputs['metre'];
             $cloth_buy->roll_count = $inputs['roll_count'];
+            $cloth_buy->receive_date = $inputs['receive_date'];
 
             return $cloth_buy->save();
         } catch (\Exception $e) {
