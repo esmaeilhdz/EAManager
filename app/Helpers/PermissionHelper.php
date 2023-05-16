@@ -206,20 +206,40 @@ class PermissionHelper
                     $this->permission_interface->getPermissionByName("view-$resource")->id,
                 ];
             } elseif ($permission_type == 'edit') {
-                // todo: all children roles must change "admin" permission to "edit"
-
+                $admin_id = $this->permission_interface->getPermissionByName("admin-$resource")->id;
+                $view_id = $this->permission_interface->getPermissionByName("view-$resource")->id;
                 $permission_ids = [
-                    $this->permission_interface->getPermissionByName("admin-$resource")->id,
+                    $admin_id,
                     $permission->id,
-                    $this->permission_interface->getPermissionByName("view-$resource")->id,
+                    $view_id,
                 ];
+
+                $children_roles = RoleFacade::getAllChildrenRoles($role);
+                foreach ($children_roles as $children_role_id) {
+                    $result[] = $this->permission_interface->editRolePermission($children_role_id, $permission->id, $admin_id);
+                }
             } else {
                 // todo: all children roles must change "admin", "edit" permission to "view"
+
+                $admin_id = $this->permission_interface->getPermissionByName("admin-$resource")->id;
+                $edit_id = $this->permission_interface->getPermissionByName("edit-$resource")->id;
                 $permission_ids = [
                     $this->permission_interface->getPermissionByName("admin-$resource")->id,
                     $this->permission_interface->getPermissionByName("edit-$resource")->id,
                     $permission->id,
                 ];
+
+                $children_roles = RoleFacade::getAllChildrenRoles($role);
+                foreach ($children_roles as $children_role_id) {
+                    $res = $this->permission_interface->editRolePermission($children_role_id, $permission->id, $admin_id);
+                    if ($res > 0) {
+                        $result[] = $res;
+                    }
+                    $res = $this->permission_interface->editRolePermission($children_role_id, $permission->id, $edit_id);
+                    if ($res > 0) {
+                        $result[] = $res;
+                    }
+                }
             }
             $res = $this->permission_interface->deleteRolePermissions($role->id, $permission_ids);
             if ($res > 0) {
