@@ -76,29 +76,44 @@ class PermissionHelper
 
                     $is_show = false;
                     if ($permission_type == 'admin') {
-                        if (in_array($permission['name'], $parent_role_permission_names)) {
-                            $is_show = true;
-                            $is_shows[$resource][$permission_type] = $is_show;
+                        if (count($parent_role_permission_names)) {
+                            if (in_array($permission['name'], $parent_role_permission_names)) {
+                                $is_show = true;
+                                $is_shows[$resource][$permission_type] = $is_show;
+                            } else {
+                                $is_shows[$resource][$permission_type] = false;
+                            }
                         } else {
-                            $is_shows[$resource][$permission_type] = false;
+                            $is_show = true;
+                            $is_shows[$resource][$permission_type] = true;
                         }
                     } elseif ($permission_type == 'edit') {
-                        if (
-                            $is_shows[$resource]['admin'] ||
-                            (in_array($permission['name'], $parent_role_permission_names))
-                        ) {
-                            $is_show = true;
-                            $is_shows[$resource][$permission_type] = $is_show;
+                        if (count($parent_role_permission_names)) {
+                            if (
+                                $is_shows[$resource]['admin'] ||
+                                (in_array($permission['name'], $parent_role_permission_names))
+                            ) {
+                                $is_show = true;
+                                $is_shows[$resource][$permission_type] = $is_show;
+                            } else {
+                                $is_shows[$resource][$permission_type] = false;
+                            }
                         } else {
-                            $is_shows[$resource][$permission_type] = false;
+                            $is_show = true;
+                            $is_shows[$resource][$permission_type] = true;
                         }
                     } elseif ($permission_type == 'view') {
-                        if (
-                            $is_shows[$resource]['admin'] ||
-                            $is_shows[$resource]['edit'] ||
-                            in_array($permission['name'], $parent_role_permission_names)
-                        ) {
+                        if (count($parent_role_permission_names)) {
+                            if (
+                                $is_shows[$resource]['admin'] ||
+                                $is_shows[$resource]['edit'] ||
+                                in_array($permission['name'], $parent_role_permission_names)
+                            ) {
+                                $is_show = true;
+                            }
+                        } else {
                             $is_show = true;
+                            $is_shows[$resource][$permission_type] = true;
                         }
                     }
 
@@ -219,8 +234,6 @@ class PermissionHelper
                     $result[] = $this->permission_interface->editRolePermission($children_role_id, $permission->id, $admin_id);
                 }
             } else {
-                // todo: all children roles must change "admin", "edit" permission to "view"
-
                 $admin_id = $this->permission_interface->getPermissionByName("admin-$resource")->id;
                 $edit_id = $this->permission_interface->getPermissionByName("edit-$resource")->id;
                 $permission_ids = [
