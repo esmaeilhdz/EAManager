@@ -11,6 +11,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'auth:sanctum'], function () {
     });
     Route::group(['middleware' => ['permission:admin-salary|edit-salary']], function () {
         Route::put('person/{code}/salary/{id}', [SalaryController::class, 'editSalary']);
+        Route::put('person/{code}/salary/{id}/checkout', [SalaryController::class, 'checkoutSalary']);
     });
     Route::group(['middleware' => ['permission:admin-salary']], function () {
         Route::post('person/{code}/salary', [SalaryController::class, 'addSalary']);

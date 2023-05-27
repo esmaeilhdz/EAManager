@@ -3,11 +3,13 @@
 namespace App\Helpers;
 
 use App\Exceptions\ApiException;
+use App\Repositories\Interfaces\iPayment;
 use App\Repositories\Interfaces\iPerson;
 use App\Repositories\Interfaces\iPersonCompany;
 use App\Repositories\Interfaces\iSalary;
 use App\Traits\Common;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class SalaryHelper
 {
@@ -17,16 +19,19 @@ class SalaryHelper
     public iPerson $person_interface;
     public iSalary $salary_interface;
     public iPersonCompany $person_company_interface;
+    public iPayment $payment_interface;
 
     public function __construct(
         iPerson $person_interface,
         iSalary $salary_interface,
         iPersonCompany $person_company_interface,
+        iPayment $payment_interface
     )
     {
         $this->person_interface = $person_interface;
         $this->salary_interface = $salary_interface;
         $this->person_company_interface = $person_company_interface;
+        $this->payment_interface = $payment_interface;
     }
 
     /**
@@ -255,6 +260,56 @@ class SalaryHelper
         return [
             'result' => (bool) $result,
             'message' => $result ? __('messages.success') : __('messages.fail'),
+            'data' => null
+        ];
+    }
+
+    /**
+     * سرویس تسویه حساب حقوق
+     * @param $inputs
+     * @return array
+     */
+    public function checkoutSalary($inputs): array
+    {
+        $person = $this->person_interface->getPersonByCode($inputs['code'], ['id']);
+        if (is_null($person)) {
+            return [
+                'result' => false,
+                'message' => __('messages.record_not_found'),
+                'data' => null
+            ];
+        }
+
+        $user = Auth::user();
+        $inputs['person_id'] = $person->id;
+        $select = ['id', 'is_checkout'];
+        $salary = $this->salary_interface->getSalaryDetail($inputs, $user, $select);
+        if (is_null($salary)) {
+            return [
+                'result' => false,
+                'message' => __('messages.record_not_found'),
+                'data' => null
+            ];
+        }
+
+        DB::beginTransaction();
+        $result[] = $this->salary_interface->checkoutSalary($salary);
+        $inputs['model_type'] = $this->convertModelNameToNamespace('salary');
+        $inputs['model_id'] = $salary->id;
+        $result_payment = $this->payment_interface->addPayment($inputs, $user);
+        $result[] = $result_payment['result'];
+
+        if (!in_array(false, $result)) {
+            $flag = true;
+            DB::commit();
+        } else {
+            $flag = false;
+            DB::rollBack();
+        }
+
+        return [
+            'result' => $flag,
+            'message' => $flag ? __('messages.success') : __('messages.fail'),
             'data' => null
         ];
     }

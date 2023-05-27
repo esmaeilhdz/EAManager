@@ -153,8 +153,18 @@ class SalaryRepository implements Interfaces\iSalary
             $salary->to_date = $inputs['to_date'];
             $salary->reward_price = $inputs['reward_price'];
             $salary->overtime_hour = $inputs['overtime_hour'];
-            $salary->is_checkout = $inputs['is_checkout'];
             $salary->description = $inputs['description'];
+
+            return $salary->save();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
+    public function checkoutSalary($salary)
+    {
+        try {
+            $salary->is_checkout = 1;
 
             return $salary->save();
         } catch (\Exception $e) {

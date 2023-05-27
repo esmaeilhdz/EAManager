@@ -4,7 +4,7 @@ namespace App\Http\Requests\Salary;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SalaryEditRequest extends FormRequest
+class SalaryCheckoutRequest extends FormRequest
 {
 
     /**
@@ -40,11 +40,13 @@ class SalaryEditRequest extends FormRequest
         return [
             'code' => 'required|string|size:32',
             'id' => 'required|numeric|min:1',
-            'from_date' => 'required|date',
-            'to_date' => 'required|date',
-            'reward_price' => 'required|numeric|min:0',
-            'overtime_hour' => 'required|numeric|min:0',
-            'description' => 'required|string',
+            'account_id' => 'required|numeric|min:1',
+            'payment_type_id' => 'required|numeric|min:1',
+            'gate_id' => 'nullable|numeric|min:1',
+            'price' => 'required|numeric|min:1',
+            'payment_date' => 'required|date',
+            'payment_tracking_code' => 'nullable|string|max:50',
+            'description' => 'nullable|string',
         ];
     }
 }

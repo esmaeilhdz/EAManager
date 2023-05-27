@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Facades\SalaryFacade;
 use App\Http\Requests\Salary\SalaryAddRequest;
 use App\Http\Requests\Salary\SalaryAllListRequest;
+use App\Http\Requests\Salary\SalaryCheckoutRequest;
 use App\Http\Requests\Salary\SalaryDetailRequest;
 use App\Http\Requests\Salary\SalaryEditRequest;
 use App\Http\Requests\Salary\SalaryListRequest;
@@ -44,7 +45,7 @@ class SalaryController extends Controller
     }
 
     /**
-     * سرویس جزئیات فرد
+     * سرویس جزئیات حقوق
      * @param SalaryDetailRequest $request
      * @return JsonResponse
      */
@@ -58,7 +59,7 @@ class SalaryController extends Controller
     }
 
     /**
-     * سرویس ویرایش فرد
+     * سرویس ویرایش حقوق
      * @param SalaryEditRequest $request
      * @return JsonResponse
      */
@@ -72,7 +73,20 @@ class SalaryController extends Controller
     }
 
     /**
-     * سرویس افزودن فرد
+     * سرویس تسویه حساب حقوق
+     * @param SalaryCheckoutRequest $request
+     * @return JsonResponse
+     */
+    public function checkoutSalary(SalaryCheckoutRequest $request): JsonResponse
+    {
+        $inputs = $request->validated();
+
+        $result = SalaryFacade::checkoutSalary($inputs);
+        return $this->api_response->response($result['result'], $result['message'], $result['data']);
+    }
+
+    /**
+     * سرویس افزودن حقوق
      * @param SalaryAddRequest $request
      * @return JsonResponse
      */

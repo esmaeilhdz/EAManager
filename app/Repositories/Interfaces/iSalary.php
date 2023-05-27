@@ -14,5 +14,7 @@ interface iSalary
 
     public function editSalary($salary, $inputs);
 
+    public function checkoutSalary($salary);
+
     public function addSalary($inputs, $user);
 }
