@@ -37,7 +37,6 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->configureRateLimiting();
 
-
         $this->routes(function () {
             Route::prefix('api')
                 ->middleware('api')
@@ -67,17 +66,11 @@ class RouteServiceProvider extends ServiceProvider
             // روت خرید خرج کار
             $this->mapAccessoryBuy();
             // روت کالا
-            $this->mapProductBuy();
-            // روت ارسال کالا به فروشگاه
-            $this->mapProductToStore();
+            $this->mapProduct();
             // روت اعلان ها
             $this->mapNotifs();
             // روت درخواست کالا از انبار
             $this->mapRequestProductFromWarehouse();
-            // روت قیمت های کالا
-            $this->mapProductPrice();
-            // روت انبار های کالا
-            $this->mapProductWarehouse();
             // روت دوخت
             $this->mapSewing();
             // روت برش
@@ -129,6 +122,11 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/salary.php'));
+
+        Route::prefix('api')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/salary_deduction.php'));
 
     }
 
@@ -205,35 +203,23 @@ class RouteServiceProvider extends ServiceProvider
 
     }
 
-    private function mapProductBuy()
+    private function mapProduct()
     {
         Route::prefix('api')
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/product.php'));
 
-    }
-
-    private function mapProductToStore()
-    {
         Route::prefix('api')
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/product_to_store.php'));
 
-    }
-
-    private function mapProductPrice()
-    {
         Route::prefix('api')
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/product_price.php'));
 
-    }
-
-    private function mapProductWarehouse()
-    {
         Route::prefix('api')
             ->middleware('api')
             ->namespace($this->namespace)

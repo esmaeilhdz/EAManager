@@ -55,6 +55,7 @@ use App\Repositories\Interfaces\iPersonCompany;
 use App\Repositories\Interfaces\iReport;
 use App\Repositories\Interfaces\iRole;
 use App\Repositories\Interfaces\iSalary;
+use App\Repositories\Interfaces\iSalaryDeduction;
 use App\Repositories\Interfaces\iSalePeriod;
 use App\Repositories\Interfaces\iPerson;
 use App\Repositories\Interfaces\iPlace;
@@ -75,6 +76,7 @@ use App\Repositories\PermissionRepository;
 use App\Repositories\PersonCompanyRepository;
 use App\Repositories\ReportRepository;
 use App\Repositories\RoleRepository;
+use App\Repositories\SalaryDeductionRepository;
 use App\Repositories\SalaryRepository;
 use App\Repositories\SalePeriodRepository;
 use App\Repositories\PersonRepository;
@@ -139,6 +141,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(iPersonCompany::class, PersonCompanyRepository::class);
         $this->app->bind(iEnumeration::class, EnumerationRepository::class);
         $this->app->bind(iPermissionGroup::class, PermissionGroupRepository::class);
+        $this->app->bind(iSalaryDeduction::class, SalaryDeductionRepository::class);
     }
 
     /**

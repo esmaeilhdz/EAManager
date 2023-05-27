@@ -42,4 +42,7 @@ return [
     'cannot_edit_record' => 'شما قادر به ویرایش این داده نیستید.',
     'cannot_delete_record' => 'شما قادر به حذف این داده نیستید.',
     'parent_role_not_found' => 'نقش والد یافت نشد.',
+    'salary_already_settled_edit_not_allowed' => 'حقوق قبلا تسویه حساب شده است. شما مجاز به ویرایش این داده نیستید.',
+    'salary_already_settled_add_not_allowed' => 'حقوق قبلا تسویه حساب شده است. شما مجاز به افزودن این داده نیستید.',
+    'salary_already_settled_delete_not_allowed' => 'حقوق قبلا تسویه حساب شده است. شما مجاز به حذف این داده نیستید.',
 ];

@@ -26,6 +26,7 @@ class SalaryRepository implements Interfaces\iSalary
             $company_id = $this->getCurrentCompanyOfUser($user);
             return Salary::with([
                     'person:id,code,name,family',
+                    'salary_deduction:salary_id,price',
                     'creator:id,person_id',
                     'creator.person:id,name,family'
                 ])
@@ -36,7 +37,7 @@ class SalaryRepository implements Interfaces\iSalary
                     'to_date',
                     'reward_price',
                     'overtime_hour',
-                    'salary_deduction',
+                    'is_checkout',
                     'created_by',
                     'created_at'
                 ])
@@ -63,6 +64,7 @@ class SalaryRepository implements Interfaces\iSalary
         try {
             $company_id = $this->getCurrentCompanyOfUser($user);
             return Salary::with([
+                    'salary_deduction:salary_id,price',
                     'creator:id,person_id',
                     'creator.person:id,name,family'
                 ])
@@ -72,7 +74,7 @@ class SalaryRepository implements Interfaces\iSalary
                     'to_date',
                     'reward_price',
                     'overtime_hour',
-                    'salary_deduction',
+                    'is_checkout',
                     'created_by',
                     'created_at'
                 ])
@@ -116,6 +118,27 @@ class SalaryRepository implements Interfaces\iSalary
         }
     }
 
+    public function getSalaryById($id, $user, $select = [], $relation = [])
+    {
+        try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
+            $salary = Salary::where('company_id', $company_id)
+                ->where('id', $id);
+
+            if (count($relation)) {
+                $salary = $salary->with($relation);
+            }
+
+            if (count($select)) {
+                $salary = $salary->select($select);
+            }
+
+            return $salary->first();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
     /**
      * ویرایش حقوق فرد
      * @param $salary
@@ -130,7 +153,7 @@ class SalaryRepository implements Interfaces\iSalary
             $salary->to_date = $inputs['to_date'];
             $salary->reward_price = $inputs['reward_price'];
             $salary->overtime_hour = $inputs['overtime_hour'];
-            $salary->salary_deduction = $inputs['salary_deduction'];
+            $salary->is_checkout = $inputs['is_checkout'];
             $salary->description = $inputs['description'];
 
             return $salary->save();

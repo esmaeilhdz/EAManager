@@ -28,6 +28,7 @@ use App\Helpers\PermissionHelper;
 use App\Helpers\PersonCompanyHelper;
 use App\Helpers\ReportHelper;
 use App\Helpers\RoleHelper;
+use App\Helpers\SalaryDeductionHelper;
 use App\Helpers\SalaryHelper;
 use App\Helpers\SalePeriodHelper;
 use App\Helpers\PersonHelper;
@@ -88,6 +89,7 @@ class HelperServiceProvider extends ServiceProvider
         App::alias(PersonCompanyHelper::class, 'person_company_helper');
         App::alias(EnumerationHelper::class, 'enumeration_helper');
         App::alias(ClothWarehouseHelper::class, 'cloth_warehouse_helper');
+        App::alias(SalaryDeductionHelper::class, 'salary_deduction_helper');
     }
 
     /**

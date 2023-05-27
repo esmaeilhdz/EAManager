@@ -44,7 +44,7 @@ class SalaryEditRequest extends FormRequest
             'to_date' => 'required|date',
             'reward_price' => 'required|numeric|min:0',
             'overtime_hour' => 'required|numeric|min:0',
-            'salary_deduction' => 'required|numeric|min:0',
+            'is_checkout' => 'required|numeric|in:0,1',
             'description' => 'required|string',
         ];
     }
