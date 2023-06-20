@@ -23,10 +23,13 @@ class SalePeriodAddRequest extends FormRequest
      */
     public function rules()
     {
+        list($year, $month, $day) = explode('-', date('Y-m-d'));
+        $start_date = "$year-01-01";
+        $end_date = "$year-12-30";
         return [
             'name' => 'required|string',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date'
+            'start_date' => "required|date|after:$start_date",
+            'end_date' => "required|date|before:$end_date"
         ];
     }
 }
