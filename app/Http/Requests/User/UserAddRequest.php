@@ -27,7 +27,7 @@ class UserAddRequest extends FormRequest
             'person_code' => 'required|string|size:32',
             'email' => 'nullable|email',
             'mobile' => 'required|string|size:11|starts_with:09',
-            'password' => 'required|string|confirmed',
+            'password' => 'required|string|confirmed|min:8',
         ];
     }
 }

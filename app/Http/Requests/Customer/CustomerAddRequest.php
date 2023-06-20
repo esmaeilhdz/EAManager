@@ -29,7 +29,6 @@ class CustomerAddRequest extends FormRequest
             'parent_id' => 'nullable|numeric|min:1',
             'mobile' => 'required|string|starts_with:09',
             'tel' => 'nullable|string',
-            'score' => 'required|numeric|min:0'
         ];
     }
 }
