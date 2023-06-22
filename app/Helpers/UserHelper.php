@@ -48,6 +48,7 @@ class UserHelper
                 'name' => $item->person->name,
                 'family' => $item->person->family,
                 'national_code' => $item->person->national_code,
+                'email' => $item->email,
                 'mobile' => $item->mobile,
                 'creator' => is_null($item->creator->person) ? null : [
                     'user' => [

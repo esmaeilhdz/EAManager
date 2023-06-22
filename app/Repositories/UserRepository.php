@@ -33,6 +33,7 @@ class UserRepository implements Interfaces\iUser
                     'code',
                     'person_id',
                     'mobile',
+                    'email',
                     'created_by',
                     'created_at'
                 ])
