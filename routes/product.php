@@ -4,7 +4,7 @@ use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1', 'middleware' => 'auth:sanctum'], function () {
-    Route::group(['middleware' => ['permission:admin-products|edit-product|view-product']], function () {
+    Route::group(['middleware' => ['permission:admin-product|edit-product|view-product']], function () {
         Route::get('product', [ProductController::class, 'getProducts']);
         Route::get('product/{code}', [ProductController::class, 'getProductDetail']);
     });

@@ -40,14 +40,17 @@ class ProductHelper
                 $warehouse_count = $item->productWarehouse->free_size_count + $item->productWarehouse->size1_count + $item->productWarehouse->size2_count + $item->productWarehouse->size3_count + $item->productWarehouse->size4_count;
             }
             return [
-                'code' => $item->code,
+                'id' => $item->code,
                 'name' => $item->name,
                 'internal_code' => $item->internal_code,
                 'has_accessories' => $item->has_accessories,
                 'product_warehouse_count' => $warehouse_count,
                 'price' => $item->productPrice->final_price ?? null,
                 'cloth' => [
-                    'name' => $item->cloth->name
+                    'name' => $item->cloth->name,
+                    'color' => [
+                        $item->cloth->color->caption
+                    ]
                 ],
                 'creator' => is_null($item->creator->person) ? null : [
                     'person' => [
@@ -138,7 +141,7 @@ class ProductHelper
      */
     public function deleteProduct($inputs): array
     {
-        $product = $this->product_interface->getProductByCode($inputs['code'], ['id']);
+        $product = $this->product_interface->getProductByCode($inputs['code'], ['id', 'code']);
         if (is_null($product)) {
             return [
                 'result' => false,

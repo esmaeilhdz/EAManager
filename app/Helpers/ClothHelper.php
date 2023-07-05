@@ -36,7 +36,7 @@ class ClothHelper
 
         $clothes->transform(function ($item) {
             return [
-                'code' => $item->code,
+                'id' => $item->code,
                 'name' => $item->name,
                 'color' => [
                     'id' => $item->color_id,

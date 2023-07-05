@@ -15,7 +15,18 @@ class Product extends Model
     use HasFactory, Common;
 
     protected $primaryKey = 'id';
-    protected $hidden = ['id', 'cloth_id', 'created_by', 'updated_at'];
+    protected $hidden = ['code', 'cloth_id', 'created_by', 'updated_at'];
+
+    protected array $maps = [
+        'code' => 'id'
+    ];
+
+    protected $appends = ['id'];
+
+    public function getIdAttribute()
+    {
+        return $this->attributes['code'];
+    }
 
     protected function createdAt(): Attribute
     {

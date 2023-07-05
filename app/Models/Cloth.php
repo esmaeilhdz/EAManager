@@ -15,7 +15,18 @@ class Cloth extends Model
     use HasFactory, Common;
 
     protected $primaryKey = 'id';
-    protected $hidden = ['id', 'color_id', 'created_by', 'updated_at'];
+    protected $hidden = ['id', 'code', 'color_id', 'created_by', 'updated_at'];
+
+    protected array $maps = [
+        'code' => 'id'
+    ];
+
+    protected $appends = ['id'];
+
+    public function getIdAttribute()
+    {
+        return $this->attributes['id'];
+    }
 
     protected function createdAt(): Attribute
     {
