@@ -34,7 +34,7 @@ class ProductPriceHelper
      */
     public function getProductPrices($inputs): array
     {
-        $select = ['id', 'name'];
+        $select = ['id', 'code', 'name'];
         $product = $this->product_interface->getProductByCode($inputs['code'], $select);
         if (is_null($product)) {
             return [

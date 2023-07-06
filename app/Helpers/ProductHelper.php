@@ -40,7 +40,7 @@ class ProductHelper
                 $warehouse_count = $item->productWarehouse->free_size_count + $item->productWarehouse->size1_count + $item->productWarehouse->size2_count + $item->productWarehouse->size3_count + $item->productWarehouse->size4_count;
             }
             return [
-                'id' => $item->code,
+                'code' => $item->code,
                 'name' => $item->name,
                 'internal_code' => $item->internal_code,
                 'has_accessories' => $item->has_accessories,
