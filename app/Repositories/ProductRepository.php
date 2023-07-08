@@ -86,6 +86,7 @@ class ProductRepository implements Interfaces\iProduct
     {
         try {
             $product->internal_code = $inputs['internal_code'];
+            $product->cloth_id = $inputs['cloth_id'];
             $product->name = $inputs['name'];
             $product->has_accessories = $inputs['has_accessories'];
 
