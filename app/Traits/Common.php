@@ -647,4 +647,11 @@ trait Common
         return str_replace($en, $fa, $string);
     }
 
+    public function prepareTransactionArray(array $result): array
+    {
+        return array_filter($result,function ($item) {
+            return $item === true || $item === false;
+        });
+    }
+
 }

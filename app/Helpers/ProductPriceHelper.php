@@ -179,6 +179,8 @@ class ProductPriceHelper
         $result[] = $this->product_price_interface->deActiveOldPrices($product->id);
         $result[] = $this->product_price_interface->addProductPrice($inputs, $user);
 
+        $result = $this->prepareTransactionArray($result);
+
         if (!in_array(false, $result)) {
             $flag = true;
             DB::commit();
