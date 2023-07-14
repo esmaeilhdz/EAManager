@@ -10,7 +10,7 @@ interface iCloth
 
     public function editCloth($inputs);
 
-    public function addCloth($inputs, $user);
+    public function addCloth($inputs, $user, $company_id);
 
     public function deleteCloth($code);
 }

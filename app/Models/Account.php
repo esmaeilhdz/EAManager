@@ -45,10 +45,17 @@ class Account extends Model
     }
 
 
+    public function bank()
+    {
+        return $this->hasOne(Enumeration::class, 'enum_id', 'bank_id')
+            ->where('category_name', 'bank');
+    }
+
     public function account_cheques()
     {
         return $this->hasMany(AccountCheque::class, 'account_id', 'id');
     }
+
 
     public function creator()
     {

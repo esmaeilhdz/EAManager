@@ -2,10 +2,12 @@
 
 namespace App\Http\Requests\User;
 
+use App\Traits\Common;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UserEditRequest extends FormRequest
 {
+    use Common;
 
     /**
      * Prepare the data for validation.
@@ -16,6 +18,7 @@ class UserEditRequest extends FormRequest
     {
         $this->merge([
             'code' => $this->code,
+            'mobile' => $this->FaToEn($this->mobile),
         ]);
     }
 

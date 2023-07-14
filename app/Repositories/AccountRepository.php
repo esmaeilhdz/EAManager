@@ -21,15 +21,17 @@ class AccountRepository implements Interfaces\iAccount
     {
         try {
             return Account::with([
-                'creator:id,person_id',
-                'creator.person:id,name,family',
                 'account_cheques' => function ($q) {
                     $q->select(['account_id'])->where('is_enable', 1);
-                }
+                },
+                'bank:enum_id,enum_caption',
+                'creator:id,person_id',
+                'creator.person:id,name,family',
             ])
                 ->select([
                     'id',
                     'code',
+                    'bank_id',
                     'branch_name',
                     'account_no',
                     'sheba_no',
@@ -48,11 +50,13 @@ class AccountRepository implements Interfaces\iAccount
     {
         try {
             return Account::with([
+                'bank:enum_id,enum_caption',
                 'account_cheques:account_id,cheque_no_from,cheque_no_to,is_enable'
             ])
                 ->select([
                     'id',
                     'code',
+                    'bank_id',
                     'branch_name',
                     'account_no',
                     'sheba_no',
@@ -70,6 +74,7 @@ class AccountRepository implements Interfaces\iAccount
         try {
             return Account::whereCode($inputs['code'])
                 ->update([
+                    'bank_id' => $inputs['bank_id'],
                     'branch_name' => $inputs['branch_name'],
                     'account_no' => $inputs['account_no'],
                     'sheba_no' => $inputs['sheba_no'],
@@ -88,6 +93,7 @@ class AccountRepository implements Interfaces\iAccount
 
             $account->code = $this->randomString();
             $account->company_id = $company_id;
+            $account->bank_id = $inputs['bank_id'];
             $account->branch_name = $inputs['branch_name'];
             $account->account_no = $inputs['account_no'];
             $account->sheba_no = $inputs['sheba_no'];

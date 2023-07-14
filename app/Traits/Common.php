@@ -91,6 +91,8 @@ trait Common
             $text = $param;
         }
 
+//        $text = $this->EnToFa($text);
+
         if (is_null($text) or empty($text)) {
             return $text;
         }
@@ -633,8 +635,8 @@ trait Common
 
     public function FaToEn($string): array|string
     {
-        $fa = ['ا', 'ب', 'پ', 'ت', 'ث', 'ج', 'چ', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'ژ', 'س', 'ش', 'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ک', 'گ', 'ل', 'م', 'ن', 'و', 'ه', 'ی', 'آ', ' '];
-        $en = ['a', 'b', 'p', 't', 's', 'j', 'ch', 'h', 'kh', 'd', 'z', 'r', 'z', 'zh', 's', 'sh', 's', 'z', 't', 'z', 'a', 'gh', 'f', 'gh', 'k', 'g', 'l', 'm', 'n', 'o', 'h', 'y', 'aa', '_'];
+        $fa = ['ا', 'ب', 'پ', 'ت', 'ث', 'ج', 'چ', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'ژ', 'س', 'ش', 'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ک', 'گ', 'ل', 'م', 'ن', 'و', 'ه', 'ی', 'آ', ' ', '٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+        $en = ['a', 'b', 'p', 't', 's', 'j', 'ch', 'h', 'kh', 'd', 'z', 'r', 'z', 'zh', 's', 'sh', 's', 'z', 't', 'z', 'a', 'gh', 'f', 'gh', 'k', 'g', 'l', 'm', 'n', 'o', 'h', 'y', 'aa', '_', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
         return str_replace($fa, $en, $string);
     }
@@ -647,6 +649,11 @@ trait Common
         return str_replace($en, $fa, $string);
     }
 
+    /**
+     * remove 0 value from update or delete query
+     * @param array $result
+     * @return array
+     */
     public function prepareTransactionArray(array $result): array
     {
         return array_filter($result,function ($item) {

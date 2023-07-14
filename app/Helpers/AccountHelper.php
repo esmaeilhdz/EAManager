@@ -37,6 +37,7 @@ class AccountHelper
         $accounts->transform(function ($item) {
             return [
                 'code' => $item->code,
+                'bank' => $item->bank,
                 'branch_name' => $item->branch_name,
                 'account_no' => $item->account_no,
                 'sheba_no' => $item->sheba_no,

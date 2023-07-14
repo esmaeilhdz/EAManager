@@ -9,6 +9,7 @@ use App\Http\Requests\User\UserEditRequest;
 use App\Http\Requests\User\UserListRequest;
 use App\Traits\Common;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
