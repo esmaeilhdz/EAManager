@@ -98,7 +98,7 @@ class ClothHelper
             ];
         }
 
-
+        // todo: manage add/edit cloth by color
 
         $result = $this->cloth_interface->editCloth($inputs);
         return [
