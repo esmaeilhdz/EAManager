@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Facades\ProductPriceFacade;
 use App\Http\Requests\ProductPrice\ProductPriceAddRequest;
-use App\Http\Requests\ProductPrice\ProductPricedetailRequest;
+use App\Http\Requests\ProductPrice\ProductPriceDetailRequest;
 use App\Http\Requests\ProductPrice\ProductPriceEditRequest;
 use App\Http\Requests\ProductPrice\ProductPriceListRequest;
 use App\Traits\Common;
@@ -78,7 +78,6 @@ class ProductPriceController extends Controller
     public function deleteProductPrice(ProductPriceDetailRequest $request): JsonResponse
     {
         $inputs = $request->validated();
-        $this->cleanInput($inputs, array_keys($request->rules()));
 
         $result = ProductPriceFacade::deleteProductPrice($inputs);
         return $this->api_response->response($result['result'], $result['message'], $result['data']);
