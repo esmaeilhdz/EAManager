@@ -7,6 +7,8 @@ use App\Models\Product;
 use App\Models\ProductWarehouse;
 use App\Traits\Common;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 class ProductWarehouseRepository implements Interfaces\iProductWarehouse
@@ -167,6 +169,34 @@ class ProductWarehouseRepository implements Interfaces\iProductWarehouse
             }
 
             return $product_warehouse->first();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
+    /**
+     * محصولات براساس انبار
+     * @param $inputs
+     * @param $user
+     * @return Collection|array
+     * @throws ApiException
+     */
+    public function getByPlaceId($inputs, $user): Collection|array
+    {
+        try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
+            return ProductWarehouse::with([
+                'product:id,name'
+            ])
+                ->select('id', 'product_id')
+                ->where('place_id', $inputs['id'])
+                ->whereHas('product', function ($q) use ($inputs, $company_id) {
+                    $q->when(isset($inputs['search_txt']), function ($q2) use ($inputs) {
+                        $q2->where('name', 'like', '%' . $inputs['search_txt'] . '%');
+                    })
+                    ->where('company_id', $company_id);
+                })
+                ->get();
         } catch (\Exception $e) {
             throw new ApiException($e);
         }

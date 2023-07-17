@@ -7,6 +7,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'auth:sanctum'], function () {
     Route::group(['middleware' => ['permission:admin-product|edit-product|view-product']], function () {
         Route::get('product/{code}/warehouse', [ProductWarehouseController::class, 'getProductWarehouses']);
         Route::get('product/{code}/warehouse/{id}', [ProductWarehouseController::class, 'getProductWarehouseDetail']);
+        Route::get('place/{id}/product', [ProductWarehouseController::class, 'getProductsOfPlace']);
     });
     Route::group(['middleware' => ['permission:admin-product|edit-product']], function () {
         Route::put('product/{code}/warehouse/{id}', [ProductWarehouseController::class, 'editProductWarehouse']);

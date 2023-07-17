@@ -16,6 +16,8 @@ interface iProductWarehouse
 
     public function getByStockProduct($inputs, $data, $select = [], $relation = []);
 
+    public function getByPlaceId($inputs, $user);
+
     public function editProductWarehouse($product_warehouse, $inputs);
 
     public function deActiveOldWarehouses($inputs);
