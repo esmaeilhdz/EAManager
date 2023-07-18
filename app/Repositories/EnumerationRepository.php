@@ -109,6 +109,7 @@ class EnumerationRepository implements Interfaces\iEnumeration
             return Enumeration::select([
                 'category_name',
                 'category_caption',
+                'is_editable',
                 'enum_caption',
                 'enum_id'
             ])

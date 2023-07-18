@@ -101,6 +101,7 @@ class EnumerationHelper
                 $result[$enum->category_name]['category'] = [
                     'name' => $enum->category_name,
                     'caption' => $enum->category_caption,
+                    'is_editable' => $enum->is_editable,
                 ];
                 $result[$enum->category_name]['items'][] = [
                     'id' => $enum->enum_id,
