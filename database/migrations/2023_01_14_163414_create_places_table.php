@@ -23,7 +23,7 @@ class CreatePlacesTable extends Migration
             $table->string('department_manager_national_code', 11)->nullable()->comment('کدملی مسئول');
             $table->string('department_manager_identity', 11)->nullable()->comment('شماره شناسنامه مسئول');
             $table->unsignedTinyInteger('capacity')->nullable();
-            $table->date('from_date')->comment('تاریخ شروع همکاری');
+            $table->date('from_date')->nullable()->comment('تاریخ شروع همکاری');
             $table->unsignedBigInteger('created_by');
             $table->timestamps();
 

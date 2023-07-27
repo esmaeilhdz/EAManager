@@ -31,7 +31,7 @@ class PlaceAddRequest extends FormRequest
             'department_manager_national_code' => 'nullable|string|size:10',
             'department_manager_identity' => 'nullable|string',
             'capacity' => 'nullable|numeric|min:1',
-            'from_date' => 'required|date',
+            'from_date' => 'nullable|date',
         ];
     }
 }
