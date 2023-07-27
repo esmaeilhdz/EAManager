@@ -20,6 +20,53 @@ class CuttingEditRequest extends FormRequest
         ]);
     }
 
+    protected function getValidatorInstance(){
+        $validator = parent::getValidatorInstance();
+
+        $validator->sometimes('free_size_count', 'required|numeric|min:1', function($input)
+        {
+            return
+                !isset($input->size1_count) &&
+                !isset($input->size2_count) &&
+                !isset($input->size3_count) &&
+                !isset($input->size4_count);
+        });
+
+        $validator->sometimes('size1_count', 'required|numeric|min:1', function($input)
+        {
+            return !isset($input->free_size_count) &&
+                !isset($input->size2_count) &&
+                !isset($input->size3_count) &&
+                !isset($input->size4_count);
+        });
+
+        $validator->sometimes('size2_count', 'required|numeric|min:1', function($input)
+        {
+            return !isset($input->free_size_count) &&
+                !isset($input->size1_count) &&
+                !isset($input->size3_count) &&
+                !isset($input->size4_count);
+        });
+
+        $validator->sometimes('size3_count', 'required|numeric|min:1', function($input)
+        {
+            return !isset($input->free_size_count) &&
+                !isset($input->size1_count) &&
+                !isset($input->size2_count) &&
+                !isset($input->size4_count);
+        });
+
+        $validator->sometimes('size4_count', 'required|numeric|min:1', function($input)
+        {
+            return !isset($input->free_size_count) &&
+                !isset($input->size1_count) &&
+                !isset($input->size2_count) &&
+                !isset($input->size3_count);
+        });
+
+        return $validator;
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      *
