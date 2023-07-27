@@ -112,11 +112,11 @@ class CuttingRepository implements Interfaces\iCutting
 
             $cutting->product_id = $inputs['product_id'];
             $cutting->cutted_count = $inputs['cutted_count'];
-            $cutting->free_size_count = $inputs['free_size_count'];
-            $cutting->size1_count = $inputs['size1_count'];
-            $cutting->size2_count = $inputs['size2_count'];
-            $cutting->size3_count = $inputs['size3_count'];
-            $cutting->size4_count = $inputs['size4_count'];
+            $cutting->free_size_count = $inputs['free_size_count'] ?? 0;
+            $cutting->size1_count = $inputs['size1_count'] ?? 0;
+            $cutting->size2_count = $inputs['size2_count'] ?? 0;
+            $cutting->size3_count = $inputs['size3_count'] ?? 0;
+            $cutting->size4_count = $inputs['size4_count'] ?? 0;
             $cutting->created_by = $user->id;
 
             $result = $cutting->save();
