@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Repositories\Interfaces\iPerson;
+use App\Repositories\Interfaces\iRole;
 use App\Repositories\Interfaces\iUser;
 use App\Traits\Common;
 use Illuminate\Support\Facades\Auth;
@@ -13,14 +14,17 @@ class UserHelper
 
     // attributes
     public iUser $user_interface;
+    public iRole $role_interface;
     public iPerson $person_interface;
 
     public function __construct(
         iUser $user_interface,
+        iRole $role_interface,
         iPerson $person_interface
     )
     {
         $this->user_interface = $user_interface;
+        $this->role_interface = $role_interface;
         $this->person_interface = $person_interface;
     }
 
@@ -123,6 +127,38 @@ class UserHelper
             'data' => $result
         ];
 
+    }
+
+    public function editUserRole($inputs)
+    {
+        $user = $this->user_interface->getUserByCode($inputs['code']);
+        if (is_null($user)) {
+            return [
+                'result' => false,
+                'message' => __('messages.record_not_found'),
+                'data' => null
+            ];
+        }
+
+        $role_names = [];
+        foreach ($inputs['role_code'] as $role_code) {
+            $role = $this->role_interface->getRoleByCode($role_code, ['id', 'name']);
+            if (is_null($role)) {
+                return [
+                    'result' => false,
+                    'message' => __('messages.role_not_found'),
+                    'data' => null
+                ];
+            }
+            $role_names[] = $role->name;
+        }
+
+        $result = $user->syncRoles($role_names);
+        return [
+            'result' => $result,
+            'message' => $result ? __('messages.success') : __('messages.failed'),
+            'data' => null
+        ];
     }
 
     /**

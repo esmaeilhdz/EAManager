@@ -10,6 +10,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'auth:sanctum'], function () {
         Route::get('user/{code}', [UserController::class, 'getUserDetail']);
     });
     Route::group(['middleware' => ['permission:admin-user|edit-user']], function () {
+        Route::patch('user/{code}/role', [UserController::class, 'editUserRole']);
         Route::put('user/{code}', [UserController::class, 'editUser']);
     });
     Route::group(['middleware' => ['permission:admin-user']], function () {
