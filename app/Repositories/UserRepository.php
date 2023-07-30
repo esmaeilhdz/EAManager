@@ -96,7 +96,7 @@ class UserRepository implements Interfaces\iUser
     /**
      * افزودن کاربر
      * @param $inputs
-     * @param $user
+     * @param $user_login
      * @return array
      * @throws ApiException
      */
@@ -116,7 +116,7 @@ class UserRepository implements Interfaces\iUser
 
             return [
                 'result' => $result,
-                'data' => $result ? $user->code : null
+                'data' => $result ? $user : null
             ];
 
         } catch (\Exception $e) {

@@ -7,6 +7,7 @@ use App\Repositories\Interfaces\iRole;
 use App\Repositories\Interfaces\iUser;
 use App\Traits\Common;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class UserHelper
 {
@@ -203,11 +204,26 @@ class UserHelper
 
         $inputs['person_id'] = $person->id;
         $user = Auth::user();
-        $result = $this->user_interface->addUser($inputs, $user);
+
+        DB::beginTransaction();
+        $res = $this->user_interface->addUser($inputs, $user);
+        $result[] = $res['result'];
+        $result[] = $this->role_interface->setRole($res['data'], 'default');
+
+        if (!in_array(false, $result)) {
+            $flag = true;
+            $data = $res['data']->code;
+            DB::commit();
+        } else {
+            $flag = false;
+            $data = null;
+            DB::rollBack();
+        }
+
         return [
-            'result' => $result['result'],
-            'message' => $result['result'] ? __('messages.success') : __('messages.fail'),
-            'data' => $result['data']
+            'result' => $flag,
+            'message' => $flag ? __('messages.success') : __('messages.fail'),
+            'data' => $data
         ];
     }
 
