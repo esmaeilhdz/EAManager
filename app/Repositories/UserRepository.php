@@ -27,9 +27,11 @@ class UserRepository implements Interfaces\iUser
                 ->with([
                     'creator:id,person_id',
                     'creator.person:id,name,family',
-                    'person:id,name,family,national_code'
+                    'person:id,name,family,national_code',
+                    'roles'
                 ])
                 ->select([
+                    'id',
                     'code',
                     'person_id',
                     'mobile',
