@@ -135,8 +135,8 @@ class PlaceRepository implements Interfaces\iPlace
             $place->department_manager_name = $inputs['department_manager_name'];
             $place->department_manager_national_code = $inputs['department_manager_national_code'] ?? null;
             $place->department_manager_identity = $inputs['department_manager_identity'] ?? null;
-            $place->capacity = $inputs['capacity'];
-            $place->from_date = $inputs['from_date'];
+            $place->capacity = $inputs['capacity'] ?? null;
+            $place->from_date = $inputs['from_date'] ?? null;
             $place->created_by = $user->id;
 
             $result = $place->save();
