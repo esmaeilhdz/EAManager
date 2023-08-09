@@ -139,6 +139,7 @@ class PersonRepository implements Interfaces\iPerson
                 'family' => $inputs['family'],
                 'father_name' => $inputs['father_name'],
                 'national_code' => $inputs['national_code'],
+                'insurance_no' => $inputs['insurance_no'],
                 'identity' => $inputs['identity'],
                 'score' => $inputs['score'],
                 'passport_no' => $inputs['passport_no'] ?? null
@@ -172,9 +173,9 @@ class PersonRepository implements Interfaces\iPerson
             $person->family = $inputs['family'];
             $person->father_name = $inputs['father_name'];
             $person->national_code = $inputs['national_code'];
+            $person->insurance_no = $inputs['insurance_no'];
             $person->identity = $inputs['identity'];
             $person->passport_no = $inputs['passport_no'] ?? null;
-            $person->score = $inputs['score'];
             $person->created_by = $user->id;
 
             $result = $person->save();

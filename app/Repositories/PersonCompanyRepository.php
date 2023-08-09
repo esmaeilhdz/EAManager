@@ -98,7 +98,6 @@ class PersonCompanyRepository implements Interfaces\iPersonCompany
             $person_company->suggest_salary = $inputs['suggest_salary'];
             $person_company->daily_income = $inputs['daily_income'];
             $person_company->position = $inputs['position'];
-            $person_company->score = 0;
             $person_company->created_by = $user->id;
 
             $result = $person_company->save();

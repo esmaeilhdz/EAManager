@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 
+use App\Models\Person;
+use App\Repositories\Interfaces\iAddress;
 use App\Repositories\Interfaces\iCompany;
 use App\Repositories\Interfaces\iPerson;
 use App\Repositories\Interfaces\iPersonCompany;
@@ -16,16 +18,19 @@ class PersonHelper
     // attributes
     public iPerson $person_interface;
     public iCompany $company_interface;
+    public iAddress $address_interface;
     public iPersonCompany $person_company_interface;
 
     public function __construct(
         iPerson $person_interface,
         iCompany $company_interface,
+        iAddress $address_interface,
         iPersonCompany $person_company_interface,
     )
     {
         $this->person_interface = $person_interface;
         $this->company_interface = $company_interface;
+        $this->address_interface = $address_interface;
         $this->person_company_interface = $person_company_interface;
     }
 
@@ -113,7 +118,10 @@ class PersonHelper
                 $q->select(['model_type', 'model_id', 'path', 'file_name', 'ext'])
                     ->where('type', 'thumb')
                     ->where('attachment_type_id', 1);
-            }
+            },
+            'address',
+            'address.province:id,name',
+            'address.city:id,name',
         ];
         $person = $this->person_interface->getPersonByCode($code, $select, $relation);
         if (is_null($person)) {
@@ -129,9 +137,24 @@ class PersonHelper
         $result['family'] = $person->family;
         $result['father_name'] = $person->father_name;
         $result['national_code'] = $person->national_code;
+        $result['insurance_no'] = $person->insurance_no;
         $result['identity'] = $person->identity;
         $result['passport_no'] = $person->passport_no;
         $result['score'] = $person->score;
+        $result['address'] = is_null($person->address) ? null : [
+            'id' => $person->address->id,
+            'province' => [
+                'id' => $person->address->province_id,
+                'name' => $person->address->province->name
+            ],
+            'city' => [
+                'id' => $person->address->city_id,
+                'name' => $person->address->city->name
+            ],
+            'address_kind_id' => $person->address->address_kind_id,
+            'tel' => $person->address->tel,
+            'address' => $person->address->address,
+        ];
 
         $attachment_path = null;
         if (count($person->attachment)) {
@@ -162,10 +185,35 @@ class PersonHelper
             ];
         }
 
-        $result = $this->person_interface->editPerson($inputs);
+        DB::beginTransaction();
+        $result[] = $this->person_interface->editPerson($inputs);
+
+        $inputs['model_type'] = Person::class;
+        $inputs['model_id'] = $person->id;
+        $inputs['id'] = $inputs['address_id'];
+
+        $address = $this->address_interface->getAddressById($inputs);
+        if (is_null($address)) {
+            return [
+                'result' => false,
+                'message' => __('messages.record_not_found'),
+                'data' => null
+            ];
+        }
+
+        $result[] = $this->address_interface->editAddress($address, $inputs);
+
+        if (!in_array(false, $result)) {
+            $flag = true;
+            DB::commit();
+        } else {
+            $flag = false;
+            DB::rollBack();
+        }
+
         return [
-            'result' => (bool) $result,
-            'message' => $result ? __('messages.success') : __('messages.fail'),
+            'result' => $flag,
+            'message' => $flag ? __('messages.success') : __('messages.fail'),
             'data' => null
         ];
     }
@@ -194,6 +242,11 @@ class PersonHelper
         $inputs['person_id'] = $add_person_result['data']->id;
 
         $result[] = $this->person_company_interface->addPersonCompany($inputs, $user)['result'];
+
+        $inputs['model_type'] = Person::class;
+        $inputs['model_id'] = $add_person_result['data']->id;
+
+        $result[] = $this->address_interface->addAddress($inputs, $user);
 
         if (!in_array(false, $result)) {
             $flag = true;

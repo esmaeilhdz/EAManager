@@ -10,6 +10,7 @@ use App\Repositories\AddressRepository;
 use App\Repositories\AttachmentRepository;
 use App\Repositories\BillRepository;
 use App\Repositories\ChatGroupPersonRepository;
+use App\Repositories\CityRepository;
 use App\Repositories\EnumerationRepository;
 use App\Repositories\GroupConversationRepository;
 use App\Repositories\ChatRepository;
@@ -31,6 +32,7 @@ use App\Repositories\Interfaces\iAddress;
 use App\Repositories\Interfaces\iAttachment;
 use App\Repositories\Interfaces\iBill;
 use App\Repositories\Interfaces\iChat;
+use App\Repositories\Interfaces\iCity;
 use App\Repositories\Interfaces\iEnumeration;
 use App\Repositories\Interfaces\iGroupConversation;
 use App\Repositories\Interfaces\iChatGroupPerson;
@@ -52,6 +54,7 @@ use App\Repositories\Interfaces\iPayment;
 use App\Repositories\Interfaces\iPermission;
 use App\Repositories\Interfaces\iPermissionGroup;
 use App\Repositories\Interfaces\iPersonCompany;
+use App\Repositories\Interfaces\iProvince;
 use App\Repositories\Interfaces\iReport;
 use App\Repositories\Interfaces\iRole;
 use App\Repositories\Interfaces\iSalary;
@@ -74,6 +77,7 @@ use App\Repositories\PaymentRepository;
 use App\Repositories\PermissionGroupRepository;
 use App\Repositories\PermissionRepository;
 use App\Repositories\PersonCompanyRepository;
+use App\Repositories\ProvinceRepository;
 use App\Repositories\ReportRepository;
 use App\Repositories\RoleRepository;
 use App\Repositories\SalaryDeductionRepository;
@@ -142,6 +146,8 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(iEnumeration::class, EnumerationRepository::class);
         $this->app->bind(iPermissionGroup::class, PermissionGroupRepository::class);
         $this->app->bind(iSalaryDeduction::class, SalaryDeductionRepository::class);
+        $this->app->bind(iProvince::class, ProvinceRepository::class);
+        $this->app->bind(iCity::class, CityRepository::class);
     }
 
     /**
