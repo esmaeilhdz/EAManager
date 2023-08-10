@@ -41,7 +41,7 @@ class CompanyRepository implements Interfaces\iCompany
                 ])
                 ->whereIn('id', $company_ids)
                 ->whereRaw($inputs['where']['search']['condition'], $inputs['where']['search']['params'])
-                ->orderByRaw($inputs['order_by'])
+                ->orderBy('parent_id')
                 ->paginate($inputs['per_page']);
         } catch (\Exception $e) {
             throw new ApiException($e);
