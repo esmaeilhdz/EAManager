@@ -29,7 +29,7 @@ class SalePeriodAddRequest extends FormRequest
         return [
             'name' => 'required|string',
             'start_date' => "required|date|after:$start_date",
-            'end_date' => "required|date|before:$end_date"
+            'end_date' => "nullable|date|before:$end_date"
         ];
     }
 }
