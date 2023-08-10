@@ -48,9 +48,12 @@ class UserHelper
         $users = $this->user_interface->getUsers($inputs, $user);
 
         $users->transform(function ($item) {
-            $role_codes = null;
+            $roles = null;
             foreach ($item->roles as $role) {
-                $role_codes[] = $role->code;
+                $roles[] = [
+                    'code' => $role->code,
+                    'caption' => $role->caption
+                ];
             }
             return [
                 'code' => $item->code,
@@ -59,7 +62,7 @@ class UserHelper
                 'national_code' => $item->person->national_code,
                 'email' => $item->email,
                 'mobile' => $item->mobile,
-                'role_code' => $role_codes,
+                'roles' => $roles,
                 'creator' => is_null($item->creator->person) ? null : [
                     'user' => [
                         'full_name' => $item->creator->person->name . ' ' . $item->creator->person->family,
