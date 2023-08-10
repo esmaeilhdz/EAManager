@@ -45,6 +45,7 @@ class PersonEditRequest extends FormRequest
             'family' => ['required', 'string', new MbMin(5), new MbMax(35)],
             'father_name' => ['required', 'string', new MbMin(3), new MbMax(30)],
             'national_code' => 'required|string|size:10',
+            'mobile' => 'nullable|string|size:11|starts_with:09',
             'insurance_no' => 'nullable|string',
             'address_id' => 'required|numeric|min:1',
             'province_id' => 'required|numeric|min:1',

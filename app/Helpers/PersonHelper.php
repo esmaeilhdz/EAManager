@@ -58,6 +58,7 @@ class PersonHelper
                 'name' => $item->name,
                 'family' => $item->family,
                 'national_code' => $item->national_code,
+                'mobile' => $item->mobile,
                 'score' => $item->score,
                 'creator' => is_null($item->creator->person) ? null : [
                     'person' => [
@@ -112,7 +113,7 @@ class PersonHelper
      */
     public function getPersonDetail($code): array
     {
-        $select = ['id', 'internal_code', 'name', 'family', 'father_name', 'national_code', 'identity', 'passport_no', 'score'];
+        $select = ['id', 'internal_code', 'name', 'family', 'father_name', 'national_code', 'insurance_no', 'mobile', 'identity', 'passport_no', 'score'];
         $relation = [
             'attachment' => function ($q) {
                 $q->select(['model_type', 'model_id', 'path', 'file_name', 'ext'])
@@ -138,6 +139,7 @@ class PersonHelper
         $result['father_name'] = $person->father_name;
         $result['national_code'] = $person->national_code;
         $result['insurance_no'] = $person->insurance_no;
+        $result['mobile'] = $person->mobile;
         $result['identity'] = $person->identity;
         $result['passport_no'] = $person->passport_no;
         $result['score'] = $person->score;

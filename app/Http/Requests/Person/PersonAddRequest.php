@@ -30,6 +30,7 @@ class PersonAddRequest extends FormRequest
             'family' => ['required', 'string', new MbMin(5), new MbMax(35)],
             'father_name' => ['required', 'string', new MbMin(3), new MbMax(30)],
             'national_code' => 'required|string|size:10',
+            'mobile' => 'nullable|string|size:11|starts_with:09',
             'identity' => 'required|string|max:10',
             'passport_no' => 'nullable|string',
             'insurance_no' => 'nullable|string',
