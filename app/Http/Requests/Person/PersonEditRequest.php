@@ -42,7 +42,7 @@ class PersonEditRequest extends FormRequest
             'code' => 'required|string|size:32',
             'internal_code' => 'required|string|size:12',
             'name' => ['required', 'string', new MbMin(2), new MbMax(30)],
-            'family' => ['required', 'string', new MbMin(5), new MbMax(35)],
+            'family' => ['required', 'string', new MbMin(3), new MbMax(35)],
             'father_name' => ['required', 'string', new MbMin(3), new MbMax(30)],
             'national_code' => 'required|string|size:10',
             'mobile' => 'nullable|string|size:11|starts_with:09',
@@ -53,7 +53,7 @@ class PersonEditRequest extends FormRequest
             'address_kind_id' => 'required|numeric|min:1',
             'tel' => 'nullable|string',
             'address' => 'required|string',
-            'identity' => 'required|string|max:10',
+            'identity' => 'nullable|string|max:10',
             'passport_no' => 'nullable|string',
             'score' => 'required|numeric|min:0',
         ];
