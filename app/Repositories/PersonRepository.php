@@ -22,8 +22,9 @@ class PersonRepository implements Interfaces\iPerson
     public function getPersons($inputs, $user): LengthAwarePaginator
     {
         try {
-            $roles = $user->getRoleNames()->pluck('name'); // Returns a collection
-            if (!in_array('super_admin', $roles)) {
+            $company_id = null;
+            $roles = $user->getRoleNames(); // Returns a collection
+            if (!$user->hasRole('super_admin', $roles)) {
                 $company_id = $this->getCurrentCompanyOfUser($user);
             }
             return Person::query()
@@ -42,7 +43,7 @@ class PersonRepository implements Interfaces\iPerson
                     'created_at'
                 ])
                 ->whereRaw($inputs['where']['search']['condition'], $inputs['where']['search']['params'])
-                ->when(!$user->hasRole('super_admin'), function ($q) use ($company_id) {
+                ->when(!is_null($company_id), function ($q) use ($company_id) {
                     $q->whereHas('person_company', function ($q2) use ($company_id) {
                         $q2->where('company_id', $company_id);
                     });
