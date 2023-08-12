@@ -53,6 +53,13 @@ class PersonHelper
         $persons = $this->person_interface->getPersons($inputs, $user);
 
         $persons->transform(function ($item) {
+            $companies = [];
+            foreach ($item->person_company as $person_company) {
+                $companies[] = [
+                    'code' => $person_company->company->code,
+                    'name' => $person_company->company->name
+                ];
+            }
             return [
                 'code' => $item->code,
                 'name' => $item->name,
@@ -60,6 +67,7 @@ class PersonHelper
                 'national_code' => $item->national_code,
                 'mobile' => $item->mobile,
                 'score' => $item->score,
+                'companies' => $companies,
                 'creator' => is_null($item->creator->person) ? null : [
                     'person' => [
                         'full_name' => $item->creator->person->name . ' ' . $item->creator->person->family,

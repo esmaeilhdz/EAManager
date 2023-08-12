@@ -29,10 +29,13 @@ class PersonRepository implements Interfaces\iPerson
             }
             return Person::query()
                 ->with([
+                    'person_company:person_id,company_id',
+                    'person_company.company:id,code,name',
                     'creator:id,person_id',
                     'creator.person:id,name,family'
                 ])
                 ->select([
+                    'id',
                     'code',
                     'internal_code',
                     'name',
