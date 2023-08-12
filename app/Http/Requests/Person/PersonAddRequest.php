@@ -42,8 +42,8 @@ class PersonAddRequest extends FormRequest
             'company_code' => 'required|string|size:32',
             'start_work_date' => 'required|date',
             'end_work_date' => 'nullable|date',
-            'suggest_salary' => 'required|numeric|min:1',
-            'daily_income' => 'required|numeric|min:1',
+            'suggest_salary' => 'nullable|numeric|min:1',
+            'daily_income' => 'nullable|numeric|min:1',
             'position' => 'required|string',
         ];
     }
