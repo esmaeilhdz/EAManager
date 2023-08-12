@@ -23,8 +23,7 @@ class PersonRepository implements Interfaces\iPerson
     {
         try {
             $company_id = null;
-            $roles = $user->getRoleNames(); // Returns a collection
-            if (!$user->hasRole('super_admin', $roles)) {
+            if (!$user->hasRole('super_admin')) {
                 $company_id = $this->getCurrentCompanyOfUser($user);
             }
             return Person::query()
