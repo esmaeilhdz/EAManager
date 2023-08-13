@@ -82,11 +82,16 @@ class AuthController extends Controller
             }
 
             $user = User::query()
+                ->with('person')
                 ->where('email', $inputs['username'])
                 ->orWhere('mobile', $inputs['username'])
                 ->firstOrFail();
         } catch (\Exception $e) {
             throw new ApiException($e, false);
+        }
+
+        if (is_null($user->person)) {
+            return $this->api_response->response(401, __('messages.your_account_is_account'), null);
         }
 
         // ایجاد توکن
