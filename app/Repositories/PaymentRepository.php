@@ -28,7 +28,8 @@ class PaymentRepository implements Interfaces\iPayment
                 'creator.person:id,name,family',
                 'payment_type:enum_id,enum_caption',
                 'gate:enum_id,enum_caption',
-                'account:id,branch_name'
+                'account:id,bank_id',
+                'account.bank:enum_id,enum_caption',
             ])
                 ->select([
                     'id',
@@ -65,7 +66,8 @@ class PaymentRepository implements Interfaces\iPayment
                 'creator.person:id,name,family',
                 'payment_type:enum_id,enum_caption',
                 'gate:enum_id,enum_caption',
-                'account:id,branch_name'
+                'account:id,bank_id',
+                'account.bank:enum_id,enum_caption',
             ])
                 ->select([
                     'id',

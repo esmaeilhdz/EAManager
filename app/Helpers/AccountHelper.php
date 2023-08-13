@@ -25,11 +25,6 @@ class AccountHelper
      */
     public function getAccounts($inputs): array
     {
-        $search_data = $param_array = [];
-        $search_data[] = $this->GWC($inputs['search_txt'] ?? '', 'string:branch_name');
-        $inputs['where']['search']['condition'] = $this->generateWhereCondition($search_data, $param_array);
-        $inputs['where']['search']['params'] = $param_array;
-
         $inputs['per_page'] = $this->calculatePerPage($inputs);
 
         $accounts = $this->account_interface->getAccounts($inputs);
@@ -38,7 +33,6 @@ class AccountHelper
             return [
                 'code' => $item->code,
                 'bank' => $item->bank,
-                'branch_name' => $item->branch_name,
                 'account_no' => $item->account_no,
                 'sheba_no' => $item->sheba_no,
                 'card_no' => $item->card_no,

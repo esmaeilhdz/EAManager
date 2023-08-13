@@ -81,7 +81,8 @@ class BillHelper
         $relation = [
             'bill_type:enum_id,enum_caption',
             'payment:model_type,model_id,account_id,payment_date,payment_tracking_code,description,price',
-            'payment.account:id,branch_name'
+            'payment.account:id,bank_id',
+            'payment.account.bank:enum_id,enum_caption',
         ];
         $bill = $this->bill_interface->getBillById($id, $user, $select, $relation);
         if (is_null($bill)) {

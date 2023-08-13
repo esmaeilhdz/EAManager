@@ -32,13 +32,15 @@ class AccountRepository implements Interfaces\iAccount
                     'id',
                     'code',
                     'bank_id',
-                    'branch_name',
                     'account_no',
                     'sheba_no',
                     'card_no',
                     'created_by',
                     'created_at'
                 ])
+                ->when(isset($inputs['search_txt']), function ($q) use ($inputs) {
+                    $q->whereLike('enum_caption', $inputs['search_txt'])->where('category_name', 'bank');
+                })
                 ->whereRaw($inputs['where']['search']['condition'], $inputs['where']['search']['params'])
                 ->paginate($inputs['per_page']);
         } catch (\Exception $e) {
@@ -57,7 +59,6 @@ class AccountRepository implements Interfaces\iAccount
                     'id',
                     'code',
                     'bank_id',
-                    'branch_name',
                     'account_no',
                     'sheba_no',
                     'card_no'
@@ -75,7 +76,6 @@ class AccountRepository implements Interfaces\iAccount
             return Account::whereCode($inputs['code'])
                 ->update([
                     'bank_id' => $inputs['bank_id'],
-                    'branch_name' => $inputs['branch_name'],
                     'account_no' => $inputs['account_no'],
                     'sheba_no' => $inputs['sheba_no'],
                     'card_no' => $inputs['card_no']
@@ -94,7 +94,6 @@ class AccountRepository implements Interfaces\iAccount
             $account->code = $this->randomString();
             $account->company_id = $company_id;
             $account->bank_id = $inputs['bank_id'];
-            $account->branch_name = $inputs['branch_name'];
             $account->account_no = $inputs['account_no'];
             $account->sheba_no = $inputs['sheba_no'];
             $account->card_no = $inputs['card_no'];

@@ -39,7 +39,6 @@ class AccountEditRequest extends FormRequest
         return [
             'code' => 'required|string|size:32',
             'bank_id' => 'required|numeric|min:1',
-            'branch_name' => 'nullable|string',
             'account_no' => 'required|string',
             'sheba_no' => 'required|string',
             'card_no' => 'required|string',
