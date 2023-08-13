@@ -50,6 +50,7 @@ class PersonRepository implements Interfaces\iPerson
                         $q2->where('company_id', $company_id);
                     });
                 })
+                ->where('id', '<>', 1)
                 ->orderByRaw($inputs['order_by'])
                 ->paginate($inputs['per_page']);
         } catch (\Exception $e) {
