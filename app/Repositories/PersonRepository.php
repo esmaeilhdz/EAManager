@@ -181,7 +181,7 @@ class PersonRepository implements Interfaces\iPerson
             $person = new Person();
 
             $person->code = $this->randomString();
-            $person->internal_code = $this->randomPersonnelCode();
+            $person->internal_code = $this->randomPersonnelCode($inputs['company_id']);
             $person->name = $inputs['name'];
             $person->family = $inputs['family'];
             $person->father_name = $inputs['father_name'];
