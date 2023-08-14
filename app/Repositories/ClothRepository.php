@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Exceptions\ApiException;
 use App\Models\Cloth;
-use App\Models\SalePeriod;
+use App\Models\ClothBuy;
 use App\Traits\Common;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
@@ -15,19 +15,29 @@ class ClothRepository implements Interfaces\iCloth
     public function getClothes($inputs)
     {
         try {
-            return Cloth::with([
+            return ClothBuy::with([
                 'creator:id,person_id',
                 'creator.person:id,name,family',
-                'color:enum_id,enum_caption'
+                'cloth:id,code,color_id,name',
+                'cloth.color:enum_id,enum_caption',
+                'seller_place:id,name',
+                'warehouse_place:id,name',
             ])
                 ->select([
-                    'code',
-                    'name',
-                    'color_id',
+                    'cloth_id',
+                    'seller_place_id',
+                    'warehouse_place_id',
+                    'metre',
+                    'roll_count',
+                    'receive_date',
+                    'factor_no',
+                    'price',
                     'created_by',
                     'created_at'
                 ])
-                ->whereRaw($inputs['where']['search']['condition'], $inputs['where']['search']['params'])
+                ->whereHas('cloth', function ($q) use ($inputs) {
+                    $q->whereRaw($inputs['where']['search']['condition'], $inputs['where']['search']['params']);
+                })
                 ->paginate($inputs['per_page']);
         } catch (\Exception $e) {
             throw new ApiException($e);

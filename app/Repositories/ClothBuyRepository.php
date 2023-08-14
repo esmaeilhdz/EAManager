@@ -91,6 +91,8 @@ class ClothBuyRepository implements Interfaces\iClothBuy
             $cloth_buy->metre = $inputs['metre'];
             $cloth_buy->roll_count = $inputs['roll_count'];
             $cloth_buy->receive_date = $inputs['receive_date'];
+            $cloth_buy->factor_no = $inputs['factor_no'];
+            $cloth_buy->price = $inputs['price'];
 
             return $cloth_buy->save();
         } catch (\Exception $e) {
@@ -109,6 +111,8 @@ class ClothBuyRepository implements Interfaces\iClothBuy
             $cloth_buy->metre = $inputs['metre'];
             $cloth_buy->roll_count = $inputs['roll_count'];
             $cloth_buy->receive_date = $inputs['receive_date'];
+            $cloth_buy->factor_no = $inputs['factor_no'];
+            $cloth_buy->price = $inputs['price'];
             $cloth_buy->created_by = $user->id;
 
             $result = $cloth_buy->save();

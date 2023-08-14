@@ -42,6 +42,8 @@ class ClothBuyAddRequest extends FormRequest
             'metre' => 'required|numeric|min:1',
             'roll_count' => 'required|numeric|min:1',
             'receive_date' => 'required|date',
+            'price' => 'required|string',
+            'factor_no' => 'required|string',
         ];
     }
 }

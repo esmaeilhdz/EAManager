@@ -37,12 +37,19 @@ class ClothHelper
 
         $clothes->transform(function ($item) {
             return [
-                'code' => $item->code,
-                'name' => $item->name,
-                'color' => [
-                    'id' => $item->color_id,
-                    'caption' => $item->color->enum_caption
+                'cloth' => [
+                    'code' => $item->cloth->code,
+                    'name' => $item->cloth->name,
+                    'color' => [
+                        'id' => $item->cloth->color_id,
+                        'caption' => $item->cloth->color->enum_caption
+                    ],
                 ],
+                'seller_place' => $item->seller_place->name,
+                'warehouse_place' => $item->warehouse_place->name,
+                'receive_date' => $item->receive_date,
+                'factor_no' => $item->factor_no,
+                'price' => $item->price,
                 'creator' => is_null($item->creator->person) ? null : [
                     'person' => [
                         'full_name' => $item->creator->person->name . ' ' . $item->creator->person->family,
