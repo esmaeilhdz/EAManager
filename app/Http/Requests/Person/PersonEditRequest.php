@@ -51,7 +51,7 @@ class PersonEditRequest extends FormRequest
             'province_id' => 'required|numeric|min:1',
             'city_id' => 'required|numeric|min:1',
             'address_kind_id' => 'required|numeric|min:1',
-            'card_no' => 'required|string|size:16',
+            'card_no' => 'nullable|string|size:16',
             'bank_account_no' => 'nullable|string',
             'sheba_no' => 'nullable|string|size:24',
             'tel' => 'nullable|string',

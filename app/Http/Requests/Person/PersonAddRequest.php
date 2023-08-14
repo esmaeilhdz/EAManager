@@ -34,7 +34,7 @@ class PersonAddRequest extends FormRequest
             'identity' => 'nullable|string|max:10',
             'passport_no' => 'nullable|string',
             'insurance_no' => 'nullable|string',
-            'card_no' => 'required|string|size:16',
+            'card_no' => 'nullable|string|size:16',
             'bank_account_no' => 'nullable|string',
             'sheba_no' => 'nullable|string|size:24',
             'province_id' => 'required|numeric|min:1',
