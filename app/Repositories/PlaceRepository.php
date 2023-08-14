@@ -79,6 +79,23 @@ class PlaceRepository implements Interfaces\iPlace
         }
     }
 
+    public function getPlaceCombo($inputs, $user)
+    {
+        try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
+            return Place::select([
+                'id',
+                'name',
+            ])
+                ->where('name', 'like', '%'.$inputs['search_txt'].'%')
+                ->where('company_id', $company_id)
+                ->limit(50)
+                ->get();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
     public function editPlace($inputs)
     {
         try {
@@ -118,8 +135,8 @@ class PlaceRepository implements Interfaces\iPlace
             $place->department_manager_name = $inputs['department_manager_name'];
             $place->department_manager_national_code = $inputs['department_manager_national_code'] ?? null;
             $place->department_manager_identity = $inputs['department_manager_identity'] ?? null;
-            $place->capacity = $inputs['capacity'];
-            $place->from_date = $inputs['from_date'];
+            $place->capacity = $inputs['capacity'] ?? null;
+            $place->from_date = $inputs['from_date'] ?? null;
             $place->created_by = $user->id;
 
             $result = $place->save();

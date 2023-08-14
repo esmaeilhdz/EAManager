@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Repositories\Interfaces\iCloth;
 use App\Repositories\Interfaces\iProduct;
 use App\Traits\Common;
 use Illuminate\Support\Facades\Auth;
@@ -12,10 +13,12 @@ class ProductHelper
 
     // attributes
     public iProduct $product_interface;
+    public iCloth $cloth_interface;
 
-    public function __construct(iProduct $product_interface)
+    public function __construct(iProduct $product_interface, iCloth $cloth_interface)
     {
         $this->product_interface = $product_interface;
+        $this->cloth_interface = $cloth_interface;
     }
 
     /**
@@ -47,7 +50,10 @@ class ProductHelper
                 'product_warehouse_count' => $warehouse_count,
                 'price' => $item->productPrice->final_price ?? null,
                 'cloth' => [
-                    'name' => $item->cloth->name
+                    'name' => $item->cloth->name,
+                    'color' => [
+                        $item->cloth->color->caption
+                    ]
                 ],
                 'creator' => is_null($item->creator->person) ? null : [
                     'person' => [
@@ -107,6 +113,16 @@ class ProductHelper
             ];
         }
 
+        $cloth = $this->cloth_interface->getClothByCode($inputs['cloth_code']);
+        if (is_null($cloth)) {
+            return [
+                'result' => false,
+                'message' => __('messages.record_not_found'),
+                'data' => null
+            ];
+        }
+
+        $inputs['cloth_id'] = $cloth->id;
         $result = $this->product_interface->editProduct($product, $inputs);
         return [
             'result' => (bool) $result,
@@ -123,6 +139,17 @@ class ProductHelper
     public function addProduct($inputs): array
     {
         $user = Auth::user();
+
+        $cloth = $this->cloth_interface->getClothByCode($inputs['cloth_code']);
+        if (is_null($cloth)) {
+            return [
+                'result' => false,
+                'message' => __('messages.record_not_found'),
+                'data' => null
+            ];
+        }
+
+        $inputs['cloth_id'] = $cloth->id;
         $result = $this->product_interface->addProduct($inputs, $user);
         return [
             'result' => $result['result'],
@@ -138,7 +165,7 @@ class ProductHelper
      */
     public function deleteProduct($inputs): array
     {
-        $product = $this->product_interface->getProductByCode($inputs['code'], ['id']);
+        $product = $this->product_interface->getProductByCode($inputs['code'], ['id', 'code']);
         if (is_null($product)) {
             return [
                 'result' => false,

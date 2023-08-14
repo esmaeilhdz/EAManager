@@ -12,6 +12,13 @@ class Salary extends Model
 
     protected $hidden = ['company_id', 'person_id', 'created_by', 'updated_at'];
 
+    protected function isCheckout(): Attribute
+    {
+        return Attribute::get(
+            get: fn ($value) => (bool) $value,
+        );
+    }
+
     protected function fromDate(): Attribute
     {
         return Attribute::get(
@@ -46,6 +53,11 @@ class Salary extends Model
     public function person()
     {
         return $this->hasOne(Person::class, 'id', 'person_id');
+    }
+
+    public function salary_deduction()
+    {
+        return $this->hasMany(SalaryDeduction::class, 'salary_id', 'id');
     }
 
     public function creator()

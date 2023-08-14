@@ -125,4 +125,13 @@ class RoleRepository implements Interfaces\iRole
             throw new ApiException($e);
         }
     }
+
+    public function setRole($user, $role_name)
+    {
+        try {
+            return $user->syncRoles($role_name);
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
 }

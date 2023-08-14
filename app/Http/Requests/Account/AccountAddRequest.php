@@ -24,7 +24,7 @@ class AccountAddRequest extends FormRequest
     public function rules()
     {
         return [
-            'branch_name' => 'required|string',
+            'bank_id' => 'required|numeric|min:1',
             'account_no' => 'required|string',
             'sheba_no' => 'required|string',
             'card_no' => 'required|string',

@@ -13,12 +13,16 @@ class CreateAccountsTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('cheques');
+        Schema::dropIfExists('payments');
+        Schema::dropIfExists('account_cheques');
         Schema::dropIfExists('accounts');
         Schema::create('accounts', function (Blueprint $table) {
             $table->id();
             $table->string('code', 32)->unique()->index();
             $table->unsignedBigInteger('company_id');
-            $table->string('branch_name')->index()->comment(' نام شعبه بانک');
+            $table->unsignedTinyInteger('bank_id')->index();
+            $table->string('branch_name')->nullable()->index()->comment(' نام شعبه بانک');
             $table->string('account_no', 100);
             $table->string('sheba_no', 30);
             $table->string('card_no', 20);

@@ -26,7 +26,7 @@ class ProductAddRequest extends FormRequest
     public function rules()
     {
         return [
-            'cloth_id' => 'required|numeric|min:1',
+            'cloth_code' => 'required|string|size:32',
             'name' => ['required', 'string', new MbMin(2), new MbMax(100)],
             'has_accessories' => 'required|numeric|in:0,1',
         ];

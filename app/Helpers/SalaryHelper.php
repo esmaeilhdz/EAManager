@@ -2,10 +2,14 @@
 
 namespace App\Helpers;
 
+use App\Exceptions\ApiException;
+use App\Repositories\Interfaces\iPayment;
 use App\Repositories\Interfaces\iPerson;
+use App\Repositories\Interfaces\iPersonCompany;
 use App\Repositories\Interfaces\iSalary;
 use App\Traits\Common;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class SalaryHelper
 {
@@ -14,20 +18,40 @@ class SalaryHelper
     // attributes
     public iPerson $person_interface;
     public iSalary $salary_interface;
+    public iPersonCompany $person_company_interface;
+    public iPayment $payment_interface;
 
     public function __construct(
         iPerson $person_interface,
-        iSalary $salary_interface
+        iSalary $salary_interface,
+        iPersonCompany $person_company_interface,
+        iPayment $payment_interface
     )
     {
         $this->person_interface = $person_interface;
         $this->salary_interface = $salary_interface;
+        $this->person_company_interface = $person_company_interface;
+        $this->payment_interface = $payment_interface;
     }
+
+    /**
+     * @throws ApiException
+     */
+    private function calculatePayable($person_id, $user, $reward_price, $overtime_hour, $deduction_price): float
+    {
+        $company_id = $this->getCurrentCompanyOfUser($user);
+        $person_company = $this->person_company_interface->getPersonCompanyDetail($person_id, $company_id);
+
+        $salary_per_hour = $person_company->daily_income / 8;
+        return ($person_company->suggest_salary + $reward_price + ($salary_per_hour * 1.4 * $overtime_hour)) - $deduction_price;
+    }
+
 
     /**
      * سرویس لیست حقوق های افراد
      * @param $inputs
      * @return array
+     * @throws ApiException
      */
     public function getAllSalaries($inputs): array
     {
@@ -42,7 +66,12 @@ class SalaryHelper
 
         $salaries = $this->salary_interface->getAllSalaries($inputs, $user);
 
-        $salaries->transform(function ($item) {
+        $salaries->transform(function ($item) use ($user) {
+            $sum_deduction = 0;
+            foreach ($item->salary_deduction as $salary_deduction) {
+                $sum_deduction += $salary_deduction->price;
+            }
+
             return [
                 'id' => $item->id,
                 'person' => [
@@ -54,7 +83,9 @@ class SalaryHelper
                 'to_date' => $item->to_date,
                 'reward_price' => $item->reward_price,
                 'overtime_hour' => $item->overtime_hour,
-                'salary_deduction' => $item->salary_deduction,
+                'sum_deduction' => $sum_deduction,
+                'is_checkout' => $item->is_checkout,
+                'payable' => $this->calculatePayable($item->person_id, $user, $item->reward_price, $item->overtime_hour, $sum_deduction),
                 'creator' => is_null($item->creator->person) ? null : [
                     'person' => [
                         'full_name' => $item->creator->person->name . ' ' . $item->creator->person->family,
@@ -75,6 +106,7 @@ class SalaryHelper
      * سرویس لیست حقوق های فرد
      * @param $inputs
      * @return array
+     * @throws ApiException
      */
     public function getSalaries($inputs): array
     {
@@ -88,11 +120,6 @@ class SalaryHelper
             ];
         }
 
-        /*$search_data = $param_array = [];
-        $search_data[] = $this->GWC($inputs['search_txt'] ?? '', 'string:name;family;national_code;concat_ws(" ",name,family);replace(concat_ws("",name,family)," ","")');
-        $inputs['where']['search']['condition'] = $this->generateWhereCondition($search_data, $param_array);
-        $inputs['where']['search']['params'] = $param_array;*/
-
         $inputs['person_id'] = $person->id;
         $inputs['order_by'] = $this->orderBy($inputs, 'salaries');
         $inputs['per_page'] = $this->calculatePerPage($inputs);
@@ -100,14 +127,21 @@ class SalaryHelper
         $user = Auth::user();
         $salaries = $this->salary_interface->getSalaries($inputs, $user);
 
-        $salaries->transform(function ($item) {
+        $salaries->transform(function ($item) use ($person, $user) {
+            $sum_deduction = 0;
+            foreach ($item->salary_deduction as $salary_deduction) {
+                $sum_deduction += $salary_deduction->price;
+            }
+
             return [
                 'id' => $item->id,
                 'from_date' => $item->from_date,
                 'to_date' => $item->to_date,
                 'reward_price' => $item->reward_price,
                 'overtime_hour' => $item->overtime_hour,
-                'salary_deduction' => $item->salary_deduction,
+                'sum_deduction' => $sum_deduction,
+                'is_checkout' => $item->is_checkout,
+                'payable' => $this->calculatePayable($person->id, $user, $item->reward_price, $item->overtime_hour, $sum_deduction),
                 'creator' => is_null($item->creator->person) ? null : [
                     'person' => [
                         'full_name' => $item->creator->person->name . ' ' . $item->creator->person->family,
@@ -150,8 +184,10 @@ class SalaryHelper
 
         $inputs['person_id'] = $person->id;
         $user = Auth::user();
-        $select = ['person_id', 'from_date', 'to_date', 'reward_price', 'overtime_hour', 'salary_deduction', 'description'];
+        $select = ['person_id', 'from_date', 'to_date', 'reward_price', 'overtime_hour', 'is_checkout', 'description'];
         $relation = [
+            'salary_deduction:salary_id,product_id,price,description',
+            'salary_deduction.product:id,name',
             'person:id,code,name,family'
         ];
         $salary = $this->salary_interface->getSalaryDetail($inputs, $user, $select, $relation);
@@ -163,10 +199,33 @@ class SalaryHelper
             ];
         }
 
+        $salary_deductions = null;
+        foreach ($salary->salary_deduction as $salary_deduction) {
+            $salary_deductions[] = [
+                'product_name' => $salary_deduction->product->name,
+                'price' => $salary_deduction->price,
+                'description' => $salary_deduction->description,
+            ];
+        }
+
+        $return = [
+            'person' => [
+                'name' => $salary->person->name,
+                'family' => $salary->person->family
+            ],
+            'from_date' => $salary->from_date,
+            'to_date' => $salary->to_date,
+            'reward_price' => $salary->reward_price,
+            'overtime_hour' => $salary->overtime_hour,
+            'is_checkout' => $salary->is_checkout,
+            'description' => $salary->description,
+            'salary_deductions' => $salary_deductions
+        ];
+
         return [
             'result' => true,
             'message' => __('messages.success'),
-            'data' => $salary
+            'data' => $return
         ];
     }
 
@@ -206,6 +265,56 @@ class SalaryHelper
     }
 
     /**
+     * سرویس تسویه حساب حقوق
+     * @param $inputs
+     * @return array
+     */
+    public function checkoutSalary($inputs): array
+    {
+        $person = $this->person_interface->getPersonByCode($inputs['code'], ['id']);
+        if (is_null($person)) {
+            return [
+                'result' => false,
+                'message' => __('messages.record_not_found'),
+                'data' => null
+            ];
+        }
+
+        $user = Auth::user();
+        $inputs['person_id'] = $person->id;
+        $select = ['id', 'is_checkout'];
+        $salary = $this->salary_interface->getSalaryDetail($inputs, $user, $select);
+        if (is_null($salary)) {
+            return [
+                'result' => false,
+                'message' => __('messages.record_not_found'),
+                'data' => null
+            ];
+        }
+
+        DB::beginTransaction();
+        $result[] = $this->salary_interface->checkoutSalary($salary);
+        $inputs['model_type'] = $this->convertModelNameToNamespace('salary');
+        $inputs['model_id'] = $salary->id;
+        $result_payment = $this->payment_interface->addPayment($inputs, $user);
+        $result[] = $result_payment['result'];
+
+        if (!in_array(false, $result)) {
+            $flag = true;
+            DB::commit();
+        } else {
+            $flag = false;
+            DB::rollBack();
+        }
+
+        return [
+            'result' => $flag,
+            'message' => $flag ? __('messages.success') : __('messages.fail'),
+            'data' => null
+        ];
+    }
+
+    /**
      * سرویس افزودن حقوق فرد
      * @param $inputs
      * @return array
@@ -230,6 +339,5 @@ class SalaryHelper
             'data' => $result['data']
         ];
     }
-
 
 }

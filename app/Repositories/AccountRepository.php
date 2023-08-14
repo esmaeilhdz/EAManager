@@ -21,22 +21,26 @@ class AccountRepository implements Interfaces\iAccount
     {
         try {
             return Account::with([
-                'creator:id,person_id',
-                'creator.person:id,name,family',
                 'account_cheques' => function ($q) {
                     $q->select(['account_id'])->where('is_enable', 1);
-                }
+                },
+                'bank:enum_id,enum_caption',
+                'creator:id,person_id',
+                'creator.person:id,name,family',
             ])
                 ->select([
                     'id',
                     'code',
-                    'branch_name',
+                    'bank_id',
                     'account_no',
                     'sheba_no',
                     'card_no',
                     'created_by',
                     'created_at'
                 ])
+                ->when(isset($inputs['search_txt']), function ($q) use ($inputs) {
+                    $q->whereLike('enum_caption', $inputs['search_txt'])->where('category_name', 'bank');
+                })
                 ->whereRaw($inputs['where']['search']['condition'], $inputs['where']['search']['params'])
                 ->paginate($inputs['per_page']);
         } catch (\Exception $e) {
@@ -48,12 +52,13 @@ class AccountRepository implements Interfaces\iAccount
     {
         try {
             return Account::with([
+                'bank:enum_id,enum_caption',
                 'account_cheques:account_id,cheque_no_from,cheque_no_to,is_enable'
             ])
                 ->select([
                     'id',
                     'code',
-                    'branch_name',
+                    'bank_id',
                     'account_no',
                     'sheba_no',
                     'card_no'
@@ -70,7 +75,7 @@ class AccountRepository implements Interfaces\iAccount
         try {
             return Account::whereCode($inputs['code'])
                 ->update([
-                    'branch_name' => $inputs['branch_name'],
+                    'bank_id' => $inputs['bank_id'],
                     'account_no' => $inputs['account_no'],
                     'sheba_no' => $inputs['sheba_no'],
                     'card_no' => $inputs['card_no']
@@ -88,7 +93,7 @@ class AccountRepository implements Interfaces\iAccount
 
             $account->code = $this->randomString();
             $account->company_id = $company_id;
-            $account->branch_name = $inputs['branch_name'];
+            $account->bank_id = $inputs['bank_id'];
             $account->account_no = $inputs['account_no'];
             $account->sheba_no = $inputs['sheba_no'];
             $account->card_no = $inputs['card_no'];

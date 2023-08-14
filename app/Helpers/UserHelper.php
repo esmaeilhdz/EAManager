@@ -3,9 +3,11 @@
 namespace App\Helpers;
 
 use App\Repositories\Interfaces\iPerson;
+use App\Repositories\Interfaces\iRole;
 use App\Repositories\Interfaces\iUser;
 use App\Traits\Common;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class UserHelper
 {
@@ -13,14 +15,17 @@ class UserHelper
 
     // attributes
     public iUser $user_interface;
+    public iRole $role_interface;
     public iPerson $person_interface;
 
     public function __construct(
         iUser $user_interface,
+        iRole $role_interface,
         iPerson $person_interface
     )
     {
         $this->user_interface = $user_interface;
+        $this->role_interface = $role_interface;
         $this->person_interface = $person_interface;
     }
 
@@ -43,12 +48,21 @@ class UserHelper
         $users = $this->user_interface->getUsers($inputs, $user);
 
         $users->transform(function ($item) {
+            $roles = null;
+            foreach ($item->roles as $role) {
+                $roles[] = [
+                    'code' => $role->code,
+                    'caption' => $role->caption
+                ];
+            }
             return [
                 'code' => $item->code,
                 'name' => $item->person->name,
                 'family' => $item->person->family,
                 'national_code' => $item->person->national_code,
+                'email' => $item->email,
                 'mobile' => $item->mobile,
+                'roles' => $roles,
                 'creator' => is_null($item->creator->person) ? null : [
                     'user' => [
                         'full_name' => $item->creator->person->name . ' ' . $item->creator->person->family,
@@ -124,6 +138,38 @@ class UserHelper
 
     }
 
+    public function editUserRole($inputs)
+    {
+        $user = $this->user_interface->getUserByCode($inputs['code']);
+        if (is_null($user)) {
+            return [
+                'result' => false,
+                'message' => __('messages.record_not_found'),
+                'data' => null
+            ];
+        }
+
+        $role_names = [];
+        foreach ($inputs['role_code'] as $role_code) {
+            $role = $this->role_interface->getRoleByCode($role_code, ['id', 'name']);
+            if (is_null($role)) {
+                return [
+                    'result' => false,
+                    'message' => __('messages.role_not_found'),
+                    'data' => null
+                ];
+            }
+            $role_names[] = $role->name;
+        }
+
+        $result = $user->syncRoles($role_names);
+        return [
+            'result' => $result,
+            'message' => $result ? __('messages.success') : __('messages.failed'),
+            'data' => null
+        ];
+    }
+
     /**
      * سرویس ویرایش کاربر
      * @param $inputs
@@ -166,11 +212,26 @@ class UserHelper
 
         $inputs['person_id'] = $person->id;
         $user = Auth::user();
-        $result = $this->user_interface->addUser($inputs, $user);
+
+        DB::beginTransaction();
+        $res = $this->user_interface->addUser($inputs, $user);
+        $result[] = $res['result'];
+        $result[] = $this->role_interface->setRole($res['data'], 'default');
+
+        if (!in_array(false, $result)) {
+            $flag = true;
+            $data = $res['data']->code;
+            DB::commit();
+        } else {
+            $flag = false;
+            $data = null;
+            DB::rollBack();
+        }
+
         return [
-            'result' => $result['result'],
-            'message' => $result['result'] ? __('messages.success') : __('messages.fail'),
-            'data' => $result['data']
+            'result' => $flag,
+            'message' => $flag ? __('messages.success') : __('messages.fail'),
+            'data' => $data
         ];
     }
 

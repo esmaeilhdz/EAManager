@@ -13,6 +13,7 @@ class CreateSalariesTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('salary_deductions');
         Schema::dropIfExists('salaries');
         Schema::create('salaries', function (Blueprint $table) {
             $table->id();
@@ -22,7 +23,7 @@ class CreateSalariesTable extends Migration
             $table->date('to_date');
             $table->unsignedInteger('reward_price')->comment('پاداش');
             $table->unsignedTinyInteger('overtime_hour')->comment('ساعت اضافه کار');
-            $table->unsignedInteger('salary_deduction')->comment('کسر حقوق');
+            $table->boolean('is_checkout')->default(0)->index()->comment('تسویه حساب شده/نشده');
             $table->text('description')->nullable();
             $table->unsignedBigInteger('created_by');
             $table->timestamps();

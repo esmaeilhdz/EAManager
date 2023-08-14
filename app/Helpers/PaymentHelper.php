@@ -39,7 +39,7 @@ class PaymentHelper
         $payments->transform(function ($item) {
             return [
                 'id' => $item->id,
-                'account' => $item->account->branch_name,
+                'account' => $item->account->bank->enum_caption,
                 'payment_date' => $item->payment_date,
                 'price' => $item->price,
                 'gate' => is_null($item->gate) ? null : [
@@ -87,7 +87,7 @@ class PaymentHelper
         $payments->transform(function ($item) {
             return [
                 'id' => $item->id,
-                'account' => $item->account->branch_name,
+                'account' => $item->account->bank->enum_caption,
                 'payment_date' => $item->payment_date,
                 'price' => $item->price,
                 'gate' => is_null($item->gate) ? null : [
@@ -126,7 +126,8 @@ class PaymentHelper
         $relation = [
             'payment_type:enum_id,enum_caption',
             'gate:enum_id,enum_caption',
-            'account:id,branch_name'
+            'account:id,bank_id',
+            'account.bank:enum_id,enum_caption',
         ];
         $payment = $this->payment_interface->getPaymentById($inputs, $select, $relation);
         if (is_null($payment)) {

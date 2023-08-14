@@ -12,7 +12,7 @@ class Place extends Model
 
     protected $primaryKey = 'id';
 
-    protected $hidden = ['id', 'place_kind_id', 'updated_at'];
+    protected $hidden = ['place_kind_id', 'updated_at'];
 
     protected function createdAt(): Attribute
     {

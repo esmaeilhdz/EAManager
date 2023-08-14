@@ -223,4 +223,23 @@ class RoleHelper
         return array_merge([$user_role->id], $role_ids);
     }
 
+    /**
+     * تمام فرزندان یک نقش
+     * @param $role
+     * @return array
+     */
+    public function getAllChildrenRoles($role): array
+    {
+        $resource = $resource2 = [];
+        $roles_array = RoleModel::query()->select(['id', 'parent_id'])->withoutGlobalScopes()->get()->toArray();
+        $parent_id = $role->parent_id;
+        if (is_null($role->parent_id)) {
+            $parent_id = 0;
+        }
+
+        $roles_array = $this->buildTree($roles_array, $parent_id);
+        $this->findInTree($roles_array, $role->id, $resource);
+        return $this->convertTreeToArray($resource, $resource2);
+    }
+
 }

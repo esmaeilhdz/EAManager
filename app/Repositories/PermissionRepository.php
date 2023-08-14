@@ -45,16 +45,33 @@ class PermissionRepository implements Interfaces\iPermission
     {
         try {
             return PermissionGroup::select([
+                'permission_groups.id',
                 'permission_groups.caption',
                 'permission_groups.name',
                 'rhp.permission_id',
-                'p.id as permission_id',
                 'p.name as permission_name'
             ])
                 ->join('permissions as p', 'permission_groups.id', '=', 'p.permission_group_id')
                 ->join('role_has_permissions as rhp', 'p.id', '=', 'rhp.permission_id')
                 ->where('rhp.role_id', $role_id)
                 ->get();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
+    public function editRolePermission($role_id, $new_permission_id, $old_permission_id = null): int
+    {
+        try {
+            $role_has_permission = DB::table('role_has_permissions')->where('role_id', $role_id);
+
+            if (!is_null($old_permission_id)) {
+                $role_has_permission = $role_has_permission->where('permission_id', $old_permission_id);
+            }
+
+            return $role_has_permission->update([
+                'permission_id' => $new_permission_id
+            ]);
         } catch (\Exception $e) {
             throw new ApiException($e);
         }

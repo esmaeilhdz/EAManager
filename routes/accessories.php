@@ -10,6 +10,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'auth:sanctum'], function () {
     });
     Route::group(['middleware' => ['permission:admin-accessory|edit-accessory']], function () {
         Route::put('accessory/{id}', [AccessoryController::class, 'editAccessory']);
+        Route::patch('accessory/{id}', [AccessoryController::class, 'changeStatusAccessory']);
     });
     Route::group(['middleware' => ['permission:admin-accessory']], function () {
         Route::post('accessory', [AccessoryController::class, 'addAccessory']);

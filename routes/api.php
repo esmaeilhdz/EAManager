@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CityController;
 use App\Http\Controllers\GeneralController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PersonController;
+use App\Http\Controllers\ProvinceController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,5 +27,7 @@ Route::group(['prefix' => 'v1'], function () {
 
 Route::group(['prefix' => 'v1', 'middleware' => 'auth:sanctum'], function () {
     Route::get('menu', [MenuController::class, 'getMenu']);
+    Route::get('province', [ProvinceController::class, 'getProvinces']);
+    Route::get('province/{province_id}/city', [CityController::class, 'getCities']);
     Route::delete('logout', [AuthController::class, 'logOut']);
 });

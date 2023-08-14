@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -34,8 +35,22 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->reportable(function (Throwable $e) {
-            //
+        $this->reportable(function (Throwable $exception) {
+            if ($exception instanceof ValidationException) {
+                $errors = [];
+
+                foreach ($exception->validator->getMessageBag()->getMessages() as $name => $error) {
+                    $errors = array_merge($errors, [
+                        $name => $error[0]
+                    ]);
+                }
+
+                return response(res_template([
+                    'status' => 422,
+                    'message' => 'داده های نامعتبر',
+                    'errors' => $errors,
+                ]), 422);
+            }
         });
     }
 }

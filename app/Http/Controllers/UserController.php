@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Facades\UserFacade;
 use App\Http\Requests\User\UserAddRequest;
+use App\Http\Requests\User\UserChangeRoleRequest;
 use App\Http\Requests\User\UserDetailRequest;
 use App\Http\Requests\User\UserEditRequest;
 use App\Http\Requests\User\UserListRequest;
 use App\Traits\Common;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -45,6 +47,14 @@ class UserController extends Controller
     public function getUserInfo()
     {
         $result = UserFacade::getUserInfo();
+        return $this->api_response->response($result['result'], $result['message'], $result['data']);
+    }
+
+    public function editUserRole(UserChangeRoleRequest $request)
+    {
+        $inputs = $request->validated();
+
+        $result = UserFacade::editUserRole($inputs);
         return $this->api_response->response($result['result'], $result['message'], $result['data']);
     }
 

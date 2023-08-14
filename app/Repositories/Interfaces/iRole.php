@@ -10,6 +10,8 @@ interface iRole
 
     public function getRoleByCode($code, $select = [], $relation = []);
 
+    public function setRole($user, $role_name);
+
     public function editRole($role, $inputs);
 
     public function addRole($inputs, $user);

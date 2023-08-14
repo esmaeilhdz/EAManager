@@ -42,8 +42,8 @@ class PersonCompanyEditRequest extends FormRequest
             'company_code' => 'required|string|size:32',
             'start_work_date' => 'required|date',
             'end_work_date' => 'nullable|date',
-            'suggest_salary' => 'required|numeric',
-            'daily_income' => 'required|numeric',
+            'suggest_salary' => 'nullable|numeric',
+            'daily_income' => 'nullable|numeric',
             'position' => 'required|string',
             'is_enable' => 'required|numeric|in:0,1',
         ];

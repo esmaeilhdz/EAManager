@@ -39,4 +39,9 @@ class Person extends Model
     {
         return $this->morphMany(Attachment::class, 'model');
     }
+
+    public function address()
+    {
+        return $this->morphOne(Address::class, 'model');
+    }
 }

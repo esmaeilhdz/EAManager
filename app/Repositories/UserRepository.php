@@ -27,12 +27,15 @@ class UserRepository implements Interfaces\iUser
                 ->with([
                     'creator:id,person_id',
                     'creator.person:id,name,family',
-                    'person:id,name,family,national_code'
+                    'person:id,name,family,national_code',
+                    'roles'
                 ])
                 ->select([
+                    'id',
                     'code',
                     'person_id',
                     'mobile',
+                    'email',
                     'created_by',
                     'created_at'
                 ])
@@ -95,7 +98,7 @@ class UserRepository implements Interfaces\iUser
     /**
      * افزودن کاربر
      * @param $inputs
-     * @param $user
+     * @param $user_login
      * @return array
      * @throws ApiException
      */
@@ -115,7 +118,7 @@ class UserRepository implements Interfaces\iUser
 
             return [
                 'result' => $result,
-                'data' => $result ? $user->code : null
+                'data' => $result ? $user : null
             ];
 
         } catch (\Exception $e) {

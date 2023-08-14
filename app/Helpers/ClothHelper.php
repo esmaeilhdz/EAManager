@@ -5,6 +5,7 @@ namespace App\Helpers;
 use App\Repositories\Interfaces\iCloth;
 use App\Traits\Common;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ClothHelper
 {
@@ -97,6 +98,8 @@ class ClothHelper
             ];
         }
 
+        // todo: manage add/edit cloth by color
+
         $result = $this->cloth_interface->editCloth($inputs);
         return [
             'result' => (bool) $result,
@@ -109,15 +112,35 @@ class ClothHelper
      * افزودن پارچه
      * @param $inputs
      * @return array
+     * @throws \App\Exceptions\ApiException
      */
     public function addCloth($inputs): array
     {
         $user = Auth::user();
-        $result = $this->cloth_interface->addCloth($inputs, $user);
+        $company_id = $this->getCurrentCompanyOfUser($user);
+
+        DB::beginTransaction();
+        $result = [];
+        foreach ($inputs['color_id'] as $color_id) {
+            $inputs['color_id_item'] = $color_id;
+            $res = $this->cloth_interface->addCloth($inputs, $user, $company_id);
+            $result[] = $res['result'];
+        }
+
+        $result = $this->prepareTransactionArray($result);
+
+        if (!in_array(false, $result)) {
+            $flag = true;
+            DB::commit();
+        } else {
+            $flag = false;
+            DB::rollBack();
+        }
+
         return [
-            'result' => $result['result'],
-            'message' => $result['result'] ? __('messages.success') : __('messages.fail'),
-            'data' => $result['data']
+            'result' => $flag,
+            'message' => $flag ? __('messages.success') : __('messages.fail'),
+            'data' => null
         ];
     }
 

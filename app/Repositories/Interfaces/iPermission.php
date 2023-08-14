@@ -10,6 +10,8 @@ interface iPermission
 
     public function getRolePermissions($role_id);
 
+    public function editRolePermission($role_id, $new_permission_id, $old_permission_id = null);
+
     public function addRolePermission($role_id, $permission_id);
 
     public function deleteRolePermission($role_id, $permission_id);

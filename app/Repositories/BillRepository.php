@@ -70,7 +70,7 @@ class BillRepository implements Interfaces\iBill
         try {
             $bill->bill_type_id = $inputs['bill_type_id'];
             $bill->bill_id = $inputs['bill_id'];
-            $bill->payment_id = $inputs['bill_type_id'];
+            $bill->payment_id = $inputs['payment_id'];
 
             return $bill->save();
         } catch (\Exception $e) {

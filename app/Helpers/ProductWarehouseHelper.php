@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Models\ProductWarehouse;
+use App\Repositories\Interfaces\iPlace;
 use App\Repositories\Interfaces\iProduct;
 use App\Repositories\Interfaces\iProductWarehouse;
 use App\Traits\Common;
@@ -14,14 +15,17 @@ class ProductWarehouseHelper
     use Common;
 
     // attributes
+    public iPlace $place_interface;
     public iProduct $product_interface;
     public iProductWarehouse $product_warehouse_interface;
 
     public function __construct(
+        iPlace $place_interface,
         iProduct $product_interface,
         iProductWarehouse $product_warehouse_interface
     )
     {
+        $this->place_interface = $place_interface;
         $this->product_interface = $product_interface;
         $this->product_warehouse_interface = $product_warehouse_interface;
     }
@@ -120,6 +124,34 @@ class ProductWarehouseHelper
             'other' => [
                 'product_name' => $product->name
             ]
+        ];
+    }
+
+    public function getProductsOfPlace($inputs)
+    {
+        $place = $this->place_interface->getPlaceById($inputs['id']);
+        if (!$place) {
+            return [
+                'result' => false,
+                'message' => __('messages.record_not_found'),
+                'data' => null
+            ];
+        }
+
+        $user = Auth::user();
+        $product_warehouses = $this->product_warehouse_interface->getByPlaceId($inputs, $user);
+
+        $product_warehouses->transform(function ($item) {
+            return [
+                'id' => $item->id,
+                'caption' => $item->product->name
+            ];
+        });
+
+        return [
+            'result' => true,
+            'message' => __('messages.success'),
+            'data' => $product_warehouses
         ];
     }
 

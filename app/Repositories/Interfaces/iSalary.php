@@ -10,7 +10,11 @@ interface iSalary
 
     public function getSalaryDetail($inputs, $user, $select = [], $relation = []);
 
+    public function getSalaryById($id, $user, $select = [], $relation = []);
+
     public function editSalary($salary, $inputs);
+
+    public function checkoutSalary($salary);
 
     public function addSalary($inputs, $user);
 }

@@ -25,7 +25,8 @@ class ClothAddRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'color_id' => 'required|numeric|min:1'
+            'color_id' => 'required|array',
+            'color_id.*' => 'numeric|min:1'
         ];
     }
 }

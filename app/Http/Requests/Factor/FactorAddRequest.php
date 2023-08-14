@@ -26,7 +26,6 @@ class FactorAddRequest extends FormRequest
         return [
             'customer_code' => 'required|string|size:32',
             'sale_period_id' => 'required|numeric|min:1',
-            'factor_no' => 'required|string',
             'has_return_permission' => 'required|numeric:in:0,1',
             'is_credit' => 'required|numeric:in:0,1',
             'status' => 'required|numeric:in:1,2,3',

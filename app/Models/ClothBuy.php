@@ -11,7 +11,7 @@ class ClothBuy extends Model
     use HasFactory;
 
     protected $primaryKey = 'id';
-    protected $hidden = ['cloth_id', 'place_id', 'created_by', 'updated_at'];
+    protected $hidden = ['cloth_id', 'seller_place_id', 'warehouse_place_id', 'created_by', 'updated_at'];
 
     protected function createdAt(): Attribute
     {
@@ -44,9 +44,14 @@ class ClothBuy extends Model
         return $this->hasOne(Cloth::class, 'id', 'cloth_id');
     }
 
-    public function place()
+    public function seller_place()
     {
-        return $this->hasOne(Place::class, 'id', 'place_id');
+        return $this->hasOne(Place::class, 'id', 'seller_place_id');
+    }
+
+    public function warehouse_place()
+    {
+        return $this->hasOne(Place::class, 'id', 'warehouse_place_id');
     }
 
 }

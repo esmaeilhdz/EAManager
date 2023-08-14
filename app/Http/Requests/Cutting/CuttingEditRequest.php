@@ -37,15 +37,48 @@ class CuttingEditRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $rules = [
             'code' => 'required|string|size:32',
             'id' => 'required|numeric|min:1',
             'cutted_count' => 'required|numeric|min:1',
-            'free_size_count' => 'required|numeric|min:1',
-            'size1_count' => 'required|numeric|min:1',
-            'size2_count' => 'required|numeric|min:1',
-            'size3_count' => 'required|numeric|min:1',
-            'size4_count' => 'required|numeric|min:1',
         ];
+
+
+
+        if ($this->request->has('free_size_count')) {
+            $rules['free_size_count'] = 'required|numeric|min:1';
+        }
+
+        if ($this->request->has('size1_count')) {
+            $rules['size1_count'] = 'required|numeric|min:1';
+        }
+
+        if ($this->request->has('size2_count')) {
+            $rules['size2_count'] = 'required|numeric|min:1';
+        }
+
+        if ($this->request->has('size3_count')) {
+            $rules['size3_count'] = 'required|numeric|min:1';
+        }
+
+        if ($this->request->has('size4_count')) {
+            $rules['size4_count'] = 'required|numeric|min:1';
+        }
+
+        if (
+            !$this->request->has('free_size_count') &&
+            !$this->request->has('size1_count') &&
+            !$this->request->has('size2_count') &&
+            !$this->request->has('size3_count') &&
+            !$this->request->has('size4_count')
+        ) {
+            $rules['free_size_count'] = 'required|numeric|min:1';
+            $rules['size1_count'] = 'required|numeric|min:1';
+            $rules['size2_count'] = 'required|numeric|min:1';
+            $rules['size3_count'] = 'required|numeric|min:1';
+            $rules['size4_count'] = 'required|numeric|min:1';
+        }
+
+        return $rules;
     }
 }

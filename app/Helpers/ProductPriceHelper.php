@@ -34,7 +34,7 @@ class ProductPriceHelper
      */
     public function getProductPrices($inputs): array
     {
-        $select = ['id', 'name'];
+        $select = ['id', 'code', 'name'];
         $product = $this->product_interface->getProductByCode($inputs['code'], $select);
         if (is_null($product)) {
             return [
@@ -178,6 +178,8 @@ class ProductPriceHelper
         $user = Auth::user();
         $result[] = $this->product_price_interface->deActiveOldPrices($product->id);
         $result[] = $this->product_price_interface->addProductPrice($inputs, $user);
+
+        $result = $this->prepareTransactionArray($result);
 
         if (!in_array(false, $result)) {
             $flag = true;

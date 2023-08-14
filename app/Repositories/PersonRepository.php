@@ -22,13 +22,19 @@ class PersonRepository implements Interfaces\iPerson
     public function getPersons($inputs, $user): LengthAwarePaginator
     {
         try {
-            $company_id = $this->getCurrentCompanyOfUser($user);
+            $company_id = null;
+            if (!$user->hasRole('super_admin')) {
+                $company_id = $this->getCurrentCompanyOfUser($user);
+            }
             return Person::query()
                 ->with([
+                    'person_company:person_id,company_id',
+                    'person_company.company:id,code,name',
                     'creator:id,person_id',
                     'creator.person:id,name,family'
                 ])
                 ->select([
+                    'id',
                     'code',
                     'internal_code',
                     'name',
@@ -39,9 +45,12 @@ class PersonRepository implements Interfaces\iPerson
                     'created_at'
                 ])
                 ->whereRaw($inputs['where']['search']['condition'], $inputs['where']['search']['params'])
-                ->whereHas('person_company', function ($q) use ($company_id) {
-                    $q->where('company_id', $company_id);
+                ->when(!is_null($company_id), function ($q) use ($company_id) {
+                    $q->whereHas('person_company', function ($q2) use ($company_id) {
+                        $q2->where('company_id', $company_id);
+                    });
                 })
+                ->where('id', '<>', 1)
                 ->orderByRaw($inputs['order_by'])
                 ->paginate($inputs['per_page']);
         } catch (\Exception $e) {
@@ -139,9 +148,14 @@ class PersonRepository implements Interfaces\iPerson
                 'family' => $inputs['family'],
                 'father_name' => $inputs['father_name'],
                 'national_code' => $inputs['national_code'],
+                'insurance_no' => $inputs['insurance_no'],
+                'mobile' => $inputs['mobile'],
                 'identity' => $inputs['identity'],
                 'score' => $inputs['score'],
-                'passport_no' => $inputs['passport_no'] ?? null
+                'passport_no' => $inputs['passport_no'],
+                'card_no' => $inputs['card_no'],
+                'bank_account_no' => $inputs['bank_account_no'],
+                'sheba_no' => $inputs['sheba_no']
             ];
 
             if (empty($inputs['passport_no'])) {
@@ -172,9 +186,13 @@ class PersonRepository implements Interfaces\iPerson
             $person->family = $inputs['family'];
             $person->father_name = $inputs['father_name'];
             $person->national_code = $inputs['national_code'];
+            $person->insurance_no = $inputs['insurance_no'];
+            $person->mobile = $inputs['mobile'];
             $person->identity = $inputs['identity'];
             $person->passport_no = $inputs['passport_no'] ?? null;
-            $person->score = $inputs['score'];
+            $person->passport_no = $inputs['passport_no'];
+            $person->card_no = $inputs['card_no'];
+            $person->bank_account_no = $inputs['bank_account_no'];
             $person->created_by = $user->id;
 
             $result = $person->save();

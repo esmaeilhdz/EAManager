@@ -8,6 +8,8 @@ interface iPlace
 
     public function getPlaceById($id);
 
+    public function getPlaceCombo($inputs, $user);
+
     public function editPlace($inputs);
 
     public function addPlace($inputs, $user);

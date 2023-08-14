@@ -12,6 +12,37 @@ class ClothWarehouseRepository implements Interfaces\iClothWarehouse
 {
     use Common;
 
+    /**
+     * انبارهای پارچه
+     * @param $inputs
+     * @return LengthAwarePaginator
+     * @throws ApiException
+     */
+    public function getClothWarehouses($inputs): LengthAwarePaginator
+    {
+        try {
+            return ClothWareHouse::with([
+                'place:id,name'
+            ])
+                ->select([
+                    'cloth_id',
+                    'place_id',
+                    'metre',
+                    'roll_count'
+                ])
+                ->where('cloth_id', $inputs['cloth_id'])
+                ->where(function ($q) use ($inputs) {
+                    $q->whereHas('place', function ($q) use ($inputs) {
+                        $q->whereRaw($inputs['where']['place']['condition'], $inputs['where']['place']['params']);
+                    });
+                })
+                ->orderByRaw($inputs['order_by'])
+                ->paginate($inputs['per_page']);
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
     public function editWarehouse($inputs)
     {
         try {

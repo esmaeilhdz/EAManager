@@ -12,6 +12,22 @@ class Enumeration extends Model
 
     public $timestamps = false;
 
+    protected array $maps = [
+        'enum_id' => 'id',
+        'enum_caption' => 'caption'
+    ];
+    protected $hidden = ['enum_id', 'enum_caption'];
+    protected $appends = ['id', 'caption'];
+
+    public function getIdAttribute()
+    {
+        return $this->attributes['enum_id'];
+    }
+    public function getCaptionAttribute()
+    {
+        return $this->attributes['enum_caption'];
+    }
+
     protected function isEnable(): Attribute
     {
         return Attribute::get(
