@@ -202,8 +202,6 @@ class CompanyHelper
             $inputs['pre_personnel_code'] = '0' . $inputs['pre_personnel_code'];
         }
 
-        dd($inputs['pre_personnel_code']);
-
         $user = Auth::user();
         $result = $this->company_interface->addCompany($inputs, $user);
         return [
