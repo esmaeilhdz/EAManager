@@ -28,8 +28,7 @@ class CustomerAddRequest extends FormRequest
             'name' => ['required', 'string', new MbMax(150)],
             'parent_id' => 'nullable|numeric|min:1',
             'mobile' => 'required|string|starts_with:09',
-            'tel' => 'nullable|string',
-            'score' => 'required|numeric|min:0'
+            'tel' => 'nullable|string'
         ];
     }
 }

@@ -110,7 +110,6 @@ class CustomerRepository implements Interfaces\iCustomer
             $customer->company_id = $company_id;
             $customer->name = $inputs['name'];
             $customer->mobile = $inputs['mobile'];
-            $customer->score = $inputs['score'];
             $customer->created_by = $user->id;
 
             $result = $customer->save();
