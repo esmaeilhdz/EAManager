@@ -24,6 +24,7 @@ class ClothRepository implements Interfaces\iCloth
                 'warehouse_place:id,name',
             ])
                 ->select([
+                    'id',
                     'cloth_id',
                     'seller_place_id',
                     'warehouse_place_id',

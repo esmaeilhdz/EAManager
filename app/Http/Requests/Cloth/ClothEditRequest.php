@@ -39,7 +39,12 @@ class ClothEditRequest extends FormRequest
         return [
             'code' => 'required|string|size:32',
             'name' => 'required|string',
-            'color_id' => 'required|numeric|min:1'
+            'color_id' => 'required|numeric|min:1',
+            'seller_place_id' => 'required|numeric|min:1',
+            'warehouse_place_id' => 'required|numeric|min:1',
+            'receive_date' => 'required|date',
+            'factor_no' => 'required|string',
+            'price' => 'required|string',
         ];
     }
 }

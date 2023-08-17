@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Repositories\Interfaces\iCloth;
+use App\Repositories\Interfaces\iClothBuy;
 use App\Traits\Common;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -13,10 +14,12 @@ class ClothHelper
 
     // attributes
     public iCloth $cloth_interface;
+    public iClothBuy $cloth_buy_interface;
 
-    public function __construct(iCloth $cloth_interface)
+    public function __construct(iCloth $cloth_interface, iClothBuy $cloth_buy_interface)
     {
         $this->cloth_interface = $cloth_interface;
+        $this->cloth_buy_interface = $cloth_buy_interface;
     }
 
     /**
@@ -37,6 +40,7 @@ class ClothHelper
 
         $clothes->transform(function ($item) {
             return [
+                'id' => $item->id,
                 'cloth' => [
                     'code' => $item->cloth->code,
                     'name' => $item->cloth->name,
@@ -96,8 +100,8 @@ class ClothHelper
      */
     public function editCloth($inputs): array
     {
-        $place = $this->cloth_interface->getClothByCode($inputs['code']);
-        if (is_null($place)) {
+        $cloth = $this->cloth_interface->getClothByCode($inputs['code']);
+        if (is_null($cloth)) {
             return [
                 'result' => false,
                 'message' => __('messages.record_not_found'),
@@ -105,12 +109,21 @@ class ClothHelper
             ];
         }
 
-        // todo: manage add/edit cloth by color
+        DB::beginTransaction();
+        $result[] = $this->cloth_interface->editCloth($inputs);
+        $result[] = $this->cloth_buy_interface->editClothBuy($cloth, $inputs);
 
-        $result = $this->cloth_interface->editCloth($inputs);
+        if (!in_array(false, $result)) {
+            DB::commit();
+            $flag = true;
+        } else {
+            DB::rollBack();
+            $flag = false;
+        }
+
         return [
-            'result' => (bool) $result,
-            'message' => $result ? __('messages.success') : __('messages.fail'),
+            'result' => $flag,
+            'message' => $flag ? __('messages.success') : __('messages.fail'),
             'data' => null
         ];
     }
