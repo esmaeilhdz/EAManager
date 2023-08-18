@@ -64,14 +64,13 @@ class ClothRepository implements Interfaces\iCloth
         }
     }
 
-    public function editCloth($inputs)
+    public function editCloth($cloth, $inputs)
     {
         try {
-            return Cloth::where('code', $inputs['code'])
-                ->update([
-                    'name' => $inputs['name'],
-                    'color_id' => $inputs['color_id']
-                ]);
+            $cloth->name = $inputs['name'];
+            $cloth->color_id = $inputs['color_id'];
+
+            return $cloth->save();
         } catch (\Exception $e) {
             throw new ApiException($e);
         }

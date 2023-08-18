@@ -8,7 +8,7 @@ interface iCloth
 
     public function getClothByCode($code);
 
-    public function editCloth($inputs);
+    public function editCloth($cloth, $inputs);
 
     public function addCloth($inputs, $user, $company_id);
 

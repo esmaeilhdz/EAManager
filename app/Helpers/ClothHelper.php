@@ -109,21 +109,11 @@ class ClothHelper
             ];
         }
 
-        DB::beginTransaction();
-        $result[] = $this->cloth_interface->editCloth($inputs);
-        $result[] = $this->cloth_buy_interface->editClothBuy($cloth, $inputs);
-
-        if (!in_array(false, $result)) {
-            DB::commit();
-            $flag = true;
-        } else {
-            DB::rollBack();
-            $flag = false;
-        }
+        $result = $this->cloth_interface->editCloth($cloth, $inputs);
 
         return [
-            'result' => $flag,
-            'message' => $flag ? __('messages.success') : __('messages.fail'),
+            'result' => (bool) $result,
+            'message' => $result ? __('messages.success') : __('messages.fail'),
             'data' => null
         ];
     }
