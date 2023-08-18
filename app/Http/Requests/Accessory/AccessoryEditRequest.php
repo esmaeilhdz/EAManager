@@ -40,6 +40,8 @@ class AccessoryEditRequest extends FormRequest
             'id' => 'required|numeric|min:1',
             'name' => 'required|string',
             'is_enable' => 'required|numeric|in:0,1',
+            'place_id' => 'required|numeric|min:1',
+            'count' => 'required|numeric|min:1',
         ];
     }
 }

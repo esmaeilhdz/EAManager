@@ -69,8 +69,6 @@ class AccessoryHelper
         $select = ['id', 'name', 'is_enable'];
         $relation = [
             'warehouse:accessory_id,count',
-            'accessoryBuys:accessory_id,place_id,count,created_at',
-            'accessoryBuys.place:id,name'
         ];
         $accessory = $this->accessory_interface->getAccessoryById($id, $select, $relation);
         if (is_null($accessory)) {

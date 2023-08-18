@@ -8,7 +8,7 @@ interface iAccessoryBuy
 
     public function getAccessoryBuyById($inputs);
 
-    public function editAccessoryBuy($inputs);
+    public function editAccessoryBuy($accessory_buy, $inputs);
 
     public function addAccessoryBuy($inputs, $user);
 
