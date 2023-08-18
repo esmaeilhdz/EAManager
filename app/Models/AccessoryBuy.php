@@ -22,6 +22,12 @@ class AccessoryBuy extends Model
         );
     }
 
+
+    public function accessory()
+    {
+        return $this->hasOne(Accessory::class, 'id', 'accessory_id');
+    }
+
     public function place()
     {
         return $this->hasOne(Place::class, 'id', 'place_id');
