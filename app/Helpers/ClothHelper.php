@@ -29,31 +29,20 @@ class ClothHelper
      */
     public function getClothes($inputs): array
     {
-        $search_data = $param_array = [];
-        $search_data[] = $this->GWC($inputs['search_txt'] ?? '', 'string:name');
-        $inputs['where']['search']['condition'] = $this->generateWhereCondition($search_data, $param_array);
-        $inputs['where']['search']['params'] = $param_array;
-
         $inputs['per_page'] = $this->calculatePerPage($inputs);
 
         $clothes = $this->cloth_interface->getClothes($inputs);
 
         $clothes->transform(function ($item) {
             return [
-                'id' => $item->id,
-                'cloth' => [
-                    'code' => $item->cloth->code,
-                    'name' => $item->cloth->name,
-                    'color' => [
-                        'id' => $item->cloth->color_id,
-                        'caption' => $item->cloth->color->enum_caption
-                    ],
+                'code' => $item->code,
+                'name' => $item->name,
+                'color' => [
+                    'id' => $item->color_id,
+                    'caption' => $item->color->enum_caption
                 ],
-                'seller_place' => $item->seller_place->name,
-                'warehouse_place' => $item->warehouse_place->name,
-                'receive_date' => $item->receive_date,
-                'factor_no' => $item->factor_no,
-                'price' => $item->price,
+                'cloth_buy_count' => count($item->cloth_buy),
+                'cloth_sell_count' => count($item->cloth_sell),
                 'creator' => is_null($item->creator->person) ? null : [
                     'person' => [
                         'full_name' => $item->creator->person->name . ' ' . $item->creator->person->family,

@@ -49,6 +49,16 @@ class Cloth extends Model
         return $this->hasOne(User::class, 'id', 'created_by');
     }
 
+    public function cloth_buy()
+    {
+        return $this->hasMany(ClothBuy::class, 'cloth_id', 'id');
+    }
+
+    public function cloth_sell()
+    {
+        return $this->hasMany(ClothSell::class, 'cloth_id', 'id');
+    }
+
     public function color()
     {
         return $this->hasOne(Enumeration::class, 'enum_id', 'color_id')

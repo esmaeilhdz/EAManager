@@ -12,32 +12,26 @@ class ClothRepository implements Interfaces\iCloth
 {
     use Common;
 
-    public function getClothes($inputs)
+    public function getClothes($inputs): LengthAwarePaginator
     {
         try {
-            return ClothBuy::with([
+            return Cloth::with([
                 'creator:id,person_id',
                 'creator.person:id,name,family',
-                'cloth:id,code,color_id,name',
-                'cloth.color:enum_id,enum_caption',
-                'seller_place:id,name',
-                'warehouse_place:id,name',
+                'color:enum_id,enum_caption',
+                'cloth_buy:cloth_id',
+                'cloth_sell:cloth_id'
             ])
                 ->select([
                     'id',
-                    'cloth_id',
-                    'seller_place_id',
-                    'warehouse_place_id',
-                    'metre',
-                    'roll_count',
-                    'receive_date',
-                    'factor_no',
-                    'price',
+                    'code',
+                    'name',
+                    'color_id',
                     'created_by',
                     'created_at'
                 ])
-                ->whereHas('cloth', function ($q) use ($inputs) {
-                    $q->whereRaw($inputs['where']['search']['condition'], $inputs['where']['search']['params']);
+                ->when(isset($inputs['search_txt']), function ($q) use ($inputs) {
+                    $q->whereLike('name', $inputs['search_txt']);
                 })
                 ->paginate($inputs['per_page']);
         } catch (\Exception $e) {
