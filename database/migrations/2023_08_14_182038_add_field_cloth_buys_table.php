@@ -15,8 +15,8 @@ class AddFieldClothBuysTable extends Migration
     {
         Schema::table('cloth_buys', function (Blueprint $table) {
             $table->string('factor_no')->after('receive_date');
-//            $table->string('price')->after('factor_no');
-//            $table->text('description')->after('price')->nullable();
+            $table->string('price')->after('factor_no');
+            $table->text('description')->after('price')->nullable();
         });
     }
 

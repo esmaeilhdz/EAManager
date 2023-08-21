@@ -27,6 +27,7 @@ class ProductAddRequest extends FormRequest
     {
         return [
             'cloth_code' => 'required|string|size:32',
+            'sale_period_id' => 'required|numeric|min:1',
             'name' => ['required', 'string', new MbMin(2), new MbMax(100)],
             'has_accessories' => 'required|numeric|in:0,1',
         ];
