@@ -15,7 +15,7 @@ class AddPeopleFieldsTable extends Migration
     {
         Schema::table('people', function (Blueprint $table) {
             $table->string('insurance_no')->after('national_code')->nullable()->comment('شماره بیمه');
-            $table->string('mobile', 11)->after('insurance_no')->nullable();
+            $table->string('mobile', 11)->index()->unique()->after('insurance_no')->nullable();
         });
     }
 
