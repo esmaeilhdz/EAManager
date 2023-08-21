@@ -124,6 +124,7 @@ class ClothSellHelper
             ];
         }
 
+
         $inputs['cloth_id'] = $cloth->id;
         $params['cloth_id'] = $cloth->id;
         $params = array_merge($params, $inputs);
@@ -136,29 +137,52 @@ class ClothSellHelper
             ];
         }
 
+        $cloth_warehouse = $this->cloth_warehouse_interface->getClothWarehousesByCloth($cloth->id, $inputs['warehouse_place_id']);
+        if (!$cloth_warehouse) {
+            return [
+                'result' => false,
+                'message' => __('messages.warehouse_not_exists'),
+                'data' => null
+            ];
+        }
+
+        /*if (
+            $cloth_warehouse->metre - $inputs['metre'] < 0 ||
+            $cloth_warehouse->roll_count - $inputs['roll_count'] < 0
+        ) {
+            return [
+                'result' => false,
+                'message' => __('messages.not_enough_warehouse_stock'),
+                'data' => null
+            ];
+        }*/
+
+        DB::beginTransaction();
         if ($cloth_sell->metre > $inputs['metre']) {
             $params['sign'] = 'plus';
-            $params['metre'] = $cloth_sell->metre - $inputs['metre'];
+            $params['metre'] = $inputs['metre'];
         } elseif ($cloth_sell->metre < $inputs['metre']) {
             $params['sign'] = 'minus';
-            $params['metre'] = $inputs['metre'] - $cloth_sell->metre;
+            $params['metre'] = $inputs['metre'];
         } else {
             $params['sign'] = 'equal';
             $params['metre'] = $inputs['metre'];
         }
+        $result[] = $this->cloth_warehouse_interface->editWarehouseMetre($params);
 
         if ($cloth_sell->roll_count > $inputs['roll_count']) {
-            $params['roll_count'] = $cloth_sell->roll_count + $inputs['roll_count'];
+            $params['sign'] = 'plus';
+            $params['roll_count'] = $inputs['roll_count'];
         } elseif ($cloth_sell->roll_count < $inputs['roll_count']) {
-            $params['roll_count'] = $inputs['roll_count'] - $cloth_sell->roll_count;
+            $params['sign'] = 'minus';
+            $params['roll_count'] = $inputs['roll_count'];
         } else {
             $params['sign'] = 'equal';
             $params['roll_count'] = $inputs['roll_count'];
         }
 
-        DB::beginTransaction();
         $result[] = $this->cloth_sell_interface->editClothSell($cloth_sell, $inputs);
-        $result[] = $this->cloth_warehouse_interface->editWarehouse($params);
+        $result[] = $this->cloth_warehouse_interface->editWarehouseRollCount($params);
 
         if (!in_array(false, $result)) {
             $flag = true;
@@ -188,6 +212,26 @@ class ClothSellHelper
             return [
                 'result' => false,
                 'message' => __('messages.record_not_found'),
+                'data' => null
+            ];
+        }
+
+        $cloth_warehouse = $this->cloth_warehouse_interface->getClothWarehousesByCloth($cloth->id, $inputs['warehouse_place_id']);
+        if (!$cloth_warehouse) {
+            return [
+                'result' => false,
+                'message' => __('messages.warehouse_not_exists'),
+                'data' => null
+            ];
+        }
+
+        if (
+            $cloth_warehouse->metre - $inputs['metre'] < 0 ||
+            $cloth_warehouse->roll_count - $inputs['roll_count'] < 0
+        ) {
+            return [
+                'result' => false,
+                'message' => __('messages.not_enough_warehouse_stock'),
                 'data' => null
             ];
         }

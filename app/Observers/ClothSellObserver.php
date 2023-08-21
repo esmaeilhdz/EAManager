@@ -19,18 +19,8 @@ class ClothSellObserver
             ->where('place_id', $clothSell->warehouse_place_id)
             ->first();
 
-        if (is_null($cloth_warehouse)) {
-            $cloth_warehouse = new ClothWareHouse();
-
-            $cloth_warehouse->cloth_id = $clothSell->cloth_id;
-            $cloth_warehouse->place_id = $clothSell->warehouse_place_id;
-            $cloth_warehouse->metre = $clothSell->metre;
-            $cloth_warehouse->roll_count = $clothSell->roll_count;
-            $cloth_warehouse->created_by = $clothSell->created_by;
-        } else {
-            $cloth_warehouse->metre -= $clothSell->metre;
-            $cloth_warehouse->roll_count -= $clothSell->roll_count;
-        }
+        $cloth_warehouse->metre -= $clothSell->metre;
+        $cloth_warehouse->roll_count -= $clothSell->roll_count;
 
         $cloth_warehouse->save();
     }

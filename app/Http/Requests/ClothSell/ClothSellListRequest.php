@@ -6,6 +6,19 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class ClothSellListRequest extends FormRequest
 {
+
+    /**
+     * Prepare the data for validation.
+     *
+     * @return void
+     */
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'code' => $this->code,
+        ]);
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -13,7 +26,7 @@ class ClothSellListRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +37,10 @@ class ClothSellListRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'code' => 'required|string|size:32',
+            'page' => 'required|numeric|min:1',
+            'per_page' => 'required|numeric',
+            'search_txt' => 'nullable|string'
         ];
     }
 }

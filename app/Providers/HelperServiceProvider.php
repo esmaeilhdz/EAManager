@@ -9,6 +9,7 @@ use App\Helpers\AddressHelper;
 use App\Helpers\AttachmentHelper;
 use App\Helpers\BillHelper;
 use App\Helpers\CityHelper;
+use App\Helpers\ClothSellHelper;
 use App\Helpers\ClothWarehouseHelper;
 use App\Helpers\EnumerationHelper;
 use App\Helpers\GroupConversationHelper;
@@ -60,6 +61,7 @@ class HelperServiceProvider extends ServiceProvider
         App::alias(AccountHelper::class, 'account_helper');
         App::alias(ClothHelper::class, 'cloth_helper');
         App::alias(ClothBuyHelper::class, 'cloth_buy_helper');
+        App::alias(ClothSellHelper::class, 'cloth_sell_helper');
         App::alias(AccessoryHelper::class, 'accessory_helper');
         App::alias(AccessoryBuyHelper::class, 'accessory_buy_helper');
         App::alias(ProductHelper::class, 'product_helper');
