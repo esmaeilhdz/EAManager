@@ -43,7 +43,12 @@ class CustomerEditRequest extends FormRequest
             'parent_id' => 'nullable|numeric|min:1',
             'mobile' => 'required|string|starts_with:09',
             'tel' => 'nullable|string',
-            'score' => 'required|numeric|min:0'
+            'score' => 'required|numeric|min:0',
+            'address_id' => 'required|numeric|min:1',
+            'province_id' => 'required|numeric|min:1',
+            'city_id' => 'required|numeric|min:1',
+            'address_kind_id' => 'required|numeric|min:1',
+            'address' => 'required|string',
         ];
     }
 }

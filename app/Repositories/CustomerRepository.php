@@ -23,9 +23,13 @@ class CustomerRepository implements Interfaces\iCustomer
             return Customer::with([
                 'creator:id,person_id',
                 'creator.person:id,name,family',
-                'parent:id,name'
+                'parent:id,name',
+                'address:model_type,model_id,province_id,city_id,address',
+                'address.province:id,name',
+                'address.city:id,name',
             ])
                 ->select([
+                    'id',
                     'code',
                     'parent_id',
                     'name',
@@ -34,7 +38,14 @@ class CustomerRepository implements Interfaces\iCustomer
                     'created_by',
                     'created_at'
                 ])
-                ->whereRaw($inputs['where']['search']['condition'], $inputs['where']['search']['params'])
+                ->when(isset($inputs['search_txt']), function ($q) use ($inputs) {
+                    $q->whereHas('address.province', function ($q2) use ($inputs) {
+                        $q2->whereLike('name', $inputs['search_txt']);
+                    });
+                    $q->orWhereHas('address.city', function ($q2) use ($inputs) {
+                        $q2->whereLike('name', $inputs['search_txt']);
+                    });
+                })
                 ->orderByRaw($inputs['order_by'])
                 ->paginate($inputs['per_page']);
         } catch (\Exception $e) {
@@ -116,7 +127,7 @@ class CustomerRepository implements Interfaces\iCustomer
 
             return [
                 'result' => $result,
-                'data' => $result ? $customer->code : null
+                'data' => $result ? $customer : null
             ];
 
         } catch (\Exception $e) {

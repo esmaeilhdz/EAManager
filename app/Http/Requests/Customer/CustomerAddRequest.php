@@ -28,7 +28,11 @@ class CustomerAddRequest extends FormRequest
             'name' => ['required', 'string', new MbMax(150)],
             'parent_id' => 'nullable|numeric|min:1',
             'mobile' => 'required|string|starts_with:09',
-            'tel' => 'nullable|string'
+            'tel' => 'nullable|string',
+            'province_id' => 'required|numeric|min:1',
+            'city_id' => 'required|numeric|min:1',
+            'address_kind_id' => 'required|numeric|min:1',
+            'address' => 'required|string',
         ];
     }
 }

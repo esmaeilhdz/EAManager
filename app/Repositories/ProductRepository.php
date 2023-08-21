@@ -21,7 +21,6 @@ class ProductRepository implements Interfaces\iProduct
     public function getProducts($inputs): LengthAwarePaginator
     {
         try {
-//            DB::enableQueryLog();
             return Product::query()
                 ->with([
                     'productWarehouse:product_id,free_size_count,size1_count,size2_count,size3_count,size4_count',
@@ -46,7 +45,6 @@ class ProductRepository implements Interfaces\iProduct
                 ->whereRaw($inputs['where']['search']['condition'], $inputs['where']['search']['params'])
                 ->paginate($inputs['per_page']);
 
-//            dd(DB::getQueryLog());
         } catch (\Exception $e) {
             throw new ApiException($e);
         }
