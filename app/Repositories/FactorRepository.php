@@ -24,14 +24,12 @@ class FactorRepository implements Interfaces\iFactor
             return Factor::query()
                 ->with([
                     'customer:id,name,mobile',
-                    'sale_period:id,name',
                     'creator:id,person_id',
                     'creator.person:id,name,family'
                 ])
                 ->select([
                     'code',
                     'customer_id',
-                    'sale_period_id',
                     'factor_no',
                     'has_return_permission',
                     'is_credit',
@@ -45,9 +43,6 @@ class FactorRepository implements Interfaces\iFactor
                     $q->whereRaw($inputs['where']['search']['condition'], $inputs['where']['search']['params'])
                         ->orWhereHas('customer', function ($q) use ($inputs) {
                             $q->whereRaw($inputs['where']['customer']['condition'], $inputs['where']['customer']['params']);
-                        })
-                        ->orWhereHas('sale_period', function ($q) use ($inputs) {
-                            $q->whereRaw($inputs['where']['sale_period']['condition'], $inputs['where']['sale_period']['params']);
                         });
                 })
                 ->orderByRaw($inputs['order_by'])
@@ -98,14 +93,12 @@ class FactorRepository implements Interfaces\iFactor
             return Factor::query()
                 ->with([
                     'customer:id,name,mobile',
-                    'sale_period:id,name',
                     'creator:id,person_id',
                     'creator.person:id,name,family'
                 ])
                 ->select([
                     'code',
                     'customer_id',
-                    'sale_period_id',
                     'factor_no',
                     'has_return_permission',
                     'is_credit',
@@ -121,9 +114,6 @@ class FactorRepository implements Interfaces\iFactor
                     $q->whereRaw($inputs['where']['search']['condition'], $inputs['where']['search']['params'])
                         ->orWhereHas('customer', function ($q) use ($inputs) {
                             $q->whereRaw($inputs['where']['customer']['condition'], $inputs['where']['customer']['params']);
-                        })
-                        ->orWhereHas('sale_period', function ($q) use ($inputs) {
-                            $q->whereRaw($inputs['where']['sale_period']['condition'], $inputs['where']['sale_period']['params']);
                         });
                 })
 //                ->whereRaw($where)
@@ -174,7 +164,6 @@ class FactorRepository implements Interfaces\iFactor
     {
         try {
             $factor->customer_id = $inputs['customer_id'];
-            $factor->sale_period_id = $inputs['sale_period_id'];
             $factor->factor_no = $inputs['factor_no'];
             $factor->has_return_permission = $inputs['has_return_permission'];
             $factor->is_credit = $inputs['is_credit'];
@@ -227,7 +216,6 @@ class FactorRepository implements Interfaces\iFactor
             $factor->code = $this->randomString();
             $factor->company_id = $company_id;
             $factor->customer_id = $inputs['customer_id'];
-            $factor->sale_period_id = $inputs['sale_period_id'];
             $factor->factor_no = 'FF-'.rand(1111111,9999999);
             $factor->has_return_permission = $inputs['has_return_permission'];
             $factor->is_credit = $inputs['is_credit'];
