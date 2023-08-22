@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Exceptions\ApiException;
 use App\Models\Company;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 trait Common

@@ -48,4 +48,5 @@ return [
     'your_account_is_account' => 'حساب کاربری شما غیرفعال شده است.',
     'warehouse_not_exists' => 'انبار وجود ندارد.',
     'not_enough_warehouse_stock' => 'موجودی انبار کافی نمی باشد.',
+    'product_warehouse_already_exists' => 'انبار کالای مورد نظر وجود دارد. می توانید مقدار قبلی را ویرایش کنید.',
 ];

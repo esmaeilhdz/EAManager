@@ -69,7 +69,8 @@ class ProductWarehouseRepository implements Interfaces\iProductWarehouse
     {
         try {
             $company_id = $this->getCurrentCompanyOfUser($user);
-            $product_warehouse = ProductWarehouse::where('id', $inputs['product_warehouse_id'])
+
+            $product_warehouse = ProductWarehouse::where('id', $inputs['product_warehouse_id'] ?? $inputs['warehouse_id'])
                 ->where('product_id', $inputs['product_id'])
                 ->whereHas('place', function ($q) use ($company_id) {
                     $q->where('company_id', $company_id);
@@ -197,6 +198,22 @@ class ProductWarehouseRepository implements Interfaces\iProductWarehouse
                     ->where('company_id', $company_id);
                 })
                 ->get();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
+    public function getByProductAndPlace($place_id, $product_id, $user)
+    {
+        try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
+            return ProductWarehouse::select('id')
+                ->where('place_id', $place_id)
+                ->where('product_id', $product_id)
+                ->whereHas('product', function ($q) use ($company_id) {
+                    $q->where('company_id', $company_id);
+                })
+                ->first();
         } catch (\Exception $e) {
             throw new ApiException($e);
         }
