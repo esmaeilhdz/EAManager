@@ -15,7 +15,7 @@ class Product extends Model
     use HasFactory, Common;
 
     protected $primaryKey = 'id';
-    protected $hidden = ['id', 'cloth_id', 'created_by', 'updated_at'];
+    protected $hidden = ['id', 'cloth_id', 'sale_period_id', 'created_by', 'updated_at'];
 
     protected function createdAt(): Attribute
     {
@@ -64,6 +64,11 @@ class Product extends Model
     public function cloth()
     {
         return $this->hasOne(Cloth::class, 'id', 'cloth_id');
+    }
+
+    public function sale_period()
+    {
+        return $this->hasOne(SalePeriod::class, 'id', 'sale_period_id');
     }
 
     public function productWarehouse()

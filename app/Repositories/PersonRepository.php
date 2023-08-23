@@ -153,9 +153,9 @@ class PersonRepository implements Interfaces\iPerson
                 'identity' => $inputs['identity'],
                 'score' => $inputs['score'],
                 'passport_no' => $inputs['passport_no'],
-                'card_no' => $inputs['card_no'],
-                'bank_account_no' => $inputs['bank_account_no'],
-                'sheba_no' => $inputs['sheba_no']
+//                'card_no' => $inputs['card_no'],
+//                'bank_account_no' => $inputs['bank_account_no'],
+//                'sheba_no' => $inputs['sheba_no']
             ];
 
             if (empty($inputs['passport_no'])) {
@@ -181,7 +181,7 @@ class PersonRepository implements Interfaces\iPerson
             $person = new Person();
 
             $person->code = $this->randomString();
-            $person->internal_code = $this->randomPersonnelCode();
+            $person->internal_code = $this->randomPersonnelCode($inputs['company_id']);
             $person->name = $inputs['name'];
             $person->family = $inputs['family'];
             $person->father_name = $inputs['father_name'];
@@ -190,9 +190,9 @@ class PersonRepository implements Interfaces\iPerson
             $person->mobile = $inputs['mobile'];
             $person->identity = $inputs['identity'];
             $person->passport_no = $inputs['passport_no'] ?? null;
-            $person->passport_no = $inputs['passport_no'];
-            $person->card_no = $inputs['card_no'];
-            $person->bank_account_no = $inputs['bank_account_no'];
+//            $person->card_no = $inputs['card_no'];
+//            $person->sheba_no = $inputs['sheba_no'];
+//            $person->bank_account_no = $inputs['bank_account_no'];
             $person->created_by = $user->id;
 
             $result = $person->save();

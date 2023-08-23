@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\Company;
 use App\Repositories\Interfaces\iCompany;
 use App\Traits\Common;
 use Illuminate\Support\Facades\Auth;
@@ -17,6 +18,18 @@ class CompanyHelper
     {
         $this->company_interface = $company_interface;
     }
+
+    private function calculatePrePersonnelCode($parent_id, $pre_personnel_code): string
+    {
+        $company = Company::select('id', 'parent_id')->find($parent_id);
+        if (!is_null($company->parent_id)) {
+            $pre_personnel_code++;
+            return $this->calculatePrePersonnelCode($company->parent_id, $pre_personnel_code);
+        } else {
+            return "0$pre_personnel_code";
+        }
+    }
+
 
     /**
      * سرویس لیست شرکت ها
@@ -40,6 +53,7 @@ class CompanyHelper
             return [
                 'code' => $item->code,
                 'name' => $item->name,
+                'pre_personnel_code' => $item->pre_personnel_code,
                 'parent' => is_null($item->parent_id) ? null : $item->parent->name,
                 'is_enable' => $item->is_enable,
                 'creator' => is_null($item->creator->person) ? null : [
@@ -83,7 +97,7 @@ class CompanyHelper
      */
     public function getCompanyDetail($code): array
     {
-        $select = ['code', 'parent_id', 'name', 'is_enable'];
+        $select = ['code', 'pre_personnel_code', 'parent_id', 'name', 'is_enable'];
         $relation = [
             'parent:id,code,name'
         ];
@@ -172,6 +186,7 @@ class CompanyHelper
     public function addCompany($inputs): array
     {
         $inputs['parent_id'] = null;
+        $inputs['pre_personnel_code'] = 1;
         if (!is_null($inputs['parent_code'])) {
             $parent_company = $this->company_interface->getCompanyByCode($inputs['parent_code'], ['id']);
             if (is_null($parent_company)) {
@@ -182,6 +197,9 @@ class CompanyHelper
                 ];
             }
             $inputs['parent_id'] = $parent_company->id;
+            $inputs['pre_personnel_code'] = $this->calculatePrePersonnelCode($parent_company->id, $inputs['pre_personnel_code']);
+        } else {
+            $inputs['pre_personnel_code'] = '0' . $inputs['pre_personnel_code'];
         }
 
         $user = Auth::user();

@@ -46,4 +46,7 @@ return [
     'salary_already_settled_add_not_allowed' => 'حقوق قبلا تسویه حساب شده است. شما مجاز به افزودن این داده نیستید.',
     'salary_already_settled_delete_not_allowed' => 'حقوق قبلا تسویه حساب شده است. شما مجاز به حذف این داده نیستید.',
     'your_account_is_account' => 'حساب کاربری شما غیرفعال شده است.',
+    'warehouse_not_exists' => 'انبار وجود ندارد.',
+    'not_enough_warehouse_stock' => 'موجودی انبار کافی نمی باشد.',
+    'product_warehouse_already_exists' => 'انبار کالای مورد نظر وجود دارد. می توانید مقدار قبلی را ویرایش کنید.',
 ];

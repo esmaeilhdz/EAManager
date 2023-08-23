@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Accessory;
+namespace App\Http\Requests\ClothSell;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AccessoryEditRequest extends FormRequest
+class ClothSellDetailRequest extends FormRequest
 {
 
     /**
@@ -15,6 +15,7 @@ class AccessoryEditRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
+            'code' => $this->code,
             'id' => $this->id,
         ]);
     }
@@ -37,11 +38,8 @@ class AccessoryEditRequest extends FormRequest
     public function rules()
     {
         return [
+            'code' => 'required|string|size:32',
             'id' => 'required|numeric|min:1',
-            'name' => 'required|string',
-            'is_enable' => 'required|numeric|in:0,1',
-            'place_id' => 'required|numeric|min:1',
-            'count' => 'required|numeric|min:1',
         ];
     }
 }

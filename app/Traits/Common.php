@@ -3,6 +3,8 @@
 namespace App\Traits;
 
 use App\Exceptions\ApiException;
+use App\Models\Company;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 trait Common
@@ -13,9 +15,10 @@ trait Common
         return Str::random($length);
     }
 
-    public function randomPersonnelCode($length = 7): string
+    public function randomPersonnelCode($company_id, $length = 7): string
     {
-        return 'FF-P-' . Str::random($length);
+        $company = Company::select('pre_personnel_code')->find($company_id);
+        return $company->pre_personnel_code . '-' . Str::random($length);
     }
 
     public function randomProductCode($length = 7): string

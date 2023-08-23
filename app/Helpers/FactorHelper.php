@@ -62,11 +62,6 @@ class FactorHelper
         $inputs['where']['customer']['condition'] = $this->generateWhereCondition($search_data, $param_array);
         $inputs['where']['customer']['params'] = $param_array;
 
-        $search_data = $param_array = [];
-        $search_data[] = $this->GWC($inputs['sale_period_id'] ?? '', 'string:name');
-        $inputs['where']['sale_period']['condition'] = $this->generateWhereCondition($search_data, $param_array);
-        $inputs['where']['sale_period']['params'] = $param_array;
-
         $inputs['order_by'] = $this->orderBy($inputs, 'factors');
         $inputs['per_page'] = $this->calculatePerPage($inputs);
 
@@ -78,10 +73,6 @@ class FactorHelper
                 'customer' => [
                     'name' => $item->customer->name,
                     'mobile' => $item->customer->mobile,
-                ],
-                'sale_period' => [
-                    'id' => $item->sale_period_id,
-                    'caption' => $item->sale_period->name,
                 ],
                 'factor_no' => $item->factor_no,
                 'settlement_date' => $item->settlement_date,
@@ -122,11 +113,6 @@ class FactorHelper
         $inputs['where']['customer']['condition'] = $this->generateWhereCondition($search_data, $param_array);
         $inputs['where']['customer']['params'] = $param_array;
 
-        $search_data = $param_array = [];
-        $search_data[] = $this->GWC($inputs['sale_period_id'] ?? '', 'string:name');
-        $inputs['where']['sale_period']['condition'] = $this->generateWhereCondition($search_data, $param_array);
-        $inputs['where']['sale_period']['params'] = $param_array;
-
         $inputs['order_by'] = $this->orderBy($inputs, 'factors');
         $inputs['per_page'] = $this->calculatePerPage($inputs);
 
@@ -138,10 +124,6 @@ class FactorHelper
                 'customer' => [
                     'name' => $item->customer->name,
                     'mobile' => $item->customer->mobile,
-                ],
-                'sale_period' => [
-                    'id' => $item->sale_period_id,
-                    'caption' => $item->sale_period->name,
                 ],
                 'factor_no' => $item->factor_no,
                 'settlement_date' => $item->settlement_date,
@@ -172,7 +154,7 @@ class FactorHelper
      */
     public function getFactorDetail($code): array
     {
-        $select = ['id', 'code', 'customer_id', 'sale_period_id', 'factor_no', 'has_return_permission', 'is_credit', 'status', 'settlement_date', 'final_price'];
+        $select = ['id', 'code', 'customer_id', 'factor_no', 'has_return_permission', 'is_credit', 'status', 'settlement_date', 'final_price'];
         $relation = [
             'customer:id,name,mobile,score',
             'factor_products:factor_id,product_warehouse_id,free_size_count,size1_count,size2_count,size3_count,size4_count,price',

@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Repositories\Interfaces\iCloth;
+use App\Repositories\Interfaces\iClothBuy;
 use App\Traits\Common;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -13,10 +14,12 @@ class ClothHelper
 
     // attributes
     public iCloth $cloth_interface;
+    public iClothBuy $cloth_buy_interface;
 
-    public function __construct(iCloth $cloth_interface)
+    public function __construct(iCloth $cloth_interface, iClothBuy $cloth_buy_interface)
     {
         $this->cloth_interface = $cloth_interface;
+        $this->cloth_buy_interface = $cloth_buy_interface;
     }
 
     /**
@@ -26,11 +29,6 @@ class ClothHelper
      */
     public function getClothes($inputs): array
     {
-        $search_data = $param_array = [];
-        $search_data[] = $this->GWC($inputs['search_txt'] ?? '', 'string:name');
-        $inputs['where']['search']['condition'] = $this->generateWhereCondition($search_data, $param_array);
-        $inputs['where']['search']['params'] = $param_array;
-
         $inputs['per_page'] = $this->calculatePerPage($inputs);
 
         $clothes = $this->cloth_interface->getClothes($inputs);
@@ -43,6 +41,8 @@ class ClothHelper
                     'id' => $item->color_id,
                     'caption' => $item->color->enum_caption
                 ],
+                'cloth_buy_count' => count($item->cloth_buy),
+                'cloth_sell_count' => count($item->cloth_sell),
                 'creator' => is_null($item->creator->person) ? null : [
                     'person' => [
                         'full_name' => $item->creator->person->name . ' ' . $item->creator->person->family,
@@ -89,8 +89,8 @@ class ClothHelper
      */
     public function editCloth($inputs): array
     {
-        $place = $this->cloth_interface->getClothByCode($inputs['code']);
-        if (is_null($place)) {
+        $cloth = $this->cloth_interface->getClothByCode($inputs['code']);
+        if (is_null($cloth)) {
             return [
                 'result' => false,
                 'message' => __('messages.record_not_found'),
@@ -98,9 +98,8 @@ class ClothHelper
             ];
         }
 
-        // todo: manage add/edit cloth by color
+        $result = $this->cloth_interface->editCloth($cloth, $inputs);
 
-        $result = $this->cloth_interface->editCloth($inputs);
         return [
             'result' => (bool) $result,
             'message' => $result ? __('messages.success') : __('messages.fail'),

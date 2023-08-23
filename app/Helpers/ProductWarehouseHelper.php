@@ -174,8 +174,9 @@ class ProductWarehouseHelper
         }
 
         $inputs['product_id'] = $product->id;
+        $user = Auth::user();
         $select = ['id', 'product_id', 'place_id', 'free_size_count', 'size1_count', 'size2_count', 'size3_count', 'size4_count', 'is_enable'];
-        $product_warehouse = $this->product_warehouse_interface->getProductWarehouseById($inputs, $select);
+        $product_warehouse = $this->product_warehouse_interface->getProductWarehouseById($inputs, $user, $select);
         if (is_null($product_warehouse)) {
             return [
                 'result' => false,
@@ -211,9 +212,18 @@ class ProductWarehouseHelper
             ];
         }
 
-        DB::beginTransaction();
         $inputs['product_id'] = $product->id;
         $user = Auth::user();
+        $product_warehouse = $this->product_warehouse_interface->getByProductAndPlace($inputs['place_id'], $product->id, $user);
+        if ($product_warehouse) {
+            return [
+                'result' => false,
+                'message' => __('messages.product_warehouse_already_exists'),
+                'data' => null
+            ];
+        }
+
+        DB::beginTransaction();
         $result[] = $this->product_warehouse_interface->deActiveOldWarehouses($inputs);
         $res = $this->product_warehouse_interface->addProductWarehouse($inputs, $user);
         $result[] = $res['result'];

@@ -19,7 +19,6 @@ class CreateFactorsTable extends Migration
             $table->string('code', 32)->unique();
             $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('customer_id');
-            $table->unsignedBigInteger('sale_period_id');
             $table->string('factor_no', 16)->unique();
             $table->boolean('has_return_permission')->default(0)->comment('اجازه مرجوع');
             $table->boolean('is_credit')->default(0)->comment('فروش اعتباری(امانی)');

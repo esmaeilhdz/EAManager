@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Exceptions\ApiException;
 use App\Models\Accessory;
+use App\Models\AccessoryBuy;
 use App\Traits\Common;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -23,19 +24,20 @@ class AccessoryRepository implements Interfaces\iAccessory
     public function getAccessories($inputs): LengthAwarePaginator
     {
         try {
-            return Accessory::with([
-                'creator:id,person_id',
-                'creator.person:id,name,family',
-                'warehouse:accessory_id,count'
+            return AccessoryBuy::with([
+                'place:id,name',
+                'accessory.creator:id,person_id',
+                'accessory.creator.person:id,name,family',
             ])
                 ->select([
                     'id',
-                    'name',
-                    'is_enable',
-                    'created_by',
-                    'created_at'
+                    'accessory_id',
+                    'place_id',
+                    'count'
                 ])
-                ->whereRaw($inputs['where']['search']['condition'], $inputs['where']['search']['params'])
+                ->whereHas('accessory', function ($q) use ($inputs) {
+                    $q->whereRaw($inputs['where']['search']['condition'], $inputs['where']['search']['params']);
+                })
                 ->paginate($inputs['per_page']);
         } catch (\Exception $e) {
             throw new ApiException($e);

@@ -41,7 +41,6 @@ class AccountRepository implements Interfaces\iAccount
                 ->when(isset($inputs['search_txt']), function ($q) use ($inputs) {
                     $q->whereLike('enum_caption', $inputs['search_txt'])->where('category_name', 'bank');
                 })
-                ->whereRaw($inputs['where']['search']['condition'], $inputs['where']['search']['params'])
                 ->paginate($inputs['per_page']);
         } catch (\Exception $e) {
             throw new ApiException($e);

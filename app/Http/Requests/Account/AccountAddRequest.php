@@ -26,7 +26,7 @@ class AccountAddRequest extends FormRequest
         return [
             'bank_id' => 'required|numeric|min:1',
             'account_no' => 'required|string',
-            'sheba_no' => 'required|string',
+            'sheba_no' => 'required|string|size:24',
             'card_no' => 'required|string',
         ];
     }

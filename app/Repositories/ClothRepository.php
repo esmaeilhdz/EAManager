@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Exceptions\ApiException;
 use App\Models\Cloth;
-use App\Models\SalePeriod;
+use App\Models\ClothBuy;
 use App\Traits\Common;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
@@ -12,22 +12,27 @@ class ClothRepository implements Interfaces\iCloth
 {
     use Common;
 
-    public function getClothes($inputs)
+    public function getClothes($inputs): LengthAwarePaginator
     {
         try {
             return Cloth::with([
                 'creator:id,person_id',
                 'creator.person:id,name,family',
-                'color:enum_id,enum_caption'
+                'color:enum_id,enum_caption',
+                'cloth_buy:cloth_id',
+                'cloth_sell:cloth_id'
             ])
                 ->select([
+                    'id',
                     'code',
                     'name',
                     'color_id',
                     'created_by',
                     'created_at'
                 ])
-                ->whereRaw($inputs['where']['search']['condition'], $inputs['where']['search']['params'])
+                ->when(isset($inputs['search_txt']), function ($q) use ($inputs) {
+                    $q->whereLike('name', $inputs['search_txt']);
+                })
                 ->paginate($inputs['per_page']);
         } catch (\Exception $e) {
             throw new ApiException($e);
@@ -53,14 +58,13 @@ class ClothRepository implements Interfaces\iCloth
         }
     }
 
-    public function editCloth($inputs)
+    public function editCloth($cloth, $inputs)
     {
         try {
-            return Cloth::where('code', $inputs['code'])
-                ->update([
-                    'name' => $inputs['name'],
-                    'color_id' => $inputs['color_id']
-                ]);
+            $cloth->name = $inputs['name'];
+            $cloth->color_id = $inputs['color_id'];
+
+            return $cloth->save();
         } catch (\Exception $e) {
             throw new ApiException($e);
         }

@@ -75,19 +75,19 @@ class AccessoryBuyRepository implements Interfaces\iAccessoryBuy
 
     /**
      * ویرایش خرید خرج کار
+     * @param $accessory_buy
      * @param $inputs
      * @return mixed
      * @throws ApiException
      */
-    public function editAccessoryBuy($inputs): mixed
+    public function editAccessoryBuy($accessory_buy, $inputs): mixed
     {
         try {
-            return AccessoryBuy::where('id', $inputs['id'])
-                ->where('accessory_id', $inputs['accessory_id'])
-                ->update([
-                    'place_id' => $inputs['place_id'],
-                    'count' => $inputs['count']
-                ]);
+            $accessory_buy->place_id = $inputs['place_id'];
+            $accessory_buy->count = $inputs['count'];
+
+            return $accessory_buy->save();
+
         } catch (\Exception $e) {
             throw new ApiException($e);
         }

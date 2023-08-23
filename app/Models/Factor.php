@@ -76,11 +76,6 @@ class Factor extends Model
         return $this->hasMany(FactorPayment::class, 'factor_id', 'id');
     }
 
-    public function sale_period()
-    {
-        return $this->hasOne(SalePeriod::class, 'id', 'sale_period_id');
-    }
-
     public function status()
     {
         return $this->hasOne(Enumeration::class, 'enum_id', 'status')

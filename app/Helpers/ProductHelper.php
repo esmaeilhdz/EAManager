@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Repositories\Interfaces\iCloth;
 use App\Repositories\Interfaces\iProduct;
+use App\Repositories\Interfaces\iSalePeriod;
 use App\Traits\Common;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,11 +15,13 @@ class ProductHelper
     // attributes
     public iProduct $product_interface;
     public iCloth $cloth_interface;
+    public iSalePeriod $sale_period_interface;
 
-    public function __construct(iProduct $product_interface, iCloth $cloth_interface)
+    public function __construct(iProduct $product_interface, iCloth $cloth_interface, iSalePeriod $sale_period_interface)
     {
         $this->product_interface = $product_interface;
         $this->cloth_interface = $cloth_interface;
+        $this->sale_period_interface = $sale_period_interface;
     }
 
     /**
@@ -55,6 +58,9 @@ class ProductHelper
                         $item->cloth->color->caption
                     ]
                 ],
+                'sale_period' => [
+                    'name' => $item->sale_period->name,
+                ],
                 'creator' => is_null($item->creator->person) ? null : [
                     'person' => [
                         'full_name' => $item->creator->person->name . ' ' . $item->creator->person->family,
@@ -79,7 +85,7 @@ class ProductHelper
     public function getProductDetail($code): array
     {
         $select = [
-            'code', 'internal_code', 'name', 'has_accessories', 'cloth_id',
+            'code', 'internal_code', 'name', 'has_accessories', 'cloth_id', 'sale_period_id'
         ];
         $product = $this->product_interface->getProductByCode($code, $select);
         if (is_null($product)) {
@@ -122,6 +128,15 @@ class ProductHelper
             ];
         }
 
+        $sale_period = $this->sale_period_interface->getSalePeriodById($inputs['sale_period_id']);
+        if (is_null($sale_period)) {
+            return [
+                'result' => false,
+                'message' => __('messages.record_not_found'),
+                'data' => null
+            ];
+        }
+
         $inputs['cloth_id'] = $cloth->id;
         $result = $this->product_interface->editProduct($product, $inputs);
         return [
@@ -142,6 +157,15 @@ class ProductHelper
 
         $cloth = $this->cloth_interface->getClothByCode($inputs['cloth_code']);
         if (is_null($cloth)) {
+            return [
+                'result' => false,
+                'message' => __('messages.record_not_found'),
+                'data' => null
+            ];
+        }
+
+        $sale_period = $this->sale_period_interface->getSalePeriodById($inputs['sale_period_id']);
+        if (is_null($sale_period)) {
             return [
                 'result' => false,
                 'message' => __('messages.record_not_found'),

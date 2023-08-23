@@ -21,13 +21,13 @@ class ProductRepository implements Interfaces\iProduct
     public function getProducts($inputs): LengthAwarePaginator
     {
         try {
-//            DB::enableQueryLog();
             return Product::query()
                 ->with([
                     'productWarehouse:product_id,free_size_count,size1_count,size2_count,size3_count,size4_count',
                     'productPrice:product_id,final_price',
                     'cloth:id,code,color_id,name',
                     'cloth.color:enum_id,enum_caption',
+                    'sale_period:id,name',
                     'creator:id,person_id',
                     'creator.person:id,name,family'
                 ])
@@ -38,13 +38,13 @@ class ProductRepository implements Interfaces\iProduct
                     'name',
                     'has_accessories',
                     'cloth_id',
+                    'sale_period_id',
                     'created_by',
                     'created_at'
                 ])
                 ->whereRaw($inputs['where']['search']['condition'], $inputs['where']['search']['params'])
                 ->paginate($inputs['per_page']);
 
-//            dd(DB::getQueryLog());
         } catch (\Exception $e) {
             throw new ApiException($e);
         }
@@ -62,7 +62,8 @@ class ProductRepository implements Interfaces\iProduct
         try {
             $product = Product::with([
                 'cloth:id,code,color_id,name',
-                'cloth.color:enum_id,enum_caption'
+                'cloth.color:enum_id,enum_caption',
+                'sale_period:id,name',
             ]);
 
             if (count($select)) {
@@ -87,6 +88,7 @@ class ProductRepository implements Interfaces\iProduct
         try {
             $product->internal_code = $inputs['internal_code'];
             $product->cloth_id = $inputs['cloth_id'];
+            $product->sale_period_id = $inputs['sale_period_id'];
             $product->name = $inputs['name'];
             $product->has_accessories = $inputs['has_accessories'];
 
@@ -114,6 +116,7 @@ class ProductRepository implements Interfaces\iProduct
             $product->company_id = $company_id;
             $product->name = $inputs['name'];
             $product->cloth_id = $inputs['cloth_id'];
+            $product->sale_period_id = $inputs['sale_period_id'];
             $product->has_accessories = $inputs['has_accessories'];
             $product->created_by = $user->id;
 

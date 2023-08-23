@@ -21,7 +21,7 @@ class CreatePersonsTable extends Migration
             $table->string('name', 60)->index();
             $table->string('family', 70)->index();
             $table->string('father_name', 60);
-            $table->string('national_code', 10)->index()->comment('کدملی');
+            $table->string('national_code', 10)->index()->unique()->comment('کدملی');
             $table->string('identity', 15)->comment('شماره شناسنامه');
             $table->string('passport_no', 20)->index()->nullable()->comment('شماره پاسپورت');
             $table->unsignedInteger('score')->default(0);

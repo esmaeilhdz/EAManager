@@ -37,12 +37,15 @@ class AccessoryHelper
         $accessories->transform(function ($item) {
             return [
                 'id' => $item->id,
-                'name' => $item->name,
-                'is_enable' => $item->is_enable,
-                'warehouse_count' => $item->warehouse->count ?? null,
-                'creator' => is_null($item->creator->person) ? null : [
+                'accessory' => [
+                    'name' => $item->accessory->name,
+                    'is_enable' => $item->accessory->is_enable,
+                ],
+                'place' => $item->place->name,
+                'count' => $item->count,
+                'creator' => is_null($item->accessory->creator->person) ? null : [
                     'person' => [
-                        'full_name' => $item->creator->person->name . ' ' . $item->creator->person->family,
+                        'full_name' => $item->accessory->creator->person->name . ' ' . $item->accessory->creator->person->family,
                     ]
                 ],
                 'created_at' => $item->created_at,
@@ -66,8 +69,6 @@ class AccessoryHelper
         $select = ['id', 'name', 'is_enable'];
         $relation = [
             'warehouse:accessory_id,count',
-            'accessoryBuys:accessory_id,place_id,count,created_at',
-            'accessoryBuys.place:id,name'
         ];
         $accessory = $this->accessory_interface->getAccessoryById($id, $select, $relation);
         if (is_null($accessory)) {
