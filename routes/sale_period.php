@@ -7,6 +7,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'auth:sanctum'], function () {
     Route::group(['middleware' => ['permission:admin-sale_periods|edit-sale_periods|view-sale_periods']], function () {
         Route::get('sale_period', [SalePeriodController::class, 'getSalePeriods']);
         Route::get('sale_period/{id}', [SalePeriodController::class, 'getSalePeriodDetail']);
+        Route::get('sale_period_combo', [SalePeriodController::class, 'getSalePeriodCombo']);
     });
     Route::group(['middleware' => ['permission:admin-sale_periods|edit-sale_periods']], function () {
         Route::put('sale_period/{id}', [SalePeriodController::class, 'editSalePeriod']);

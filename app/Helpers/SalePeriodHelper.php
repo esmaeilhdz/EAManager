@@ -83,6 +83,22 @@ class SalePeriodHelper
     }
 
     /**
+     * جزئیات دوره فروش
+     * @param $inputs
+     * @return array
+     */
+    public function getSalePeriodCombo($inputs): array
+    {
+        $sale_periods = $this->sale_period_interface->getSalePeriodsCombo($inputs);
+
+        return [
+            'result' => true,
+            'message' => __('messages.success'),
+            'data' => $sale_periods
+        ];
+    }
+
+    /**
      * ویرایش دوره فروش
      * @param $inputs
      * @return array

@@ -55,6 +55,20 @@ class SalePeriodRepository implements Interfaces\iSalePeriod
         }
     }
 
+    public function getSalePeriodsCombo($inputs)
+    {
+        try {
+            return SalePeriod::select('id', 'name')
+                ->when(isset($inputs['search_txt']), function ($q) use ($inputs) {
+                    $q->where('name', 'like', '%' . $inputs['search_txt'] . '%');
+                })
+                ->limit(10)
+                ->get();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
     public function editSalePeriod($inputs)
     {
         try {
