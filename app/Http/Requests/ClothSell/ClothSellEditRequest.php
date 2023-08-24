@@ -40,7 +40,7 @@ class ClothSellEditRequest extends FormRequest
         return [
             'code' => 'required|string|size:32',
             'id' => 'required|numeric|min:1',
-            'customer_id' => 'required|numeric|min:1',
+            'customer_code' => 'required|string|size:32',
             'warehouse_place_id' => 'required|numeric|min:1',
             'metre' => 'required|numeric|min:1',
             'roll_count' => 'required|numeric|min:1',

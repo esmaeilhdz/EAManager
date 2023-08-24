@@ -80,6 +80,20 @@ class CustomerRepository implements Interfaces\iCustomer
         }
     }
 
+    public function getCustomersCombo($inputs)
+    {
+        try {
+            return Customer::select('code', 'name')
+                ->when(isset($inputs['search_txt']), function ($q) use ($inputs) {
+                    $q->whereLike('name', $inputs['search_txt']);
+                })
+                ->limit(10)
+                ->get();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
     /**
      * ویرایش مشتری
      * @param $customer

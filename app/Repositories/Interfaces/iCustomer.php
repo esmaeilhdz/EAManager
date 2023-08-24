@@ -8,6 +8,8 @@ interface iCustomer
 
     public function getCustomerByCode($code, $select = [], $relation = []);
 
+    public function getCustomersCombo($inputs);
+
     public function editCustomer($customer, $inputs);
 
     public function addCustomer($inputs, $user);

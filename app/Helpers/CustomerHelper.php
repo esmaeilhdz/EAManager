@@ -89,6 +89,17 @@ class CustomerHelper
         ];
     }
 
+    public function getCustomerCombo($inputs)
+    {
+        $customers = $this->customer_interface->getCustomersCombo($inputs);
+
+        return [
+            'result' => true,
+            'message' => __('messages.success'),
+            'data' => $customers
+        ];
+    }
+
     /**
      * ویرایش مشتری
      * @param $inputs
