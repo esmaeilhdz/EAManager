@@ -89,7 +89,8 @@ class SalePeriodHelper
      */
     public function getSalePeriodCombo($inputs): array
     {
-        $sale_periods = $this->sale_period_interface->getSalePeriodsCombo($inputs);
+        $user = Auth::user();
+        $sale_periods = $this->sale_period_interface->getSalePeriodsCombo($inputs, $user);
 
         return [
             'result' => true,

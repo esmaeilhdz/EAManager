@@ -110,7 +110,8 @@ class ProductHelper
      */
     public function getProductCombo($inputs): array
     {
-        $products = $this->product_interface->getProductsCombo($inputs);
+        $user = Auth::user();
+        $products = $this->product_interface->getProductsCombo($inputs, $user);
 
         return [
             'result' => true,

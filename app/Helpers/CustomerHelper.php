@@ -91,7 +91,8 @@ class CustomerHelper
 
     public function getCustomerCombo($inputs)
     {
-        $customers = $this->customer_interface->getCustomersCombo($inputs);
+        $user = Auth::user();
+        $customers = $this->customer_interface->getCustomersCombo($inputs, $user);
 
         return [
             'result' => true,

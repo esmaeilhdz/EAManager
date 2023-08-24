@@ -8,7 +8,7 @@ interface iSalePeriod
 
     public function getSalePeriodById($id);
 
-    public function getSalePeriodsCombo($inputs);
+    public function getSalePeriodsCombo($inputs, $user);
 
     public function editSalePeriod($inputs);
 

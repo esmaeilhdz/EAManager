@@ -8,7 +8,7 @@ interface iProduct
 
     public function getProductByCode($code, $select = []);
 
-    public function getProductsCombo($inputs);
+    public function getProductsCombo($inputs, $user);
 
     public function editProduct($product, $inputs);
 
