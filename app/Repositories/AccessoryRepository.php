@@ -27,13 +27,15 @@ class AccessoryRepository implements Interfaces\iAccessory
         try {
             $company_id = $this->getCurrentCompanyOfUser($user);
             return Accessory::with([
-                'place:id,name',
                 'creator:id,person_id',
                 'creator.person:id,name,family',
             ])
                 ->select([
                     'id',
-                    'name'
+                    'name',
+                    'is_enable',
+                    'created_by',
+                    'created_at',
                 ])
                 ->when(isset($inputs['search_txt']), function ($q) use ($inputs) {
                     $q->where('name', 'like', '%' . $inputs['search_txt'] . '%');
