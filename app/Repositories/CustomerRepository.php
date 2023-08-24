@@ -80,13 +80,22 @@ class CustomerRepository implements Interfaces\iCustomer
         }
     }
 
-    public function getCustomersCombo($inputs)
+    /**
+     * کامبوی مشترسی
+     * @param $inputs
+     * @param $user
+     * @return mixed
+     * @throws ApiException
+     */
+    public function getCustomersCombo($inputs, $user): mixed
     {
+        $company_id = $this->getCurrentCompanyOfUser($user);
         try {
             return Customer::select('code', 'name')
                 ->when(isset($inputs['search_txt']), function ($q) use ($inputs) {
                     $q->where('name', 'like', '%' . $inputs['search_txt'] . '%');
                 })
+                ->where('company_id', $company_id)
                 ->limit(10)
                 ->get();
         } catch (\Exception $e) {

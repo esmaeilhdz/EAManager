@@ -155,6 +155,25 @@ class ProductWarehouseHelper
         ];
     }
 
+    public function getProductWarehouseCombo($inputs)
+    {
+        $user = Auth::user();
+        $product_warehouses = $this->product_warehouse_interface->getProductWarehouseCombo($inputs, $user);
+
+        $product_warehouses->transform(function ($item) {
+            return [
+                'id' => $item->id,
+                'caption' => $item->product->name
+            ];
+        });
+
+        return [
+            'result' => true,
+            'message' => __('messages.success'),
+            'data' => $product_warehouses
+        ];
+    }
+
     /**
      * سرویس ویرایش قیمت کالا
      * @param $inputs

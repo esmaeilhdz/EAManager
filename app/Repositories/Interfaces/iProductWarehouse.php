@@ -20,6 +20,8 @@ interface iProductWarehouse
 
     public function getByProductAndPlace($place_id, $product_id, $user);
 
+    public function getProductWarehouseCombo($inputs, $user);
+
     public function editProductWarehouse($product_warehouse, $inputs);
 
     public function deActiveOldWarehouses($inputs);
