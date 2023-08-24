@@ -4,7 +4,7 @@ namespace App\Repositories\Interfaces;
 
 interface iAccessory
 {
-    public function getAccessories($inputs);
+    public function getAccessories($inputs, $user);
 
     public function getAccessoryById($id, $select = [], $relation = []);
 

@@ -18,26 +18,27 @@ class AccessoryRepository implements Interfaces\iAccessory
     /**
      * لیست خرج کار ها
      * @param $inputs
+     * @param $user
      * @return LengthAwarePaginator
      * @throws ApiException
      */
-    public function getAccessories($inputs): LengthAwarePaginator
+    public function getAccessories($inputs, $user): LengthAwarePaginator
     {
         try {
-            return AccessoryBuy::with([
+            $company_id = $this->getCurrentCompanyOfUser($user);
+            return Accessory::with([
                 'place:id,name',
-                'accessory.creator:id,person_id',
-                'accessory.creator.person:id,name,family',
+                'creator:id,person_id',
+                'creator.person:id,name,family',
             ])
                 ->select([
                     'id',
-                    'accessory_id',
-                    'place_id',
-                    'count'
+                    'name'
                 ])
-                ->whereHas('accessory', function ($q) use ($inputs) {
-                    $q->whereRaw($inputs['where']['search']['condition'], $inputs['where']['search']['params']);
+                ->when(isset($inputs['search_txt']), function ($q) use ($inputs) {
+                    $q->where('name', 'like', '%' . $inputs['search_txt'] . '%');
                 })
+                ->where('company_id', $company_id)
                 ->paginate($inputs['per_page']);
         } catch (\Exception $e) {
             throw new ApiException($e);

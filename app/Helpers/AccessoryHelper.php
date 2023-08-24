@@ -25,27 +25,19 @@ class AccessoryHelper
      */
     public function getAccessories($inputs): array
     {
-        $search_data = $param_array = [];
-        $search_data[] = $this->GWC($inputs['search_txt'] ?? '', 'string:name');
-        $inputs['where']['search']['condition'] = $this->generateWhereCondition($search_data, $param_array);
-        $inputs['where']['search']['params'] = $param_array;
-
         $inputs['per_page'] = $this->calculatePerPage($inputs);
 
-        $accessories = $this->accessory_interface->getAccessories($inputs);
+        $user = Auth::user();
+        $accessories = $this->accessory_interface->getAccessories($inputs, $user);
 
         $accessories->transform(function ($item) {
             return [
                 'id' => $item->id,
-                'accessory' => [
-                    'name' => $item->accessory->name,
-                    'is_enable' => $item->accessory->is_enable,
-                ],
-                'place' => $item->place->name,
-                'count' => $item->count,
-                'creator' => is_null($item->accessory->creator->person) ? null : [
+                'name' => $item->name,
+                'is_enable' => $item->is_enable,
+                'creator' => is_null($item->creator->person) ? null : [
                     'person' => [
-                        'full_name' => $item->accessory->creator->person->name . ' ' . $item->accessory->creator->person->family,
+                        'full_name' => $item->creator->person->name . ' ' . $item->creator->person->family,
                     ]
                 ],
                 'created_at' => $item->created_at,
