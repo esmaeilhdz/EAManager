@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Facades\ProductFacade;
 use App\Http\Requests\Product\ProductAddRequest;
+use App\Http\Requests\Product\ProductComboRequest;
 use App\Http\Requests\Product\ProductDetailRequest;
 use App\Http\Requests\Product\ProductEditRequest;
 use App\Http\Requests\Product\ProductListRequest;
@@ -39,6 +40,20 @@ class ProductController extends Controller
         $this->cleanInput($inputs, array_keys($request->rules()));
 
         $result = ProductFacade::getProductDetail($inputs['code']);
+        return $this->api_response->response($result['result'], $result['message'], $result['data']);
+    }
+
+    /**
+     * سرویس کامبوی کالا
+     * @param ProductComboRequest $request
+     * @return JsonResponse
+     */
+    public function getProductCombo(ProductComboRequest $request): JsonResponse
+    {
+        $inputs = $request->validated();
+        $this->cleanInput($inputs, array_keys($request->rules()));
+
+        $result = ProductFacade::getProductCombo($inputs);
         return $this->api_response->response($result['result'], $result['message'], $result['data']);
     }
 
