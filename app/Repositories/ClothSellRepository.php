@@ -39,10 +39,10 @@ class ClothSellRepository implements Interfaces\iClothSell
                 ->where('cloth_id', $inputs['cloth_id'])
                 ->when(isset($inputs['search_txt']), function ($q) use ($inputs) {
                     $q->whereHas('customer', function ($q2) use ($inputs) {
-                        $q2->whereLike('name', $inputs['search_txt']);
+                        $q2->where('name', 'like', '%' . $inputs['search_txt'] . '%');
                     })
                         ->orWhereHas('warehouse_place', function ($q3) use ($inputs) {
-                        $q3->whereLike('name', $inputs['search_txt']);
+                            $q3->where('name', 'like', '%' . $inputs['search_txt'] . '%');
                     });
                 })
                 ->orderByRaw($inputs['order_by'])

@@ -31,7 +31,7 @@ class ClothRepository implements Interfaces\iCloth
                     'created_at'
                 ])
                 ->when(isset($inputs['search_txt']), function ($q) use ($inputs) {
-                    $q->whereLike('name', $inputs['search_txt']);
+                    $q->where('name', 'like', '%' . $inputs['search_txt'] . '%');
                 })
                 ->paginate($inputs['per_page']);
         } catch (\Exception $e) {
