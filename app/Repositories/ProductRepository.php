@@ -76,6 +76,22 @@ class ProductRepository implements Interfaces\iProduct
         }
     }
 
+    public function getProductsCombo($inputs, $user)
+    {
+        try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
+            return Product::select('id', 'name')
+                ->when(isset($inputs['search_txt']), function ($q) use ($inputs) {
+                    $q->where('name', 'like', '%' . $inputs['search_txt'] . '%');
+                })
+                ->where('company_id', $company_id)
+                ->limit(10)
+                ->get();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
     /**
      * ویرایش کالا
      * @param $product

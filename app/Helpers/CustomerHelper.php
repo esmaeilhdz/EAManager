@@ -41,8 +41,8 @@ class CustomerHelper
                 'name' => $item->name,
                 'mobile' => $item->mobile,
                 'score' => $item->score,
-                'province' => $item->address[0]->province->name,
-                'city' => $item->address[0]->city->name,
+                'province' => $item->address[0]->province->name ?? null,
+                'city' => $item->address[0]->city->name ?? null,
                 'creator' => is_null($item->creator->person) ? null : [
                     'person' => [
                         'full_name' => $item->creator->person->name . ' ' . $item->creator->person->family,
@@ -86,6 +86,18 @@ class CustomerHelper
             'result' => true,
             'message' => __('messages.success'),
             'data' => $customer
+        ];
+    }
+
+    public function getCustomerCombo($inputs)
+    {
+        $user = Auth::user();
+        $customers = $this->customer_interface->getCustomersCombo($inputs, $user);
+
+        return [
+            'result' => true,
+            'message' => __('messages.success'),
+            'data' => $customers
         ];
     }
 

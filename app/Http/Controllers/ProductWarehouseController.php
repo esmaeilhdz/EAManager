@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Facades\ProductWarehouseFacade;
 use App\Http\Requests\ProductWarehouse\ProductsOfPlaceRequest;
 use App\Http\Requests\ProductWarehouse\ProductWarehouseAddRequest;
+use App\Http\Requests\ProductWarehouse\ProductWarehouseComboRequest;
 use App\Http\Requests\ProductWarehouse\ProductWarehouseDetailRequest;
 use App\Http\Requests\ProductWarehouse\ProductWarehouseEditRequest;
 use App\Http\Requests\ProductWarehouse\ProductWarehouseListRequest;
@@ -54,6 +55,20 @@ class ProductWarehouseController extends Controller
         $this->cleanInput($inputs, array_keys($request->rules()));
 
         $result = ProductWarehouseFacade::getProductsOfPlace($inputs);
+        return $this->api_response->response($result['result'], $result['message'], $result['data']);
+    }
+
+    /**
+     * سرویس کامبوی انبار کالا
+     * @param ProductWarehouseComboRequest $request
+     * @return JsonResponse
+     */
+    public function getProductWarehouseCombo(ProductWarehouseComboRequest $request): JsonResponse
+    {
+        $inputs = $request->validated();
+        $this->cleanInput($inputs, array_keys($request->rules()));
+
+        $result = ProductWarehouseFacade::getProductWarehouseCombo($inputs);
         return $this->api_response->response($result['result'], $result['message'], $result['data']);
     }
 

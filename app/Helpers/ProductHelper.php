@@ -104,6 +104,23 @@ class ProductHelper
     }
 
     /**
+     * سرویس کامبوی کالا
+     * @param $inputs
+     * @return array
+     */
+    public function getProductCombo($inputs): array
+    {
+        $user = Auth::user();
+        $products = $this->product_interface->getProductsCombo($inputs, $user);
+
+        return [
+            'result' => true,
+            'message' => __('messages.success'),
+            'data' => $products
+        ];
+    }
+
+    /**
      * سرویس ویرایش کالا
      * @param $inputs
      * @return array

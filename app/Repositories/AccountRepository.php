@@ -39,7 +39,7 @@ class AccountRepository implements Interfaces\iAccount
                     'created_at'
                 ])
                 ->when(isset($inputs['search_txt']), function ($q) use ($inputs) {
-                    $q->whereLike('enum_caption', $inputs['search_txt'])->where('category_name', 'bank');
+                    $q->where('enum_caption', 'like', '%' . $inputs['search_txt'] . '%')->where('category_name', 'bank');
                 })
                 ->paginate($inputs['per_page']);
         } catch (\Exception $e) {

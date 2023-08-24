@@ -7,6 +7,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'auth:sanctum'], function () {
     Route::group(['middleware' => ['permission:admin-product|edit-product|view-product']], function () {
         Route::get('product', [ProductController::class, 'getProducts']);
         Route::get('product/{code}', [ProductController::class, 'getProductDetail']);
+        Route::get('product_combo', [ProductController::class, 'getProductCombo']);
     });
     Route::group(['middleware' => ['permission:admin-product|edit-product']], function () {
         Route::put('product/{code}', [ProductController::class, 'editProduct']);

@@ -5,6 +5,7 @@ namespace App\Helpers;
 use App\Repositories\Interfaces\iCloth;
 use App\Repositories\Interfaces\iClothSell;
 use App\Repositories\Interfaces\iClothWarehouse;
+use App\Repositories\Interfaces\iCustomer;
 use App\Traits\Common;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -16,17 +17,20 @@ class ClothSellHelper
     // attributes
     public iClothWarehouse $cloth_warehouse_interface;
     public iClothSell $cloth_sell_interface;
+    public iCustomer $customer_interface;
     public iCloth $cloth_interface;
 
     public function __construct(
         iClothWarehouse $cloth_warehouse_interface,
         iClothSell $cloth_sell_interface,
-        iCloth $cloth_interface
+        iCloth $cloth_interface,
+        iCustomer $customer_interface
     )
     {
         $this->cloth_warehouse_interface = $cloth_warehouse_interface;
         $this->cloth_sell_interface = $cloth_sell_interface;
         $this->cloth_interface = $cloth_interface;
+        $this->customer_interface = $customer_interface;
     }
 
     /**
@@ -124,9 +128,21 @@ class ClothSellHelper
             ];
         }
 
-
         $inputs['cloth_id'] = $cloth->id;
         $params['cloth_id'] = $cloth->id;
+
+        $customer = $this->customer_interface->getCustomerByCode($inputs['customer_code'], ['id']);
+        if (is_null($customer)) {
+            return [
+                'result' => false,
+                'message' => __('messages.customer_not_found'),
+                'data' => null
+            ];
+        }
+
+        $inputs['customer_id'] = $customer->id;
+        $params['customer_id'] = $customer->id;
+
         $params = array_merge($params, $inputs);
         $cloth_sell = $this->cloth_sell_interface->getClothSellById($inputs);
         if (is_null($cloth_sell)) {
@@ -145,17 +161,6 @@ class ClothSellHelper
                 'data' => null
             ];
         }
-
-        /*if (
-            $cloth_warehouse->metre - $inputs['metre'] < 0 ||
-            $cloth_warehouse->roll_count - $inputs['roll_count'] < 0
-        ) {
-            return [
-                'result' => false,
-                'message' => __('messages.not_enough_warehouse_stock'),
-                'data' => null
-            ];
-        }*/
 
         DB::beginTransaction();
         if ($cloth_sell->metre > $inputs['metre']) {
@@ -216,6 +221,15 @@ class ClothSellHelper
             ];
         }
 
+        $customer = $this->customer_interface->getCustomerByCode($inputs['customer_code'], ['id']);
+        if (is_null($customer)) {
+            return [
+                'result' => false,
+                'message' => __('messages.customer_not_found'),
+                'data' => null
+            ];
+        }
+
         $cloth_warehouse = $this->cloth_warehouse_interface->getClothWarehousesByCloth($cloth->id, $inputs['warehouse_place_id']);
         if (!$cloth_warehouse) {
             return [
@@ -237,6 +251,7 @@ class ClothSellHelper
         }
 
         $inputs['cloth_id'] = $cloth->id;
+        $inputs['customer_id'] = $customer->id;
         $result = $this->cloth_sell_interface->addClothSell($inputs, $user);
         return [
             'result' => $result['result'],

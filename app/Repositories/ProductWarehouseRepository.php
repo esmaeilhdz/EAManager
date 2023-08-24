@@ -219,6 +219,27 @@ class ProductWarehouseRepository implements Interfaces\iProductWarehouse
         }
     }
 
+    public function getProductWarehouseCombo($inputs, $user)
+    {
+        try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
+            return ProductWarehouse::select('id', 'product_id')
+                ->with([
+                    'product'
+                ])
+                ->whereHas('product', function ($q) use ($company_id, $inputs) {
+                    $q->where('company_id', $company_id);
+                    $q->when(isset($inputs['search_txt']), function ($q2) use ($inputs) {
+                        $q2->where('name', 'like', '%' . $inputs['search_txt'] . '%');
+                    });
+                })
+                ->limit(10)
+                ->get();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
     /**
      * ویرایش انبار کالا
      * @param $product_warehouse

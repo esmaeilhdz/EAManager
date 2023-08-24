@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Facades\CustomerFacade;
 use App\Http\Requests\Customer\CustomerAddRequest;
+use App\Http\Requests\Customer\CustomerComboRequest;
 use App\Http\Requests\Customer\CustomerDetailRequest;
 use App\Http\Requests\Customer\CustomerEditRequest;
 use App\Http\Requests\Customer\CustomerListRequest;
@@ -39,6 +40,20 @@ class CustomerController extends Controller
         $this->cleanInput($inputs, array_keys($request->rules()));
 
         $result = CustomerFacade::getCustomerDetail($inputs['code']);
+        return $this->api_response->response($result['result'], $result['message'], $result['data']);
+    }
+
+    /**
+     * سرویس کامبوی مشتری
+     * @param CustomerComboRequest $request
+     * @return JsonResponse
+     */
+    public function getCustomerCombo(CustomerComboRequest $request): JsonResponse
+    {
+        $inputs = $request->validated();
+        $this->cleanInput($inputs, array_keys($request->rules()));
+
+        $result = CustomerFacade::getCustomerCombo($inputs);
         return $this->api_response->response($result['result'], $result['message'], $result['data']);
     }
 
