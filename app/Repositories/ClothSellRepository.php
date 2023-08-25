@@ -33,6 +33,8 @@ class ClothSellRepository implements Interfaces\iClothSell
                     'metre',
                     'roll_count',
                     'sell_date',
+                    'factor_no',
+                    'price',
                     'created_by',
                     'created_at'
                 ])

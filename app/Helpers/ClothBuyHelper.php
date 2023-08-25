@@ -64,6 +64,8 @@ class ClothBuyHelper
                 'metre' => $item->metre,
                 'roll_count' => $item->roll_count,
                 'receive_date' => $item->receive_date,
+                'factor_no' => $item->factor_no,
+                'price' => $item->price,
                 'creator' => is_null($item->creator->person) ? null : [
                     'person' => [
                         'full_name' => $item->creator->person->name . ' ' . $item->creator->person->family,

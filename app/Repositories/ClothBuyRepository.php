@@ -33,6 +33,8 @@ class ClothBuyRepository implements Interfaces\iClothBuy
                     'metre',
                     'roll_count',
                     'receive_date',
+                    'factor_no',
+                    'price',
                     'created_by',
                     'created_at'
                 ])
