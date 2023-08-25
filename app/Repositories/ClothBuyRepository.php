@@ -73,6 +73,8 @@ class ClothBuyRepository implements Interfaces\iClothBuy
                     'warehouse_place_id',
                     'metre',
                     'roll_count',
+                    'factor_no',
+                    'price',
                     'receive_date'
                 ])
                 ->where('cloth_id', $inputs['cloth_id'])

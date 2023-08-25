@@ -63,7 +63,7 @@ class ClothSellRepository implements Interfaces\iClothSell
         try {
             return ClothSell::with([
                 'cloth:id,code,name',
-                'customer:id,name',
+                'customer:id,code,name',
                 'warehouse_place:id,name'
             ])
                 ->select([
@@ -73,6 +73,8 @@ class ClothSellRepository implements Interfaces\iClothSell
                     'warehouse_place_id',
                     'metre',
                     'roll_count',
+                    'factor_no',
+                    'price',
                     'sell_date'
                 ])
                 ->where('cloth_id', $inputs['cloth_id'])
