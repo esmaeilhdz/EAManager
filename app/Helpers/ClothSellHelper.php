@@ -62,7 +62,7 @@ class ClothSellHelper
                 'warehouse_place' => $item->warehouse_place->name,
                 'metre' => $item->metre,
                 'roll_count' => $item->roll_count,
-                'receive_date' => $item->receive_date,
+                'sell_date' => $item->sell_date,
                 'creator' => is_null($item->creator->person) ? null : [
                     'person' => [
                         'full_name' => $item->creator->person->name . ' ' . $item->creator->person->family,
