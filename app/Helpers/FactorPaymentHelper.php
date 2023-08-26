@@ -15,32 +15,26 @@ use App\Traits\RequestProductWarehouseTrait;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class FactorHelper
+class FactorPaymentHelper
 {
     use Common, RequestProductWarehouseTrait, FactorTrait;
 
     // attributes
     public iFactor $factor_interface;
-    public iCustomer $customer_interface;
     public iFactorProduct $factor_product_interface;
     public iFactorPayment $factor_payment_interface;
-    public iProductWarehouse $product_warehouse_interface;
     public iRequestProductWarehouse $request_product_interface;
 
     public function __construct(
         iFactor                  $factor_interface,
-        iCustomer                $customer_interface,
         iFactorProduct           $factor_product_interface,
         iFactorPayment           $factor_payment_interface,
-        iProductWarehouse        $product_warehouse_interface,
         iRequestProductWarehouse $request_product_interface,
     )
     {
         $this->factor_interface = $factor_interface;
-        $this->customer_interface = $customer_interface;
         $this->factor_product_interface = $factor_product_interface;
         $this->factor_payment_interface = $factor_payment_interface;
-        $this->product_warehouse_interface = $product_warehouse_interface;
         $this->request_product_interface = $request_product_interface;
     }
 
@@ -215,8 +209,8 @@ class FactorHelper
      */
     public function editFactor($inputs): array
     {
-        // فاکتور
         $user = Auth::user();
+        // فاکتور
         $factor = $this->factor_interface->getFactorByCode($inputs['code'], $user, ['id']);
         if (is_null($factor)) {
             return [

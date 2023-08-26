@@ -116,10 +116,26 @@ class FactorProductRepository implements Interfaces\iFactorProduct
      * @return mixed
      * @throws ApiException
      */
-    public function deleteFactorProduct($factor_id): mixed
+    public function deleteFactorProducts($factor_id): mixed
     {
         try {
             return FactorProduct::where('factor_id', $factor_id)->delete();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
+    /**
+     * حذف محصول فاکتور
+     * @param $factor_id
+     * @param $id
+     * @return mixed
+     * @throws ApiException
+     */
+    public function deleteFactorProduct($factor_id, $id): mixed
+    {
+        try {
+            return FactorProduct::where('factor_id', $factor_id)->where('id', $id)->delete();
         } catch (\Exception $e) {
             throw new ApiException($e);
         }

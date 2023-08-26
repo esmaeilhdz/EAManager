@@ -46,7 +46,7 @@ class FactorEditRequest extends FormRequest
             'settlement_date' => 'required|date',
             'final_price' => 'required|numeric',
             'description' => 'nullable|string',
-            'products' => 'required|array',
+            /*'products' => 'required|array',
             'products.*.id' => 'required|numeric|min:1',
             'products.*.product_warehouse_id' => 'required|numeric|min:1',
             'products.*.free_size_count' => 'nullable|numeric|min:0',
@@ -59,7 +59,7 @@ class FactorEditRequest extends FormRequest
             'payments.*.id' => 'required|numeric|min:1',
             'payments.*.payment_type_id' => 'required|numeric|min:1',
             'payments.*.price' => 'required|numeric|min:1',
-            'payments.*.description' => 'nullable|string',
+            'payments.*.description' => 'nullable|string',*/
         ];
     }
 }

@@ -8,7 +8,7 @@ interface iFactor
 
     public function getCompletableFactors($inputs);
 
-    public function getFactorByCode($code, $select = [], $relation = []);
+    public function getFactorByCode($code, $user, $select = [], $relation = []);
 
     public function editFactor($factor, $inputs);
 

@@ -12,5 +12,7 @@ interface iFactorProduct
 
     public function addFactorProduct(array $inputs, $factor_id, $user);
 
-    public function deleteFactorProduct($factor_id);
+    public function deleteFactorProducts($factor_id);
+
+    public function deleteFactorProduct($factor_id, $id);
 }

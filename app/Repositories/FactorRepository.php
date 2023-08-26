@@ -129,15 +129,18 @@ class FactorRepository implements Interfaces\iFactor
     /**
      * جزئیات فاکتور
      * @param $code
+     * @param $user
      * @param array $select
      * @param array $relation
      * @return mixed
      * @throws ApiException
      */
-    public function getFactorByCode($code, $select = [], $relation = []): mixed
+    public function getFactorByCode($code, $user, $select = [], $relation = []): mixed
     {
         try {
-            $factor = Factor::whereCode($code);
+            $company_id = $this->getCurrentCompanyOfUser($user);
+            $factor = Factor::whereCode($code)
+                ->where('company_id', $company_id);
 
             if (count($relation)) {
                 $factor = $factor->with($relation);
