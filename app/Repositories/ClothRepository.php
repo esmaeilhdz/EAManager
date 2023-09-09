@@ -42,15 +42,11 @@ class ClothRepository implements Interfaces\iCloth
     public function getClothByCode($code)
     {
         try {
-            return Cloth::with([
-                'color:enum_id,enum_caption'
+            return Cloth::select([
+                'id',
+                'code',
+                'name',
             ])
-                ->select([
-                    'id',
-                    'code',
-                    'name',
-                    'color_id'
-                ])
                 ->whereCode($code)
                 ->first();
         } catch (\Exception $e) {
@@ -78,14 +74,13 @@ class ClothRepository implements Interfaces\iCloth
             $cloth->code = $this->randomString();
             $cloth->company_id = $company_id;
             $cloth->name = $inputs['name'];
-            $cloth->color_id = $inputs['color_id_item'];
             $cloth->created_by = $user->id;
 
             $result = $cloth->save();
 
             return [
                 'result' => $result,
-                'data' => $result ? $cloth->code : null
+                'data' => $result ? $cloth : null
             ];
 
         } catch (\Exception $e) {

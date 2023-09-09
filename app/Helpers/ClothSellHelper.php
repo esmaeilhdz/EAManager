@@ -61,7 +61,6 @@ class ClothSellHelper
                 'customer' => $item->customer->name,
                 'warehouse_place' => $item->warehouse_place->name,
                 'metre' => $item->metre,
-                'roll_count' => $item->roll_count,
                 'sell_date' => $item->sell_date,
                 'factor_no' => $item->factor_no,
                 'price' => $item->price,
@@ -177,17 +176,6 @@ class ClothSellHelper
         }
         $result[] = $this->cloth_warehouse_interface->editWarehouseMetre($params);
 
-        if ($cloth_sell->roll_count > $inputs['roll_count']) {
-            $params['sign'] = 'plus';
-            $params['roll_count'] = $inputs['roll_count'];
-        } elseif ($cloth_sell->roll_count < $inputs['roll_count']) {
-            $params['sign'] = 'minus';
-            $params['roll_count'] = $inputs['roll_count'];
-        } else {
-            $params['sign'] = 'equal';
-            $params['roll_count'] = $inputs['roll_count'];
-        }
-
         $result[] = $this->cloth_sell_interface->editClothSell($cloth_sell, $inputs);
         $result[] = $this->cloth_warehouse_interface->editWarehouseRollCount($params);
 
@@ -241,10 +229,7 @@ class ClothSellHelper
             ];
         }
 
-        if (
-            $cloth_warehouse->metre - $inputs['metre'] < 0 ||
-            $cloth_warehouse->roll_count - $inputs['roll_count'] < 0
-        ) {
+        if ($cloth_warehouse->metre - $inputs['metre'] < 0) {
             return [
                 'result' => false,
                 'message' => __('messages.not_enough_warehouse_stock'),

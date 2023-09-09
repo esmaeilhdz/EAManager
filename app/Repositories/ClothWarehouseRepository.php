@@ -30,7 +30,6 @@ class ClothWarehouseRepository implements Interfaces\iClothWarehouse
                     'cloth_id',
                     'place_id',
                     'metre',
-                    'roll_count'
                 ])
                 ->where('cloth_id', $inputs['cloth_id'])
                 ->where(function ($q) use ($inputs) {
@@ -79,10 +78,8 @@ class ClothWarehouseRepository implements Interfaces\iClothWarehouse
 
             if ($inputs['sign'] == 'plus') {
                 $cloth_warehouse->metre += $inputs['metre'];
-                $cloth_warehouse->roll_count += $inputs['roll_count'];
             } elseif ($inputs['sign'] == 'minus') {
                 $cloth_warehouse->metre -= $inputs['metre'];
-                $cloth_warehouse->roll_count -= $inputs['roll_count'];
             }
 
             return $cloth_warehouse->save();
@@ -116,12 +113,6 @@ class ClothWarehouseRepository implements Interfaces\iClothWarehouse
             $cloth_warehouse = ClothWareHouse::where('cloth_id', $inputs['cloth_id'])
                 ->where('place_id', $inputs['warehouse_place_id'])
                 ->first();
-
-            if ($inputs['sign'] == 'plus') {
-                $cloth_warehouse->roll_count += $inputs['roll_count'];
-            } elseif ($inputs['sign'] == 'minus') {
-                $cloth_warehouse->roll_count -= $inputs['roll_count'];
-            }
 
             return $cloth_warehouse->save();
         } catch (\Exception $e) {

@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Repositories\Interfaces\iCloth;
 use App\Repositories\Interfaces\iClothBuy;
+use App\Repositories\Interfaces\iClothBuyItems;
 use App\Traits\Common;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -15,11 +16,17 @@ class ClothHelper
     // attributes
     public iCloth $cloth_interface;
     public iClothBuy $cloth_buy_interface;
+    public iClothBuyItems $cloth_buy_item_interface;
 
-    public function __construct(iCloth $cloth_interface, iClothBuy $cloth_buy_interface)
+    public function __construct(
+        iCloth $cloth_interface,
+        iClothBuy $cloth_buy_interface,
+        iClothBuyItems $cloth_buy_item_interface,
+    )
     {
         $this->cloth_interface = $cloth_interface;
         $this->cloth_buy_interface = $cloth_buy_interface;
+        $this->cloth_buy_item_interface = $cloth_buy_item_interface;
     }
 
     /**
@@ -120,10 +127,14 @@ class ClothHelper
 
         DB::beginTransaction();
         $result = [];
-        foreach ($inputs['color_id'] as $color_id) {
-            $inputs['color_id_item'] = $color_id;
-            $res = $this->cloth_interface->addCloth($inputs, $user, $company_id);
-            $result[] = $res['result'];
+        $res = $this->cloth_interface->addCloth($inputs, $user, $company_id);
+        $result[] = $res['result'];
+        $inputs['cloth_id'] = $res['data']->id;
+        $res = $this->cloth_buy_interface->addClothBuy($inputs, $user);
+        $result[] = $res['result'];
+        foreach ($inputs['items'] as $item) {
+            $item['cloth_buy_id'] = $res['data'];
+            $result[] = $this->cloth_buy_item_interface->addClothBuyItem($item, $user);
         }
 
         $result = $this->prepareTransactionArray($result);

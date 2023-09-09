@@ -20,7 +20,6 @@ class ClothSellObserver
             ->first();
 
         $cloth_warehouse->metre -= $clothSell->metre;
-        $cloth_warehouse->roll_count -= $clothSell->roll_count;
 
         $cloth_warehouse->save();
     }
@@ -48,7 +47,6 @@ class ClothSellObserver
 
         if (!is_null($clothSell)) {
             $cloth_warehouse->metre += $clothSell->metre;
-            $cloth_warehouse->roll_count += $clothSell->roll_count;
             $cloth_warehouse->save();
         } else {
             $cloth_warehouse->delete();

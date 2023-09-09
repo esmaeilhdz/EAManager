@@ -25,8 +25,15 @@ class ClothAddRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'color_id' => 'required|array',
-            'color_id.*' => 'numeric|min:1',
+            'seller_place_id' => 'required|numeric|min:1',
+            'warehouse_place_id' => 'required|numeric|min:1',
+            'receive_date' => 'required|date',
+            'factor_no' => 'required|string',
+            'price' => 'required|numeric|min:1',
+            'items' => 'required|array',
+            'items.*.metre' => 'required|numeric|min:1',
+            'items.*.price' => 'required|numeric|min:1',
+            'items.*.color_id' => 'required|numeric|min:1',
         ];
     }
 }

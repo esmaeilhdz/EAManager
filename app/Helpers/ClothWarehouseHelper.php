@@ -59,7 +59,6 @@ class ClothWarehouseHelper
                     $item->place->name
                 ],
                 'metre' => $item->metre,
-                'roll_count' => $item->roll_count,
             ];
         });
 

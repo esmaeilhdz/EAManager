@@ -39,11 +39,13 @@ class ClothBuyAddRequest extends FormRequest
             'code' => 'required|string|size:32',
             'seller_place_id' => 'required|numeric|min:1',
             'warehouse_place_id' => 'required|numeric|min:1',
-            'metre' => 'required|numeric|min:1',
-            'roll_count' => 'required|numeric|min:1',
             'receive_date' => 'required|date',
             'price' => 'required|string',
             'factor_no' => 'required|string',
+            'items' => 'required|array',
+            'items.*.metre' => 'required|numeric|min:1',
+            'items.*.price' => 'required|numeric|min:1',
+            'items.*.color_id' => 'required|numeric|min:1',
         ];
     }
 }

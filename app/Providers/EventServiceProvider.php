@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\AccessoryBuy;
 use App\Models\ClothBuy;
+use App\Models\ClothBuyItem;
 use App\Models\ClothSell;
 use App\Models\Notif;
 use App\Models\ProductToStore;
@@ -38,7 +39,7 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        ClothBuy::observe(ClothBuyObserver::class);
+        ClothBuyItem::observe(ClothBuyObserver::class);
         ClothSell::observe(ClothSellObserver::class);
         AccessoryBuy::observe(AccessoryBuyObserver::class);
         ProductToStore::observe(ProductToStoreObserver::class);

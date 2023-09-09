@@ -31,7 +31,6 @@ class ClothSellRepository implements Interfaces\iClothSell
                     'customer_id',
                     'warehouse_place_id',
                     'metre',
-                    'roll_count',
                     'sell_date',
                     'factor_no',
                     'price',
@@ -74,7 +73,6 @@ class ClothSellRepository implements Interfaces\iClothSell
                     'customer_id',
                     'warehouse_place_id',
                     'metre',
-                    'roll_count',
                     'factor_no',
                     'price',
                     'sell_date'
@@ -93,7 +91,6 @@ class ClothSellRepository implements Interfaces\iClothSell
             $cloth_sell->customer_id = $inputs['customer_id'];
             $cloth_sell->warehouse_place_id = $inputs['warehouse_place_id'];
             $cloth_sell->metre = $inputs['metre'];
-            $cloth_sell->roll_count = $inputs['roll_count'];
             $cloth_sell->sell_date = $inputs['sell_date'];
             $cloth_sell->factor_no = $inputs['factor_no'];
             $cloth_sell->price = $inputs['price'];
@@ -113,7 +110,6 @@ class ClothSellRepository implements Interfaces\iClothSell
             $cloth_sell->customer_id = $inputs['customer_id'];
             $cloth_sell->warehouse_place_id = $inputs['warehouse_place_id'];
             $cloth_sell->metre = $inputs['metre'];
-            $cloth_sell->roll_count = $inputs['roll_count'];
             $cloth_sell->sell_date = $inputs['sell_date'];
             $cloth_sell->factor_no = $inputs['factor_no'];
             $cloth_sell->price = $inputs['price'];

@@ -39,7 +39,6 @@ class ClothEditRequest extends FormRequest
         return [
             'code' => 'required|string|size:32',
             'name' => 'required|string',
-            'color_id' => 'required|numeric|min:1',
         ];
     }
 }

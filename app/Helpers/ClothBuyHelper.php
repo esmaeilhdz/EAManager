@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Repositories\Interfaces\iCloth;
 use App\Repositories\Interfaces\iClothBuy;
+use App\Repositories\Interfaces\iClothBuyItems;
 use App\Repositories\Interfaces\iClothWarehouse;
 use App\Traits\Common;
 use Illuminate\Support\Facades\Auth;
@@ -17,16 +18,19 @@ class ClothBuyHelper
     public iClothWarehouse $cloth_warehouse_interface;
     public iClothBuy $cloth_buy_interface;
     public iCloth $cloth_interface;
+    public iClothBuyItems $cloth_buy_item_interface;
 
     public function __construct(
         iClothWarehouse $cloth_warehouse_interface,
         iClothBuy $cloth_buy_interface,
-        iCloth $cloth_interface
+        iCloth $cloth_interface,
+        iClothBuyItems $cloth_buy_item_interface,
     )
     {
         $this->cloth_warehouse_interface = $cloth_warehouse_interface;
         $this->cloth_buy_interface = $cloth_buy_interface;
         $this->cloth_interface = $cloth_interface;
+        $this->cloth_buy_item_interface = $cloth_buy_item_interface;
     }
 
     /**
@@ -61,8 +65,6 @@ class ClothBuyHelper
                 'id' => $item->id,
                 'seller_place' => $item->seller_place->name,
                 'warehouse_place' => $item->warehouse_place->name,
-                'metre' => $item->metre,
-                'roll_count' => $item->roll_count,
                 'receive_date' => $item->receive_date,
                 'factor_no' => $item->factor_no,
                 'price' => $item->price,
@@ -154,15 +156,6 @@ class ClothBuyHelper
             $params['metre'] = $inputs['metre'];
         }
 
-        if ($cloth_buy->roll_count > $inputs['roll_count']) {
-            $params['roll_count'] = $cloth_buy->roll_count - $inputs['roll_count'];
-        } elseif ($cloth_buy->roll_count < $inputs['roll_count']) {
-            $params['roll_count'] = $inputs['roll_count'] - $cloth_buy->roll_count;
-        } else {
-            $params['sign'] = 'equal';
-            $params['roll_count'] = $inputs['roll_count'];
-        }
-
         DB::beginTransaction();
         $result[] = $this->cloth_buy_interface->editClothBuy($cloth_buy, $inputs);
         $result[] = $this->cloth_warehouse_interface->editWarehouse($params);
@@ -199,12 +192,29 @@ class ClothBuyHelper
             ];
         }
 
+        DB::beginTransaction();
         $inputs['cloth_id'] = $cloth->id;
-        $result = $this->cloth_buy_interface->addClothBuy($inputs, $user);
+        $res = $this->cloth_buy_interface->addClothBuy($inputs, $user);
+        $result[] = $res['result'];
+        foreach ($inputs['items'] as $item) {
+            $item['cloth_buy_id'] = $res['data'];
+            $result[] = $this->cloth_buy_item_interface->addClothBuyItem($item, $user);
+        }
+
+        $result = $this->prepareTransactionArray($result);
+
+        if (!in_array(false, $result)) {
+            $flag = true;
+            DB::commit();
+        } else {
+            $flag = false;
+            DB::rollBack();
+        }
+
         return [
-            'result' => $result['result'],
-            'message' => $result['result'] ? __('messages.success') : __('messages.fail'),
-            'data' => $result['data']
+            'result' => $flag,
+            'message' => $flag ? __('messages.success') : __('messages.fail'),
+            'data' => null
         ];
     }
 

@@ -4,10 +4,11 @@ namespace App\Repositories;
 
 use App\Exceptions\ApiException;
 use App\Models\ClothBuy;
+use App\Models\ClothBuyItem;
 use App\Traits\Common;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-class ClothBuyRepository implements Interfaces\iClothBuy
+class ClothBuyItemsRepository implements Interfaces\iClothBuyItems
 {
     use Common;
 
@@ -17,7 +18,7 @@ class ClothBuyRepository implements Interfaces\iClothBuy
      * @return LengthAwarePaginator
      * @throws ApiException
      */
-    public function getClothBuys($inputs): LengthAwarePaginator
+    public function getClothBuyItems($inputs): LengthAwarePaginator
     {
         try {
             return ClothBuy::with([
@@ -59,7 +60,7 @@ class ClothBuyRepository implements Interfaces\iClothBuy
      * @return mixed
      * @throws ApiException
      */
-    public function getClothBuyById($inputs): mixed
+    public function getClothBuyItemById($inputs): mixed
     {
         try {
             return ClothBuy::with([
@@ -85,48 +86,29 @@ class ClothBuyRepository implements Interfaces\iClothBuy
         }
     }
 
-    public function editClothBuy($cloth_buy, $inputs)
+    public function addClothBuyItem($inputs, $user): array
     {
         try {
-            $cloth_buy->seller_place_id = $inputs['seller_place_id'];
-            $cloth_buy->warehouse_place_id = $inputs['warehouse_place_id'];
-            $cloth_buy->metre = $inputs['metre'];
-            $cloth_buy->receive_date = $inputs['receive_date'];
-            $cloth_buy->factor_no = $inputs['factor_no'];
-            $cloth_buy->price = $inputs['price'];
+            $cloth_buy_item = new ClothBuyItem();
 
-            return $cloth_buy->save();
-        } catch (\Exception $e) {
-            throw new ApiException($e);
-        }
-    }
+            $cloth_buy_item->cloth_buy_id = $inputs['cloth_buy_id'];
+            $cloth_buy_item->color_id = $inputs['color_id'];
+            $cloth_buy_item->metre = $inputs['metre'];
+            $cloth_buy_item->price = $inputs['price'];
 
-    public function addClothBuy($inputs, $user)
-    {
-        try {
-            $cloth_buy = new ClothBuy();
-
-            $cloth_buy->cloth_id = $inputs['cloth_id'];
-            $cloth_buy->seller_place_id = $inputs['seller_place_id'];
-            $cloth_buy->warehouse_place_id = $inputs['warehouse_place_id'];
-            $cloth_buy->receive_date = $inputs['receive_date'];
-            $cloth_buy->factor_no = $inputs['factor_no'];
-            $cloth_buy->price = $inputs['price'];
-            $cloth_buy->created_by = $user->id;
-
-            $result = $cloth_buy->save();
+            $result = $cloth_buy_item->save();
 
             return [
                 'result' => $result,
-                'data' => $result ? $cloth_buy->id : null
+                'data' => $result ? $cloth_buy_item->id : null
             ];
         } catch (\Exception $e) {
             throw new ApiException($e);
         }
     }
 
-    public function deleteClothBuy($cloth_buy)
+    public function deleteClothBuyItem($cloth_buy_item)
     {
-        return $cloth_buy->delete();
+        return $cloth_buy_item->delete();
     }
 }
