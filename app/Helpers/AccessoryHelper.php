@@ -79,6 +79,22 @@ class AccessoryHelper
     }
 
     /**
+     * کامبوی خرج کار
+     * @param $inputs
+     * @return array
+     */
+    public function getAccessoryCombo($inputs): array
+    {
+        $accessories = $this->accessory_interface->getAccessoryCombo($inputs, Auth::user());
+
+        return [
+            'result' => true,
+            'message' => __('messages.success'),
+            'data' => $accessories
+        ];
+    }
+
+    /**
      * ویرایش خرج کار
      * @param $inputs
      * @return array

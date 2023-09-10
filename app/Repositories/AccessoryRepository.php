@@ -74,6 +74,26 @@ class AccessoryRepository implements Interfaces\iAccessory
         }
     }
 
+    public function getAccessoryCombo($inputs, $user)
+    {
+        try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
+            return Accessory::select([
+                'id',
+                'name'
+            ])
+                ->when(isset($inputs['search_txt']), function ($q) use ($inputs) {
+                    $q->where('name', 'like', '%' . $inputs['search_txt'] . '%');
+                })
+                ->where('company_id', $company_id)
+                ->where('is_enable', 1)
+                ->limit(10)
+                ->get();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
     /**
      * ویرایش خرج کار
      * @param $inputs

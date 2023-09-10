@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Facades\AccessoryFacade;
 use App\Http\Requests\Accessory\AccessoryAddRequest;
+use App\Http\Requests\Accessory\AccessoryComboRequest;
 use App\Http\Requests\Accessory\AccessoryDetailRequest;
 use App\Http\Requests\Accessory\AccessoryEditRequest;
 use App\Http\Requests\Accessory\AccessoryListRequest;
@@ -40,6 +41,20 @@ class AccessoryController extends Controller
         $this->cleanInput($inputs, array_keys($request->rules()));
 
         $result = AccessoryFacade::getAccessoryDetail($inputs['id']);
+        return $this->api_response->response($result['result'], $result['message'], $result['data']);
+    }
+
+    /**
+     * سرویس کامبوی خرج کار
+     * @param AccessoryComboRequest $request
+     * @return JsonResponse
+     */
+    public function getAccessoryCombo(AccessoryComboRequest $request): JsonResponse
+    {
+        $inputs = $request->validated();
+        $this->cleanInput($inputs, array_keys($request->rules()));
+
+        $result = AccessoryFacade::getAccessoryCombo($inputs);
         return $this->api_response->response($result['result'], $result['message'], $result['data']);
     }
 

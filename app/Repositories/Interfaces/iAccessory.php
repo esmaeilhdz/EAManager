@@ -8,6 +8,8 @@ interface iAccessory
 
     public function getAccessoryById($id, $select = [], $relation = []);
 
+    public function getAccessoryCombo($inputs, $user);
+
     public function editAccessory($inputs);
 
     public function changeStatusAccessory($accessory, $inputs);
