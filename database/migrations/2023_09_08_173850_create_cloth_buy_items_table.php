@@ -18,6 +18,7 @@ class CreateClothBuyItemsTable extends Migration
             $table->unsignedBigInteger('cloth_buy_id');
             $table->unsignedTinyInteger('color_id')->index();
             $table->string('metre');
+            $table->string('unit_price');
             $table->string('price');
             $table->timestamps();
 

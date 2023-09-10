@@ -94,7 +94,8 @@ class ClothBuyItemsRepository implements Interfaces\iClothBuyItems
             $cloth_buy_item->cloth_buy_id = $inputs['cloth_buy_id'];
             $cloth_buy_item->color_id = $inputs['color_id'];
             $cloth_buy_item->metre = $inputs['metre'];
-            $cloth_buy_item->price = $inputs['price'];
+            $cloth_buy_item->unit_price = $inputs['price'];
+            $cloth_buy_item->price = $inputs['price'] * $inputs['metre'];
 
             $result = $cloth_buy_item->save();
 
