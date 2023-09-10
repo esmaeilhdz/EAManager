@@ -12,8 +12,9 @@ class ClothRepository implements Interfaces\iCloth
 {
     use Common;
 
-    public function getClothes($inputs): LengthAwarePaginator
+    public function getClothes($inputs, $user): LengthAwarePaginator
     {
+        $company_id = $this->getCurrentCompanyOfUser($user);
         try {
             return Cloth::with([
                 'creator:id,person_id',
@@ -30,6 +31,7 @@ class ClothRepository implements Interfaces\iCloth
                     'created_by',
                     'created_at'
                 ])
+                ->where('company_id', $company_id)
                 ->when(isset($inputs['search_txt']), function ($q) use ($inputs) {
                     $q->where('name', 'like', '%' . $inputs['search_txt'] . '%');
                 })
@@ -39,16 +41,37 @@ class ClothRepository implements Interfaces\iCloth
         }
     }
 
-    public function getClothByCode($code)
+    public function getClothByCode($code, $user)
     {
         try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
             return Cloth::select([
                 'id',
                 'code',
                 'name',
             ])
                 ->whereCode($code)
+                ->where('company_id', $company_id)
                 ->first();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
+    public function getClothCombo($inputs, $user)
+    {
+        try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
+            return Cloth::select([
+                'code',
+                'name'
+            ])
+                ->when(isset($inputs['search_txt']), function ($q) use ($inputs) {
+                    $q->where('name', 'like', '%' . $inputs['search_txt'] . '%');
+                })
+                ->where('company_id', $company_id)
+                ->limit(10)
+                ->get();
         } catch (\Exception $e) {
             throw new ApiException($e);
         }
@@ -66,9 +89,10 @@ class ClothRepository implements Interfaces\iCloth
         }
     }
 
-    public function addCloth($inputs, $user, $company_id): array
+    public function addCloth($inputs, $user): array
     {
         try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
             $cloth = new Cloth();
 
             $cloth->code = $this->randomString();

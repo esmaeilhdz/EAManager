@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Facades\ClothFacade;
 use App\Http\Requests\Cloth\ClothAddRequest;
+use App\Http\Requests\Cloth\ClothComboRequest;
 use App\Http\Requests\Cloth\ClothDetailRequest;
 use App\Http\Requests\Cloth\ClothEditRequest;
 use App\Http\Requests\Cloth\ClothListRequest;
@@ -39,6 +40,20 @@ class ClothController extends Controller
         $this->cleanInput($inputs, array_keys($request->rules()));
 
         $result = ClothFacade::getClothDetail($inputs['code']);
+        return $this->api_response->response($result['result'], $result['message'], $result['data']);
+    }
+
+    /**
+     * سرویس کامبوی پارچه
+     * @param ClothComboRequest $request
+     * @return JsonResponse
+     */
+    public function getClothCombo(ClothComboRequest $request): JsonResponse
+    {
+        $inputs = $request->validated();
+        $this->cleanInput($inputs, array_keys($request->rules()));
+
+        $result = ClothFacade::getClothCombo($inputs);
         return $this->api_response->response($result['result'], $result['message'], $result['data']);
     }
 

@@ -38,7 +38,7 @@ class ClothHelper
     {
         $inputs['per_page'] = $this->calculatePerPage($inputs);
 
-        $clothes = $this->cloth_interface->getClothes($inputs);
+        $clothes = $this->cloth_interface->getClothes($inputs, Auth::user());
 
         $clothes->transform(function ($item) {
             return [
@@ -73,7 +73,7 @@ class ClothHelper
      */
     public function getClothDetail($code): array
     {
-        $cloth = $this->cloth_interface->getClothByCode($code);
+        $cloth = $this->cloth_interface->getClothByCode($code, Auth::user());
         if (is_null($cloth)) {
             return [
                 'result' => false,
@@ -90,13 +90,29 @@ class ClothHelper
     }
 
     /**
+     * کامبوی پارچه
+     * @param $inputs
+     * @return array
+     */
+    public function getClothCombo($inputs): array
+    {
+        $cloths = $this->cloth_interface->getClothCombo($inputs, Auth::user());
+
+        return [
+            'result' => true,
+            'message' => __('messages.success'),
+            'data' => $cloths
+        ];
+    }
+
+    /**
      * ویرایش پارچه
      * @param $inputs
      * @return array
      */
     public function editCloth($inputs): array
     {
-        $cloth = $this->cloth_interface->getClothByCode($inputs['code']);
+        $cloth = $this->cloth_interface->getClothByCode($inputs['code'], Auth::user());
         if (is_null($cloth)) {
             return [
                 'result' => false,
@@ -123,11 +139,10 @@ class ClothHelper
     public function addCloth($inputs): array
     {
         $user = Auth::user();
-        $company_id = $this->getCurrentCompanyOfUser($user);
 
         DB::beginTransaction();
         $result = [];
-        $res = $this->cloth_interface->addCloth($inputs, $user, $company_id);
+        $res = $this->cloth_interface->addCloth($inputs, $user);
         $result[] = $res['result'];
         $inputs['cloth_id'] = $res['data']->id;
         $res = $this->cloth_buy_interface->addClothBuy($inputs, $user);
@@ -161,7 +176,7 @@ class ClothHelper
      */
     public function deleteCloth($code): array
     {
-        $cloth = $this->cloth_interface->getClothByCode($code);
+        $cloth = $this->cloth_interface->getClothByCode($code, Auth::user());
         if (is_null($cloth)) {
             return [
                 'result' => false,
