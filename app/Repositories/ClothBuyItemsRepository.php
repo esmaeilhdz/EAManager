@@ -110,6 +110,19 @@ class ClothBuyItemsRepository implements Interfaces\iClothBuyItems
 
     public function deleteClothBuyItem($cloth_buy_item)
     {
-        return $cloth_buy_item->delete();
+        try {
+            return $cloth_buy_item->delete();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
+    public function deleteClothBuyItems($cloth_buy_id)
+    {
+        try {
+            return ClothBuyItem::where('cloth_buy_id', $cloth_buy_id)->delete();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
     }
 }

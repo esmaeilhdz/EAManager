@@ -11,4 +11,6 @@ interface iClothBuyItems
     public function addClothBuyItem($inputs, $user);
 
     public function deleteClothBuyItem($cloth_buy_item);
+
+    public function deleteClothBuyItems($cloth_buy_id);
 }

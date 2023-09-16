@@ -40,7 +40,7 @@ class ClothSellHelper
      */
     public function getClothSells($inputs): array
     {
-        $cloth = $this->cloth_interface->getClothByCode($inputs['code']);
+        $cloth = $this->cloth_interface->getClothByCode($inputs['code'], Auth::user());
         if (is_null($cloth)) {
             return [
                 'result' => false,
@@ -87,7 +87,7 @@ class ClothSellHelper
      */
     public function getClothSellDetail($inputs): array
     {
-        $cloth = $this->cloth_interface->getClothByCode($inputs['code']);
+        $cloth = $this->cloth_interface->getClothByCode($inputs['code'], Auth::user());
         if (is_null($cloth)) {
             return [
                 'result' => false,
@@ -120,7 +120,7 @@ class ClothSellHelper
      */
     public function editClothSell($inputs): array
     {
-        $cloth = $this->cloth_interface->getClothByCode($inputs['code']);
+        $cloth = $this->cloth_interface->getClothByCode($inputs['code'], Auth::user());
         if (is_null($cloth)) {
             return [
                 'result' => false,
@@ -202,7 +202,7 @@ class ClothSellHelper
     public function addClothSell($inputs): array
     {
         $user = Auth::user();
-        $cloth = $this->cloth_interface->getClothByCode($inputs['code']);
+        $cloth = $this->cloth_interface->getClothByCode($inputs['code'], Auth::user());
         if (is_null($cloth)) {
             return [
                 'result' => false,
@@ -220,21 +220,23 @@ class ClothSellHelper
             ];
         }
 
-        $cloth_warehouse = $this->cloth_warehouse_interface->getClothWarehousesByCloth($cloth->id, $inputs['warehouse_place_id']);
-        if (!$cloth_warehouse) {
-            return [
-                'result' => false,
-                'message' => __('messages.warehouse_not_exists'),
-                'data' => null
-            ];
-        }
+        foreach ($inputs['items'] as $item) {
+            $cloth_warehouse = $this->cloth_warehouse_interface->getClothWarehousesByCloth($cloth->id, $item['color_id'], $inputs['warehouse_place_id']);
+            if (!$cloth_warehouse) {
+                return [
+                    'result' => false,
+                    'message' => __('messages.warehouse_not_exists'),
+                    'data' => null
+                ];
+            }
 
-        if ($cloth_warehouse->metre - $inputs['metre'] < 0) {
-            return [
-                'result' => false,
-                'message' => __('messages.not_enough_warehouse_stock'),
-                'data' => null
-            ];
+            if ($cloth_warehouse->metre - $inputs['metre'] < 0) {
+                return [
+                    'result' => false,
+                    'message' => __('messages.not_enough_warehouse_stock'),
+                    'data' => null
+                ];
+            }
         }
 
         $inputs['cloth_id'] = $cloth->id;
@@ -254,7 +256,7 @@ class ClothSellHelper
      */
     public function deleteClothSell($inputs): array
     {
-        $cloth = $this->cloth_interface->getClothByCode($inputs['code']);
+        $cloth = $this->cloth_interface->getClothByCode($inputs['code'], Auth::user());
         if (is_null($cloth)) {
             return [
                 'result' => false,

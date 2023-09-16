@@ -49,4 +49,5 @@ return [
     'warehouse_not_exists' => 'انبار وجود ندارد.',
     'not_enough_warehouse_stock' => 'موجودی انبار کافی نمی باشد.',
     'product_warehouse_already_exists' => 'انبار کالای مورد نظر وجود دارد. می توانید مقدار قبلی را ویرایش کنید.',
+    'cloth_warehouse_not_found' => 'انبار پارچه یافت نشد.',
 ];

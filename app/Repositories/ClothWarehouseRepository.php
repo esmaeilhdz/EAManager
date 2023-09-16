@@ -46,10 +46,12 @@ class ClothWarehouseRepository implements Interfaces\iClothWarehouse
 
     /**
      * @param $cloth_id
+     * @param $color_id
      * @param $place_id
+     * @return Builder|Model|object|null
      * @throws ApiException
      */
-    public function getClothWarehousesByCloth($cloth_id, $place_id)
+    public function getClothWarehousesByCloth($cloth_id, $color_id, $place_id)
     {
         try {
             return ClothWareHouse::with([
@@ -62,6 +64,7 @@ class ClothWarehouseRepository implements Interfaces\iClothWarehouse
                     'roll_count'
                 ])
                 ->where('cloth_id', $cloth_id)
+                ->where('color_id', $color_id)
                 ->where('place_id', $place_id)
                 ->first();
         } catch (\Exception $e) {
@@ -74,6 +77,7 @@ class ClothWarehouseRepository implements Interfaces\iClothWarehouse
         try {
             $cloth_warehouse = ClothWareHouse::where('cloth_id', $inputs['cloth_id'])
                 ->where('place_id', $inputs['warehouse_place_id'])
+                ->where('color_id', $inputs['color_id'])
                 ->first();
 
             if ($inputs['sign'] == 'plus') {

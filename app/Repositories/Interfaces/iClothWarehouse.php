@@ -6,7 +6,7 @@ interface iClothWarehouse
 {
     public function getClothWarehouses($inputs);
 
-    public function getClothWarehousesByCloth($cloth_id, $place_id);
+    public function getClothWarehousesByCloth($cloth_id, $color_id, $place_id);
 
     public function editWarehouse($inputs);
 

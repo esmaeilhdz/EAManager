@@ -90,7 +90,6 @@ class ClothBuyRepository implements Interfaces\iClothBuy
         try {
             $cloth_buy->seller_place_id = $inputs['seller_place_id'];
             $cloth_buy->warehouse_place_id = $inputs['warehouse_place_id'];
-            $cloth_buy->metre = $inputs['metre'];
             $cloth_buy->receive_date = $inputs['receive_date'];
             $cloth_buy->factor_no = $inputs['factor_no'];
             $cloth_buy->price = $inputs['price'];

@@ -40,7 +40,8 @@ class ClothBuyHelper
      */
     public function getClothBuys($inputs): array
     {
-        $cloth = $this->cloth_interface->getClothByCode($inputs['code']);
+        $user = Auth::user();
+        $cloth = $this->cloth_interface->getClothByCode($inputs['code'], $user);
         if (is_null($cloth)) {
             return [
                 'result' => false,
@@ -91,7 +92,8 @@ class ClothBuyHelper
      */
     public function getClothBuyDetail($inputs): array
     {
-        $cloth = $this->cloth_interface->getClothByCode($inputs['code']);
+        $user = Auth::user();
+        $cloth = $this->cloth_interface->getClothByCode($inputs['code'], $user);
         if (is_null($cloth)) {
             return [
                 'result' => false,
@@ -124,7 +126,8 @@ class ClothBuyHelper
      */
     public function editClothBuy($inputs): array
     {
-        $cloth = $this->cloth_interface->getClothByCode($inputs['code']);
+        $user = Auth::user();
+        $cloth = $this->cloth_interface->getClothByCode($inputs['code'], $user);
         if (is_null($cloth)) {
             return [
                 'result' => false,
@@ -145,20 +148,37 @@ class ClothBuyHelper
             ];
         }
 
-        if ($cloth_buy->metre > $inputs['metre']) {
-            $params['sign'] = 'minus';
-            $params['metre'] = $cloth_buy->metre - $inputs['metre'];
-        } elseif ($cloth_buy->metre < $inputs['metre']) {
-            $params['sign'] = 'plus';
-            $params['metre'] = $inputs['metre'] - $cloth_buy->metre;
-        } else {
-            $params['sign'] = 'equal';
-            $params['metre'] = $inputs['metre'];
-        }
-
         DB::beginTransaction();
         $result[] = $this->cloth_buy_interface->editClothBuy($cloth_buy, $inputs);
-        $result[] = $this->cloth_warehouse_interface->editWarehouse($params);
+        $result[] = $this->cloth_buy_item_interface->deleteClothBuyItems($cloth_buy->id);
+        foreach ($inputs['items'] as $item) {
+            $item['cloth_buy_id'] = $cloth_buy->id;
+            $item['color_id'] = $item->color_id;
+
+            $cloth_warehouse = $this->cloth_warehouse_interface->getClothWarehousesByCloth($cloth->id, $item->color_id, $inputs['warehouse_place_id']);
+            if (is_null($cloth_warehouse)) {
+                DB::rollBack();
+                return [
+                    'result' => false,
+                    'message' => __('messages.cloth_warehouse_not_found'),
+                    'data' => null
+                ];
+            }
+
+            if ($cloth_warehouse->metre > $item['metre']) {
+                $params['sign'] = 'minus';
+                $params['metre'] = $cloth_warehouse->metre - $item['metre'];
+            } elseif ($cloth_warehouse->metre < $item['metre']) {
+                $params['sign'] = 'plus';
+                $params['metre'] = $item['metre'] - $cloth_warehouse->metre;
+            } else {
+                $params['sign'] = 'equal';
+                $params['metre'] = $item['metre'];
+            }
+
+            $result[] = $this->cloth_buy_item_interface->addClothBuyItem($item, $user);
+            $result[] = $this->cloth_warehouse_interface->editWarehouse($params);
+        }
 
         if (!in_array(false, $result)) {
             $flag = true;
@@ -183,7 +203,7 @@ class ClothBuyHelper
     public function addClothBuy($inputs): array
     {
         $user = Auth::user();
-        $cloth = $this->cloth_interface->getClothByCode($inputs['code']);
+        $cloth = $this->cloth_interface->getClothByCode($inputs['code'], $user);
         if (is_null($cloth)) {
             return [
                 'result' => false,
@@ -225,7 +245,8 @@ class ClothBuyHelper
      */
     public function deleteClothBuy($inputs): array
     {
-        $cloth = $this->cloth_interface->getClothByCode($inputs['code']);
+        $user = Auth::user();
+        $cloth = $this->cloth_interface->getClothByCode($inputs['code'], $user);
         if (is_null($cloth)) {
             return [
                 'result' => false,
@@ -244,10 +265,21 @@ class ClothBuyHelper
             ];
         }
 
-        $result = $this->cloth_buy_interface->deleteClothBuy($cloth_buy);
+        DB::beginTransaction();
+        $result[] = $this->cloth_buy_item_interface->deleteClothBuyItems($cloth_buy->id);
+        $result[] = $this->cloth_buy_interface->deleteClothBuy($cloth_buy);
+
+        if (!in_array(false, $result)) {
+            $flag = true;
+            DB::commit();
+        } else {
+            $flag = false;
+            DB::rollBack();
+        }
+
         return [
-            'result' => (bool) $result,
-            'message' => $result ? __('messages.success') : __('messages.fail'),
+            'result' => $flag,
+            'message' => $flag ? __('messages.success') : __('messages.fail'),
             'data' => null
         ];
     }
