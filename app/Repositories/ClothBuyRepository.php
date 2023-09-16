@@ -23,14 +23,15 @@ class ClothBuyRepository implements Interfaces\iClothBuy
             return ClothBuy::with([
                 'cloth:id,name',
                 'seller_place:id,name',
-                'warehouse_place:id,name'
+                'warehouse_place:id,name',
+                'items:cloth_buy_id,color_id,metre,unit_price,price',
+                'items.color:enum_id,enum_caption',
             ])
                 ->select([
                     'id',
                     'cloth_id',
                     'seller_place_id',
                     'warehouse_place_id',
-                    'metre',
                     'receive_date',
                     'factor_no',
                     'price',
@@ -65,14 +66,15 @@ class ClothBuyRepository implements Interfaces\iClothBuy
             return ClothBuy::with([
                 'cloth:id,code,name',
                 'seller_place:id,name',
-                'warehouse_place:id,name'
+                'warehouse_place:id,name',
+                'items:cloth_buy_id,color_id,metre,unit_price,price',
+                'items.color:enum_id,enum_caption',
             ])
                 ->select([
                     'id',
                     'cloth_id',
                     'seller_place_id',
                     'warehouse_place_id',
-                    'metre',
                     'factor_no',
                     'price',
                     'receive_date'
