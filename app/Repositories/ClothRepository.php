@@ -12,6 +12,12 @@ class ClothRepository implements Interfaces\iCloth
 {
     use Common;
 
+    /**
+     * @param $inputs
+     * @param $user
+     * @return LengthAwarePaginator
+     * @throws ApiException
+     */
     public function getClothes($inputs, $user): LengthAwarePaginator
     {
         $company_id = $this->getCurrentCompanyOfUser($user);
@@ -20,14 +26,17 @@ class ClothRepository implements Interfaces\iCloth
                 'creator:id,person_id',
                 'creator.person:id,name,family',
                 'color:enum_id,enum_caption',
-                'cloth_buy:cloth_id',
-                'cloth_sell:cloth_id'
+                'cloth_buy:cloth_id,receive_date,seller_place_id,warehouse_place_id,factor_no,price',
+                'cloth_buy.seller_place:id,name',
+                'cloth_buy.warehouse_place:id,name',
+                'cloth_sell:cloth_id,sell_date,customer_id,warehouse_place_id',
+                'cloth_sell.customer:id,name',
+                'cloth_sell.warehouse_place:id,name'
             ])
                 ->select([
                     'id',
                     'code',
                     'name',
-                    'color_id',
                     'created_by',
                     'created_at'
                 ])

@@ -41,15 +41,32 @@ class ClothHelper
         $clothes = $this->cloth_interface->getClothes($inputs, Auth::user());
 
         $clothes->transform(function ($item) {
+            $cloth_buys = null;
+            foreach ($item->cloth_buy as $cloth_buy) {
+                $cloth_buys[] = [
+                    'seller_place' => $cloth_buy->seller_place->name,
+                    'warehouse_place' => $cloth_buy->warehouse_place->name,
+                    'receive_date' => $cloth_buy->receive_date,
+                    'factor_no' => $cloth_buy->factor_no,
+                    'price' => $cloth_buy->price,
+                ];
+            }
+
+            $cloth_sells = null;
+            foreach ($item->cloth_sell as $cloth_sell) {
+                $cloth_sells[] = [
+                    'customer' => $cloth_sell->customer->name,
+                    'warehouse_place' => $cloth_sell->warehouse_place->name,
+                    'sell_date' => $cloth_sell->sell_date,
+                    'factor_no' => $cloth_sell->factor_no,
+                    'price' => $cloth_sell->price,
+                ];
+            }
             return [
                 'code' => $item->code,
                 'name' => $item->name,
-                'color' => [
-                    'id' => $item->color_id,
-                    'caption' => $item->color->enum_caption
-                ],
-                'cloth_buy_count' => count($item->cloth_buy),
-                'cloth_sell_count' => count($item->cloth_sell),
+                'cloth_buys' => $cloth_buys,
+                'cloth_sells' => $cloth_sells,
                 'creator' => is_null($item->creator->person) ? null : [
                     'person' => [
                         'full_name' => $item->creator->person->name . ' ' . $item->creator->person->family,
