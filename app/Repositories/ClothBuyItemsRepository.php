@@ -7,6 +7,7 @@ use App\Models\ClothBuy;
 use App\Models\ClothBuyItem;
 use App\Traits\Common;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 
 class ClothBuyItemsRepository implements Interfaces\iClothBuyItems
 {
@@ -63,30 +64,16 @@ class ClothBuyItemsRepository implements Interfaces\iClothBuyItems
     public function getClothBuyItemById($inputs): mixed
     {
         try {
-            return ClothBuy::with([
-                'cloth:id,code,name',
-                'seller_place:id,name',
-                'warehouse_place:id,name'
-            ])
-                ->select([
-                    'id',
-                    'cloth_id',
-                    'seller_place_id',
-                    'warehouse_place_id',
-                    'metre',
-                    'factor_no',
-                    'price',
-                    'receive_date'
-                ])
-                ->where('cloth_id', $inputs['cloth_id'])
-                ->where('id', $inputs['id'])
+            return ClothBuyItem::query()
+                ->where('cloth_buy_id', $inputs['cloth_buy_id'])
+                ->where('color_id', $inputs['color_id'])
                 ->first();
         } catch (\Exception $e) {
             throw new ApiException($e);
         }
     }
 
-    public function addClothBuyItem($inputs, $user): array
+    public function addClothBuyItem($inputs, $user, $quiet = false): array
     {
         try {
             $cloth_buy_item = new ClothBuyItem();
@@ -97,7 +84,11 @@ class ClothBuyItemsRepository implements Interfaces\iClothBuyItems
             $cloth_buy_item->unit_price = $inputs['price'];
             $cloth_buy_item->price = $inputs['price'] * $inputs['metre'];
 
-            $result = $cloth_buy_item->save();
+            if (!$quiet) {
+                $result = $cloth_buy_item->save();
+            } else {
+                $result = $cloth_buy_item->saveQuietly();
+            }
 
             return [
                 'result' => $result,

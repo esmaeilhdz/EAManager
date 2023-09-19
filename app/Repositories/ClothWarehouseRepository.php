@@ -9,6 +9,7 @@ use App\Traits\Common;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class ClothWarehouseRepository implements Interfaces\iClothWarehouse
 {
@@ -48,20 +49,21 @@ class ClothWarehouseRepository implements Interfaces\iClothWarehouse
      * @param $cloth_id
      * @param $color_id
      * @param $place_id
-     * @return Builder|Model|object|null
+     * @return object
      * @throws ApiException
      */
-    public function getClothWarehousesByCloth($cloth_id, $color_id, $place_id)
+    public function getClothWarehousesByCloth($cloth_id, $color_id, $place_id): object
     {
         try {
             return ClothWareHouse::with([
                 'place:id,name'
             ])
                 ->select([
+                    'id',
                     'cloth_id',
                     'place_id',
-                    'metre',
-                    'roll_count'
+                    'color_id',
+                    'metre'
                 ])
                 ->where('cloth_id', $cloth_id)
                 ->where('color_id', $color_id)
@@ -80,10 +82,15 @@ class ClothWarehouseRepository implements Interfaces\iClothWarehouse
                 ->where('color_id', $inputs['color_id'])
                 ->first();
 
-            if ($inputs['sign'] == 'plus') {
-                $cloth_warehouse->metre += $inputs['metre'];
-            } elseif ($inputs['sign'] == 'minus') {
-                $cloth_warehouse->metre -= $inputs['metre'];
+            switch ($inputs['sign']) {
+                case 'plus':
+                    $cloth_warehouse->metre += $inputs['metre'];
+                    break;
+                case 'minus':
+                    $cloth_warehouse->metre -= $inputs['metre'];
+                    break;
+                default:
+                    $cloth_warehouse->metre = $inputs['metre'];
             }
 
             return $cloth_warehouse->save();

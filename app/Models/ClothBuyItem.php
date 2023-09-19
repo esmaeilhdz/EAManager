@@ -9,6 +9,10 @@ class ClothBuyItem extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'id';
+    protected $hidden = ['id', 'updated_at'];
+    protected $fillable = ['cloth_buy_id', 'color_id', 'metre', 'unit_price', 'price'];
+
     public function cloth_buy()
     {
         return $this->hasOne(ClothBuy::class, 'id', 'cloth_buy_id');

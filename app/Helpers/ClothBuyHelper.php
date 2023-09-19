@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\ClothBuyItem;
 use App\Repositories\Interfaces\iCloth;
 use App\Repositories\Interfaces\iClothBuy;
 use App\Repositories\Interfaces\iClothBuyItems;
@@ -140,6 +141,7 @@ class ClothBuyHelper
         $inputs['cloth_id'] = $cloth->id;
         $params['cloth_id'] = $cloth->id;
         $params = array_merge($params, $inputs);
+
         $cloth_buy = $this->cloth_buy_interface->getClothBuyById($inputs);
         if (is_null($cloth_buy)) {
             return [
@@ -150,36 +152,44 @@ class ClothBuyHelper
         }
 
         DB::beginTransaction();
-        $result[] = $this->cloth_buy_interface->editClothBuy($cloth_buy, $inputs);
-        $result[] = $this->cloth_buy_item_interface->deleteClothBuyItems($cloth_buy->id);
-        foreach ($inputs['items'] as $item) {
+        DB::enableQueryLog();
+        foreach ($inputs['items'] as $key => $item) {
             $item['cloth_buy_id'] = $cloth_buy->id;
-            $item['color_id'] = $item->color_id;
-
-            $cloth_warehouse = $this->cloth_warehouse_interface->getClothWarehousesByCloth($cloth->id, $item->color_id, $inputs['warehouse_place_id']);
-            if (is_null($cloth_warehouse)) {
-                DB::rollBack();
+            $params['color_id'] = $item['color_id'];
+            $cloth_buy_item = $this->cloth_buy_item_interface->getClothBuyItemById($item);
+            if (is_null($cloth_buy_item)) {
                 return [
                     'result' => false,
-                    'message' => __('messages.cloth_warehouse_not_found'),
+                    'message' => __('messages.cloth_item_not_found'),
                     'data' => null
                 ];
             }
 
-            if ($cloth_warehouse->metre > $item['metre']) {
+            if ($cloth_buy_item->metre > $item['metre']) {
                 $params['sign'] = 'minus';
-                $params['metre'] = $cloth_warehouse->metre - $item['metre'];
-            } elseif ($cloth_warehouse->metre < $item['metre']) {
+                $params['metre'] = $cloth_buy_item->metre - $item['metre'];
+            } elseif ($cloth_buy_item->metre < $item['metre']) {
                 $params['sign'] = 'plus';
-                $params['metre'] = $item['metre'] - $cloth_warehouse->metre;
+                $params['metre'] = $item['metre'] - $cloth_buy_item->metre;
             } else {
                 $params['sign'] = 'equal';
                 $params['metre'] = $item['metre'];
             }
 
-            $result[] = $this->cloth_buy_item_interface->addClothBuyItem($item, $user);
             $result[] = $this->cloth_warehouse_interface->editWarehouse($params);
         }
+
+
+        $result[] = $this->cloth_buy_interface->editClothBuy($cloth_buy, $inputs);
+        $result[] = $this->cloth_buy_item_interface->deleteClothBuyItems($cloth_buy->id);
+        foreach ($inputs['items'] as $key => $item) {
+            $item['cloth_buy_id'] = $cloth_buy->id;
+
+            $res = $this->cloth_buy_item_interface->addClothBuyItem($item, $user, true);
+            $result[] = $res['result'];
+        }
+
+//        dd($result);
 
         if (!in_array(false, $result)) {
             $flag = true;

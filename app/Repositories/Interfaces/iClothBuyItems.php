@@ -8,7 +8,7 @@ interface iClothBuyItems
 
     public function getClothBuyItemById($inputs);
 
-    public function addClothBuyItem($inputs, $user);
+    public function addClothBuyItem($inputs, $user, $quiet = false);
 
     public function deleteClothBuyItem($cloth_buy_item);
 
