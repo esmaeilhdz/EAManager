@@ -12,6 +12,7 @@ use App\Repositories\BillRepository;
 use App\Repositories\ChatGroupPersonRepository;
 use App\Repositories\CityRepository;
 use App\Repositories\ClothBuyItemsRepository;
+use App\Repositories\ClothSellItemsRepository;
 use App\Repositories\ClothSellRepository;
 use App\Repositories\EnumerationRepository;
 use App\Repositories\GroupConversationRepository;
@@ -37,6 +38,7 @@ use App\Repositories\Interfaces\iChat;
 use App\Repositories\Interfaces\iCity;
 use App\Repositories\Interfaces\iClothBuyItems;
 use App\Repositories\Interfaces\iClothSell;
+use App\Repositories\Interfaces\iClothSellItems;
 use App\Repositories\Interfaces\iEnumeration;
 use App\Repositories\Interfaces\iGroupConversation;
 use App\Repositories\Interfaces\iChatGroupPerson;
@@ -154,6 +156,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(iProvince::class, ProvinceRepository::class);
         $this->app->bind(iCity::class, CityRepository::class);
         $this->app->bind(iClothBuyItems::class, ClothBuyItemsRepository::class);
+        $this->app->bind(iClothSellItems::class, ClothSellItemsRepository::class);
     }
 
     /**

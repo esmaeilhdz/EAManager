@@ -39,10 +39,13 @@ class ClothSellAddRequest extends FormRequest
             'code' => 'required|string|size:32',
             'customer_code' => 'required|string|size:32',
             'warehouse_place_id' => 'required|numeric|min:1',
-            'metre' => 'required|numeric|min:1',
             'sell_date' => 'required|date',
             'price' => 'required|string',
             'factor_no' => 'required|string',
+            'items' => 'required|array',
+            'items.*.metre' => 'required|numeric|min:1',
+            'items.*.price' => 'required|numeric|min:1',
+            'items.*.color_id' => 'required|numeric|min:1',
         ];
     }
 }
