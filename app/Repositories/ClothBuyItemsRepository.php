@@ -25,7 +25,7 @@ class ClothBuyItemsRepository implements Interfaces\iClothBuyItems
             return ClothBuy::with([
                 'cloth:id,name',
                 'seller_place:id,name',
-                'warehouse_place:id,name'
+                'warehouse_place:id,name',
             ])
                 ->select([
                     'id',

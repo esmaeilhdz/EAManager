@@ -22,6 +22,7 @@ class ClothBuyObserver
             ->where('place_id', $cloth_buy_item->cloth_buy->warehouse_place_id)
             ->where('color_id', $cloth_buy_item->color_id)
             ->first();
+
         if (is_null($cloth_warehouse)) {
             $cloth_warehouse = new ClothWareHouse();
 
@@ -56,17 +57,16 @@ class ClothBuyObserver
     public function deleted(ClothBuyItem $cloth_buy_item)
     {
         $cloth_warehouse = ClothWareHouse::where('cloth_id', $cloth_buy_item->cloth_buy->cloth_id)
+            ->where('place_id', $cloth_buy_item->cloth_buy->warehouse_place_id)
             ->where('color_id', $cloth_buy_item->color_id)
             ->first();
 
-        if (!is_null($cloth_buy_item)) {
+        if (!is_null($cloth_warehouse)) {
             $cloth_warehouse->metre -= $cloth_buy_item->metre;
             $cloth_warehouse->save();
         } else {
             $cloth_warehouse->delete();
         }
-
-        $cloth_warehouse->save();
     }
 
     /**

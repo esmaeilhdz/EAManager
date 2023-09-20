@@ -67,7 +67,8 @@ class ClothBuyRepository implements Interfaces\iClothBuy
                 'cloth:id,code,name',
                 'seller_place:id,name',
                 'warehouse_place:id,name',
-                'items:cloth_buy_id,color_id,metre,unit_price,price',
+                'items:id,cloth_buy_id,color_id,metre,unit_price,price',
+                'items.cloth_buy',
                 'items.color:enum_id,enum_caption',
             ])
                 ->select([

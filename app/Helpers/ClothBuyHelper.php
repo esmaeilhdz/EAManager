@@ -152,7 +152,6 @@ class ClothBuyHelper
         }
 
         DB::beginTransaction();
-        DB::enableQueryLog();
         foreach ($inputs['items'] as $key => $item) {
             $item['cloth_buy_id'] = $cloth_buy->id;
             $params['color_id'] = $item['color_id'];
@@ -179,7 +178,6 @@ class ClothBuyHelper
             $result[] = $this->cloth_warehouse_interface->editWarehouse($params);
         }
 
-
         $result[] = $this->cloth_buy_interface->editClothBuy($cloth_buy, $inputs);
         $result[] = $this->cloth_buy_item_interface->deleteClothBuyItems($cloth_buy->id);
         foreach ($inputs['items'] as $key => $item) {
@@ -188,8 +186,6 @@ class ClothBuyHelper
             $res = $this->cloth_buy_item_interface->addClothBuyItem($item, $user, true);
             $result[] = $res['result'];
         }
-
-//        dd($result);
 
         if (!in_array(false, $result)) {
             $flag = true;
@@ -277,7 +273,9 @@ class ClothBuyHelper
         }
 
         DB::beginTransaction();
-        $result[] = $this->cloth_buy_item_interface->deleteClothBuyItems($cloth_buy->id);
+        foreach ($cloth_buy->items as $item) {
+            $result[] = $this->cloth_buy_item_interface->deleteClothBuyItem($item);
+        }
         $result[] = $this->cloth_buy_interface->deleteClothBuy($cloth_buy);
 
         if (!in_array(false, $result)) {
