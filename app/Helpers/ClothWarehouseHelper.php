@@ -56,7 +56,6 @@ class ClothWarehouseHelper
 
         $cloth_warehouses->transform(function ($item) {
             return [
-                'cloth' => $item->cloth->name,
                 'place' => $item->place->name,
                 'color' => $item->color->enum_caption,
                 'metre' => $item->metre,
