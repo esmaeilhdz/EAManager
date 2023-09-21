@@ -90,7 +90,6 @@ class ClothRepository implements Interfaces\iCloth
     {
         try {
             $cloth->name = $inputs['name'];
-            $cloth->color_id = $inputs['color_id'];
 
             return $cloth->save();
         } catch (\Exception $e) {
