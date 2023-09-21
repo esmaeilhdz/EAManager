@@ -114,10 +114,40 @@ class ClothBuyHelper
             ];
         }
 
+        $items = null;
+        foreach ($cloth_buy->items as $item) {
+            $items[] = [
+                'id' => $item->id,
+                'metre' => $item->metre,
+                'unit_price' => $item->unit_price,
+                'price' => $item->price,
+            ];
+        }
+
+        $result = [
+            'id' => $cloth_buy->id,
+            'cloth' => [
+                'code' => $cloth->code,
+                'name' => $cloth->name
+            ],
+            'seller_place' => [
+                'id' => $cloth_buy->seller_place_id,
+                'name' => $cloth_buy->seller_place->name
+            ],
+            'warehouse_place' => [
+                'id' => $cloth_buy->warehouse_place_id,
+                'name' => $cloth_buy->warehouse_place->name
+            ],
+            'factor_no' => $cloth_buy->factor_no,
+            'price' => $cloth_buy->price,
+            'receive_date' => $cloth_buy->receive_date,
+            'items' => $items
+        ];
+
         return [
             'result' => true,
             'message' => __('messages.success'),
-            'data' => $cloth_buy
+            'data' => $result
         ];
     }
 

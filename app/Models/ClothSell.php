@@ -53,4 +53,9 @@ class ClothSell extends Model
     {
         return $this->hasOne(Place::class, 'id', 'warehouse_place_id');
     }
+
+    public function items()
+    {
+        return $this->hasMany(ClothSellItem::class, 'cloth_sell_id', 'id');
+    }
 }

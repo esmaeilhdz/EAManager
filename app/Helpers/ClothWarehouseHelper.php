@@ -33,7 +33,8 @@ class ClothWarehouseHelper
      */
     public function getClothWarehouses($inputs): array
     {
-        $cloth = $this->cloth_interface->getClothByCode($inputs['code']);
+        $user = Auth::user();
+        $cloth = $this->cloth_interface->getClothByCode($inputs['code'], $user);
         if (is_null($cloth)) {
             return [
                 'result' => false,
@@ -55,9 +56,9 @@ class ClothWarehouseHelper
 
         $cloth_warehouses->transform(function ($item) {
             return [
-                'place' => [
-                    $item->place->name
-                ],
+                'cloth' => $item->cloth->name,
+                'place' => $item->place->name,
+                'color' => $item->color->enum_caption,
                 'metre' => $item->metre,
             ];
         });

@@ -25,11 +25,14 @@ class ClothWarehouseRepository implements Interfaces\iClothWarehouse
     {
         try {
             return ClothWareHouse::with([
-                'place:id,name'
+                'cloth:id,name',
+                'place:id,name',
+                'color:enum_id,enum_caption'
             ])
                 ->select([
                     'cloth_id',
                     'place_id',
+                    'color_id',
                     'metre',
                 ])
                 ->where('cloth_id', $inputs['cloth_id'])
