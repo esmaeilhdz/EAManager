@@ -17,6 +17,7 @@ class CreateProductModelsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('product_id');
             $table->string('name');
+            $table->boolean('is_enable')->default(1)->index();
             $table->timestamps();
 
             $table->engine = 'InnoDB';

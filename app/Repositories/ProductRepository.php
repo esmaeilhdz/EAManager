@@ -61,7 +61,7 @@ class ProductRepository implements Interfaces\iProduct
     {
         try {
             $product = Product::with([
-                'cloth:id,code,color_id,name',
+                'cloth:id,code,name',
                 'cloth.color:enum_id,enum_caption',
                 'sale_period:id,name',
             ]);
@@ -106,7 +106,6 @@ class ProductRepository implements Interfaces\iProduct
             $product->cloth_id = $inputs['cloth_id'];
             $product->sale_period_id = $inputs['sale_period_id'];
             $product->name = $inputs['name'];
-            $product->has_accessories = $inputs['has_accessories'];
 
             return $product->save();
         } catch (\Exception $e) {
@@ -133,7 +132,6 @@ class ProductRepository implements Interfaces\iProduct
             $product->name = $inputs['name'];
             $product->cloth_id = $inputs['cloth_id'];
             $product->sale_period_id = $inputs['sale_period_id'];
-            $product->has_accessories = $inputs['has_accessories'];
             $product->created_by = $user->id;
 
             $result = $product->save();

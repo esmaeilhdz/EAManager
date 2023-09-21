@@ -44,7 +44,6 @@ class ProductEditRequest extends FormRequest
             'sale_period_id' => 'required|numeric|min:1',
             'internal_code' => 'required|string|size:16',
             'name' => ['required', 'string', new MbMin(2), new MbMax(100)],
-            'has_accessories' => 'required|numeric|in:0,1',
         ];
     }
 }

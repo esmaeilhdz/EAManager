@@ -29,12 +29,12 @@ class ProductModelRepository implements Interfaces\iProductModel
         }
     }
 
-    public function getById($product_id, $id, $user, $select = [], $relation = [])
+    public function getById($product_id, $id, $user, $relation = [])
     {
         try {
             $company_id = $this->getCurrentCompanyOfUser($user);
             return ProductModel::query()
-                ->select('id', 'name')
+                ->select('id', 'name', 'is_enable')
                 ->whereHas('product', function ($q) use ($company_id) {
                     $q->where('company_id', $company_id);
                 })
@@ -46,10 +46,31 @@ class ProductModelRepository implements Interfaces\iProductModel
         }
     }
 
+    public function getCombo($user)
+    {
+        try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
+            return ProductModel::with([
+                'product:id,name'
+            ])
+                ->select('id', 'name', 'product_id')
+                ->whereHas('product', function ($q) use ($company_id) {
+                    $q->where('company_id', $company_id);
+                })
+                ->where('is_enable', 1)
+                ->limit(10)
+                ->get();
+        } catch (\Exception $e) {
+            throw new ApiException($e, false);
+        }
+    }
+
     public function editProductModel($product_model, $inputs)
     {
         try {
             $product_model->name = $inputs['name'];
+            $product_model->is_enable = $inputs['is_enable'];
+
             return $product_model->save();
         } catch (\Exception $e) {
             throw new ApiException($e, false);

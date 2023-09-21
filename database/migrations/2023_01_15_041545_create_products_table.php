@@ -21,7 +21,6 @@ class CreateProductsTable extends Migration
             $table->string('code', 32)->unique();
             $table->string('internal_code', 16)->unique();
             $table->string('name');
-            $table->boolean('has_accessories')->default(0)->comment('داشتن خرج کار');
             $table->unsignedBigInteger('created_by');
             $table->timestamps();
 

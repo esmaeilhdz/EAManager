@@ -136,7 +136,8 @@ class ProductHelper
             ];
         }
 
-        $cloth = $this->cloth_interface->getClothByCode($inputs['cloth_code']);
+        $user = Auth::user();
+        $cloth = $this->cloth_interface->getClothByCode($inputs['cloth_code'], $user);
         if (is_null($cloth)) {
             return [
                 'result' => false,
@@ -171,8 +172,7 @@ class ProductHelper
     public function addProduct($inputs): array
     {
         $user = Auth::user();
-
-        $cloth = $this->cloth_interface->getClothByCode($inputs['cloth_code']);
+        $cloth = $this->cloth_interface->getClothByCode($inputs['cloth_code'], $user);
         if (is_null($cloth)) {
             return [
                 'result' => false,

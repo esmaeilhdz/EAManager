@@ -10,6 +10,13 @@ class ProductModel extends Model
 {
     use HasFactory;
 
+    protected function isEnable(): Attribute
+    {
+        return Attribute::get(
+            get: fn ($value) => (bool) $value
+        );
+    }
+
     protected function createdAt(): Attribute
     {
         return Attribute::get(

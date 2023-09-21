@@ -82,11 +82,45 @@ class ProductModelHelper
         $inputs['product_id'] = $product->id;
         $user = Auth::user();
         $product_model = $this->product_model_interface->getById($inputs['product_id'], $inputs['id'], $user);
+        if (is_null($product_model)) {
+            return [
+                'result' => false,
+                'message' => __('messages.record_not_found'),
+                'data' => null
+            ];
+        }
 
         return [
             'result' => true,
             'message' => __('messages.success'),
             'data' => $product_model
+        ];
+    }
+
+    public function getProductModelCombo($inputs)
+    {
+        $user = Auth::user();
+        $product_models = $this->product_model_interface->getCombo($user);
+        if (is_null($product_models)) {
+            return [
+                'result' => false,
+                'message' => __('messages.record_not_found'),
+                'data' => null
+            ];
+        }
+
+        $result = null;
+        foreach ($product_models as $product_model) {
+            $result[] = [
+                'id' => $product_model->id,
+                'name' => $product_model->product->name . ' - ' . $product_model->name
+            ];
+        }
+
+        return [
+            'result' => true,
+            'message' => __('messages.success'),
+            'data' => $result
         ];
     }
 

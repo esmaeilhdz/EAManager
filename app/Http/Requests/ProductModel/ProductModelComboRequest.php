@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Product;
+namespace App\Http\Requests\ProductModel;
 
-use App\Rules\MbMax;
-use App\Rules\MbMin;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ProductAddRequest extends FormRequest
+class ProductModelComboRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,9 +24,7 @@ class ProductAddRequest extends FormRequest
     public function rules()
     {
         return [
-            'cloth_code' => 'required|string|size:32',
-            'sale_period_id' => 'required|numeric|min:1',
-            'name' => ['required', 'string', new MbMin(2), new MbMax(100)],
+            'search_txt' => 'nullable|string|min:2'
         ];
     }
 }

@@ -40,7 +40,8 @@ class ProductModelEditRequest extends FormRequest
         return [
             'code' => 'required|string|size:32',
             'id' => 'required|numeric|min:1',
-            'name' => 'required|string|min:2'
+            'name' => 'required|string|min:2',
+            'is_enable' => 'required|numeric|in:0,1'
         ];
     }
 }
