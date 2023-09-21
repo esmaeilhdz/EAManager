@@ -30,6 +30,7 @@ use App\Helpers\NotifHelper;
 use App\Helpers\PaymentHelper;
 use App\Helpers\PermissionHelper;
 use App\Helpers\PersonCompanyHelper;
+use App\Helpers\ProductAccessoryHelper;
 use App\Helpers\ProductModelHelper;
 use App\Helpers\ProvinceHelper;
 use App\Helpers\ReportHelper;
@@ -102,6 +103,7 @@ class HelperServiceProvider extends ServiceProvider
         App::alias(ProvinceHelper::class, 'province_helper');
         App::alias(CityHelper::class, 'city_helper');
         App::alias(ProductModelHelper::class, 'product_model_helper');
+        App::alias(ProductAccessoryHelper::class, 'product_accessory_helper');
     }
 
     /**

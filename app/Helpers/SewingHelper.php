@@ -37,9 +37,10 @@ class SewingHelper
      */
     public function getSewings($inputs): array
     {
+        $user = Auth::user();
         // کالا
         $select = ['id'];
-        $product = $this->product_interface->getProductByCode($inputs['code'], $select);
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,
@@ -94,9 +95,10 @@ class SewingHelper
      */
     public function getSewingDetail($inputs): array
     {
+        $user = Auth::user();
         // کالا
         $select = ['id'];
-        $product = $this->product_interface->getProductByCode($inputs['code'], $select);
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,
@@ -138,9 +140,10 @@ class SewingHelper
      */
     public function editSewing($inputs): array
     {
+        $user = Auth::user();
         // کالا
         $select = ['id'];
-        $product = $this->product_interface->getProductByCode($inputs['code'], $select);
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,
@@ -175,7 +178,6 @@ class SewingHelper
             $result[] = $this->product_warehouse_interface->editProductWarehouse($product_warehouse, $params);
         } else {
             $params = array_merge($inputs, $params);
-            $user = Auth::user();
             $result[] = $this->product_warehouse_interface->addProductWarehouse($params, $user);
         }
 
@@ -201,9 +203,10 @@ class SewingHelper
      */
     public function addSewing($inputs): array
     {
+        $user = Auth::user();
         // کالا
         $select = ['id'];
-        $product = $this->product_interface->getProductByCode($inputs['code'], $select);
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,
@@ -213,7 +216,6 @@ class SewingHelper
         }
 
         $inputs['product_id'] = $product->id;
-        $user = Auth::user();
         $result = $this->sewing_interface->addSewing($inputs, $user);
         return [
             'result' => $result['result'],
@@ -229,9 +231,10 @@ class SewingHelper
      */
     public function deleteSewing($inputs): array
     {
+        $user = Auth::user();
         // کالا
         $select = ['id'];
-        $product = $this->product_interface->getProductByCode($inputs['code'], $select);
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,

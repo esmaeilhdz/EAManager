@@ -53,13 +53,15 @@ class ProductRepository implements Interfaces\iProduct
     /**
      * جزئیات کالا
      * @param $code
+     * @param $user
      * @param array $select
      * @return mixed
      * @throws ApiException
      */
-    public function getProductByCode($code, $select = []): mixed
+    public function getProductByCode($code, $user, $select = []): mixed
     {
         try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
             $product = Product::with([
                 'cloth:id,code,name',
                 'cloth.color:enum_id,enum_caption',
@@ -70,7 +72,9 @@ class ProductRepository implements Interfaces\iProduct
                 $product = $product->select($select);
             }
 
-            return $product->whereCode($code)->first();
+            return $product->where('company_id', $company_id)
+                ->whereCode($code)
+                ->first();
         } catch (\Exception $e) {
             throw new ApiException($e);
         }

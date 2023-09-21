@@ -33,7 +33,8 @@ class ProductModelHelper
      */
     public function getProductModels($inputs): array
     {
-        $product = $this->product_interface->getProductByCode($inputs['code'], ['id']);
+        $user = Auth::user();
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, ['id']);
         if (!$product) {
             return [
                 'result' => 'false',
@@ -70,7 +71,8 @@ class ProductModelHelper
      */
     public function getProductModelDetail($inputs): array
     {
-        $product = $this->product_interface->getProductByCode($inputs['code'], ['id']);
+        $user = Auth::user();
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, ['id']);
         if (!$product) {
             return [
                 'result' => 'false',
@@ -80,7 +82,6 @@ class ProductModelHelper
         }
 
         $inputs['product_id'] = $product->id;
-        $user = Auth::user();
         $product_model = $this->product_model_interface->getById($inputs['product_id'], $inputs['id'], $user);
         if (is_null($product_model)) {
             return [
@@ -126,7 +127,8 @@ class ProductModelHelper
 
     public function editProductModel($inputs)
     {
-        $product = $this->product_interface->getProductByCode($inputs['code'], ['id']);
+        $user = Auth::user();
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, ['id']);
         if (!$product) {
             return [
                 'result' => 'false',
@@ -136,7 +138,6 @@ class ProductModelHelper
         }
 
         $inputs['product_id'] = $product->id;
-        $user = Auth::user();
         $product_model = $this->product_model_interface->getById($inputs['product_id'], $inputs['id'], $user);
         if (!$product_model) {
             return [
@@ -157,7 +158,8 @@ class ProductModelHelper
 
     public function addProductModel($inputs)
     {
-        $product = $this->product_interface->getProductByCode($inputs['code'], ['id']);
+        $user = Auth::user();
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, ['id']);
         if (!$product) {
             return [
                 'result' => 'false',
@@ -167,7 +169,6 @@ class ProductModelHelper
         }
 
         $inputs['product_id'] = $product->id;
-        $user = Auth::user();
         $result = $this->product_model_interface->addProductModel($inputs, $user);
 
         return [
@@ -184,7 +185,8 @@ class ProductModelHelper
      */
     public function deleteProductModel($inputs): array
     {
-        $product = $this->product_interface->getProductByCode($inputs['code'], ['id']);
+        $user = Auth::user();
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, ['id']);
         if (!$product) {
             return [
                 'result' => 'false',
@@ -194,7 +196,6 @@ class ProductModelHelper
         }
 
         $inputs['product_id'] = $product->id;
-        $user = Auth::user();
         $product_model = $this->product_model_interface->getById($inputs['product_id'], $inputs['id'], $user);
         if (!$product_model) {
             return [

@@ -235,6 +235,11 @@ class RouteServiceProvider extends ServiceProvider
             ->namespace($this->namespace)
             ->group(base_path('routes/product_model.php'));
 
+        Route::prefix('api')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/product_accessory.php'));
+
     }
 
     private function mapNotifs()

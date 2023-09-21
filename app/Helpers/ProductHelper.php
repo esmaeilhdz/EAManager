@@ -87,7 +87,8 @@ class ProductHelper
         $select = [
             'code', 'internal_code', 'name', 'has_accessories', 'cloth_id', 'sale_period_id'
         ];
-        $product = $this->product_interface->getProductByCode($code, $select);
+        $user = Auth::user();
+        $product = $this->product_interface->getProductByCode($code, $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,
@@ -127,7 +128,8 @@ class ProductHelper
      */
     public function editProduct($inputs): array
     {
-        $product = $this->product_interface->getProductByCode($inputs['code']);
+        $user = Auth::user();
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user);
         if (is_null($product)) {
             return [
                 'result' => false,
@@ -136,7 +138,6 @@ class ProductHelper
             ];
         }
 
-        $user = Auth::user();
         $cloth = $this->cloth_interface->getClothByCode($inputs['cloth_code'], $user);
         if (is_null($cloth)) {
             return [
@@ -206,7 +207,8 @@ class ProductHelper
      */
     public function deleteProduct($inputs): array
     {
-        $product = $this->product_interface->getProductByCode($inputs['code'], ['id', 'code']);
+        $user = Auth::user();
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, ['id', 'code']);
         if (is_null($product)) {
             return [
                 'result' => false,

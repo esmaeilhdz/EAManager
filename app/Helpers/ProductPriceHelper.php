@@ -34,8 +34,9 @@ class ProductPriceHelper
      */
     public function getProductPrices($inputs): array
     {
+        $user = Auth::user();
         $select = ['id', 'code', 'name'];
-        $product = $this->product_interface->getProductByCode($inputs['code'], $select);
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,
@@ -86,9 +87,10 @@ class ProductPriceHelper
      */
     public function getProductPriceDetail($inputs): array
     {
+        $user = Auth::user();
         // کالا
         $select = ['id', 'name'];
-        $product = $this->product_interface->getProductByCode($inputs['code'], $select);
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,
@@ -124,9 +126,10 @@ class ProductPriceHelper
      */
     public function editProductPrice($inputs): array
     {
+        $user = Auth::user();
         // کالا
         $select = ['id', 'name'];
-        $product = $this->product_interface->getProductByCode($inputs['code'], $select);
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,
@@ -162,9 +165,10 @@ class ProductPriceHelper
      */
     public function addProductPrice($inputs): array
     {
+        $user = Auth::user();
         // کالا
         $select = ['id', 'name'];
-        $product = $this->product_interface->getProductByCode($inputs['code'], $select);
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,
@@ -175,7 +179,6 @@ class ProductPriceHelper
 
         DB::beginTransaction();
         $inputs['product_id'] = $product->id;
-        $user = Auth::user();
         $result[] = $this->product_price_interface->deActiveOldPrices($product->id);
         $result[] = $this->product_price_interface->addProductPrice($inputs, $user);
 
@@ -203,9 +206,10 @@ class ProductPriceHelper
      */
     public function deleteProductPrice($inputs): array
     {
+        $user = Auth::user();
         // کالا
         $select = ['id'];
-        $product = $this->product_interface->getProductByCode($inputs['code'], $select);
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,

@@ -41,8 +41,9 @@ class ProductToStoreHelper
      */
     public function getProductToStores($inputs): array
     {
+        $user = Auth::user();
         $select = ['id', 'name'];
-        $product = $this->product_interface->getProductByCode($inputs['code'], $select);
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,
@@ -109,9 +110,10 @@ class ProductToStoreHelper
      */
     public function getProductToStoreDetail($inputs): array
     {
+        $user = Auth::user();
         // کالا
         $select = ['id', 'name'];
-        $product = $this->product_interface->getProductByCode($inputs['code'], $select);
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,
@@ -156,9 +158,10 @@ class ProductToStoreHelper
      */
     public function editProductToStore($inputs): array
     {
+        $user = Auth::user();
         // کالا
         $select = ['id', 'name'];
-        $product = $this->product_interface->getProductByCode($inputs['code'], $select);
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,
@@ -221,9 +224,10 @@ class ProductToStoreHelper
      */
     public function addProductToStore($inputs): array
     {
+        $user = Auth::user();
         // کالا
         $select = ['id', 'name'];
-        $product = $this->product_interface->getProductByCode($inputs['code'], $select);
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,
@@ -244,7 +248,6 @@ class ProductToStoreHelper
         }
 
         $inputs['product_warehouse_id'] = $product_warehouse->id;
-        $user = Auth::user();
         $result = $this->product_to_store_interface->addProductToStore($inputs, $user);
         return [
             'result' => $result['result'],
@@ -260,9 +263,10 @@ class ProductToStoreHelper
      */
     public function deleteProductToStore($inputs): array
     {
+        $user = Auth::user();
         // کالا
         $select = ['id', 'name'];
-        $product = $this->product_interface->getProductByCode($inputs['code'], $select);
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,

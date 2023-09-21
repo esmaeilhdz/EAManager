@@ -6,7 +6,7 @@ interface iProduct
 {
     public function getProducts($inputs);
 
-    public function getProductByCode($code, $select = []);
+    public function getProductByCode($code, $user, $select = []);
 
     public function getProductsCombo($inputs, $user);
 

@@ -37,8 +37,9 @@ class ProductWarehouseHelper
      */
     public function getProductWarehouses($inputs): array
     {
+        $user = Auth::user();
         $select = ['id', 'name'];
-        $product = $this->product_interface->getProductByCode($inputs['code'], $select);
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,
@@ -50,7 +51,6 @@ class ProductWarehouseHelper
         $inputs['order_by'] = $this->orderBy($inputs, 'product_warehouses');
         $inputs['per_page'] = $this->calculatePerPage($inputs);
 
-        $user = Auth::user();
         $product_warehouses = $this->product_warehouse_interface->getProductWarehouses($product->id, $inputs, $user);
 
         $product_warehouses->transform(function ($item) {
@@ -92,9 +92,10 @@ class ProductWarehouseHelper
      */
     public function getProductWarehouseDetail($inputs): array
     {
+        $user = Auth::user();
         // کالا
         $select = ['id', 'name'];
-        $product = $this->product_interface->getProductByCode($inputs['code'], $select);
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,
@@ -104,7 +105,6 @@ class ProductWarehouseHelper
         }
 
         // انبار کالا
-        $user = Auth::user();
         $inputs['product_id'] = $product->id;
         $relation = ['color:enum_id,enum_caption'];
         $select = ['product_id', 'place_id', 'free_size_count', 'size1_count', 'size2_count', 'size3_count', 'size4_count', 'is_enable'];
@@ -181,9 +181,10 @@ class ProductWarehouseHelper
      */
     public function editProductWarehouse($inputs): array
     {
+        $user = Auth::user();
         // کالا
         $select = ['id', 'name'];
-        $product = $this->product_interface->getProductByCode($inputs['code'], $select);
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,
@@ -193,7 +194,6 @@ class ProductWarehouseHelper
         }
 
         $inputs['product_id'] = $product->id;
-        $user = Auth::user();
         $select = ['id', 'product_id', 'place_id', 'free_size_count', 'size1_count', 'size2_count', 'size3_count', 'size4_count', 'is_enable'];
         $product_warehouse = $this->product_warehouse_interface->getProductWarehouseById($inputs, $user, $select);
         if (is_null($product_warehouse)) {
@@ -220,9 +220,10 @@ class ProductWarehouseHelper
      */
     public function addProductWarehouse($inputs): array
     {
+        $user = Auth::user();
         // کالا
         $select = ['id', 'name'];
-        $product = $this->product_interface->getProductByCode($inputs['code'], $select);
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,
@@ -232,7 +233,6 @@ class ProductWarehouseHelper
         }
 
         $inputs['product_id'] = $product->id;
-        $user = Auth::user();
         $product_warehouse = $this->product_warehouse_interface->getByProductAndPlace($inputs['place_id'], $product->id, $user);
         if ($product_warehouse) {
             return [
@@ -269,9 +269,10 @@ class ProductWarehouseHelper
      */
     public function deleteProductWarehouse($inputs): array
     {
+        $user = Auth::user();
         // کالا
         $select = ['id'];
-        $product = $this->product_interface->getProductByCode($inputs['code'], $select);
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,
