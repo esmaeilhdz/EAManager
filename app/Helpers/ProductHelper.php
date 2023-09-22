@@ -81,7 +81,7 @@ class ProductHelper
     public function getProductDetail($code): array
     {
         $select = [
-            'code', 'internal_code', 'name', 'has_accessories', 'cloth_id', 'sale_period_id'
+            'code', 'internal_code', 'name', 'cloth_id', 'sale_period_id'
         ];
         $user = Auth::user();
         $product = $this->product_interface->getProductByCode($code, $user, $select);

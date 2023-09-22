@@ -62,7 +62,6 @@ class ProductRepository implements Interfaces\iProduct
             $company_id = $this->getCurrentCompanyOfUser($user);
             $product = Product::with([
                 'cloth:id,code,name',
-                'cloth.color:enum_id,enum_caption',
                 'sale_period:id,name',
             ]);
 
@@ -82,7 +81,7 @@ class ProductRepository implements Interfaces\iProduct
     {
         try {
             $company_id = $this->getCurrentCompanyOfUser($user);
-            return Product::select('id', 'name')
+            return Product::select('id', 'code', 'name')
                 ->when(isset($inputs['search_txt']), function ($q) use ($inputs) {
                     $q->where('name', 'like', '%' . $inputs['search_txt'] . '%');
                 })
