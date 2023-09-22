@@ -118,6 +118,10 @@ class ClothBuyHelper
         foreach ($cloth_buy->items as $item) {
             $items[] = [
                 'id' => $item->id,
+                'color' => [
+                    'id' => $item->color->enum_id,
+                    'caption' => $item->color->enum_caption,
+                ],
                 'metre' => $item->metre,
                 'unit_price' => $item->unit_price,
                 'price' => $item->price,

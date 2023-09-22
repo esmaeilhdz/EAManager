@@ -29,7 +29,7 @@ class ClothRepository implements Interfaces\iCloth
                 'cloth_buy:cloth_id,receive_date,seller_place_id,warehouse_place_id,factor_no,price',
                 'cloth_buy.seller_place:id,name',
                 'cloth_buy.warehouse_place:id,name',
-                'cloth_sell:cloth_id,sell_date,customer_id,warehouse_place_id',
+                'cloth_sell:cloth_id,sell_date,customer_id,warehouse_place_id,factor_no,price',
                 'cloth_sell.customer:id,name',
                 'cloth_sell.warehouse_place:id,name'
             ])
