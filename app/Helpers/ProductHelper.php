@@ -49,14 +49,10 @@ class ProductHelper
                 'code' => $item->code,
                 'name' => $item->name,
                 'internal_code' => $item->internal_code,
-                'has_accessories' => $item->has_accessories,
                 'product_warehouse_count' => $warehouse_count,
                 'price' => $item->productPrice->final_price ?? null,
                 'cloth' => [
                     'name' => $item->cloth->name,
-                    'color' => [
-                        $item->cloth->color->caption
-                    ]
                 ],
                 'sale_period' => [
                     'name' => $item->sale_period->name,

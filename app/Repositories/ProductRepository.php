@@ -25,8 +25,7 @@ class ProductRepository implements Interfaces\iProduct
                 ->with([
                     'productWarehouse:product_id,free_size_count,size1_count,size2_count,size3_count,size4_count',
                     'productPrice:product_id,final_price',
-                    'cloth:id,code,color_id,name',
-                    'cloth.color:enum_id,enum_caption',
+                    'cloth:id,code,name',
                     'sale_period:id,name',
                     'creator:id,person_id',
                     'creator.person:id,name,family'
@@ -36,7 +35,6 @@ class ProductRepository implements Interfaces\iProduct
                     'code',
                     'internal_code',
                     'name',
-                    'has_accessories',
                     'cloth_id',
                     'sale_period_id',
                     'created_by',

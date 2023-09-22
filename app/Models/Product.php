@@ -27,14 +27,6 @@ class Product extends Model
         );
     }
 
-    protected function hasAccessories(): Attribute
-    {
-        return Attribute::get(
-            get: fn ($value) => (bool) $value
-        );
-    }
-
-
     /**
      * The "booted" method of the model.
      *
