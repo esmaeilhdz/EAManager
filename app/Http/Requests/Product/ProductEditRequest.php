@@ -44,6 +44,10 @@ class ProductEditRequest extends FormRequest
             'sale_period_id' => 'required|numeric|min:1',
             'internal_code' => 'required|string|size:16',
             'name' => ['required', 'string', new MbMin(2), new MbMax(100)],
+            'product_accessories' => 'nullable|array',
+            'product_accessories.*.accessory_id' => 'nullable|numeric|min:1',
+            'product_accessories.*.cloth_code' => 'nullable|string|size:32',
+            'product_accessories.*.amount' => 'required|string',
         ];
     }
 }

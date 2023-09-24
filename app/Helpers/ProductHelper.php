@@ -2,11 +2,15 @@
 
 namespace App\Helpers;
 
+use App\Models\Accessory;
+use App\Models\Cloth;
 use App\Repositories\Interfaces\iCloth;
 use App\Repositories\Interfaces\iProduct;
+use App\Repositories\Interfaces\iProductAccessory;
 use App\Repositories\Interfaces\iSalePeriod;
 use App\Traits\Common;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ProductHelper
 {
@@ -16,12 +20,19 @@ class ProductHelper
     public iProduct $product_interface;
     public iCloth $cloth_interface;
     public iSalePeriod $sale_period_interface;
+    public iProductAccessory $product_accessory_interface;
 
-    public function __construct(iProduct $product_interface, iCloth $cloth_interface, iSalePeriod $sale_period_interface)
+    public function __construct(
+        iProduct $product_interface,
+        iCloth $cloth_interface,
+        iSalePeriod $sale_period_interface,
+        iProductAccessory $product_accessory_interface
+    )
     {
         $this->product_interface = $product_interface;
         $this->cloth_interface = $cloth_interface;
         $this->sale_period_interface = $sale_period_interface;
+        $this->product_accessory_interface = $product_accessory_interface;
     }
 
     /**
@@ -129,7 +140,7 @@ class ProductHelper
         if (is_null($product)) {
             return [
                 'result' => false,
-                'message' => __('messages.record_not_found'),
+                'message' => __('messages.product_not_found'),
                 'data' => null
             ];
         }
@@ -138,7 +149,7 @@ class ProductHelper
         if (is_null($cloth)) {
             return [
                 'result' => false,
-                'message' => __('messages.record_not_found'),
+                'message' => __('messages.cloth_not_found'),
                 'data' => null
             ];
         }
@@ -147,16 +158,60 @@ class ProductHelper
         if (is_null($sale_period)) {
             return [
                 'result' => false,
-                'message' => __('messages.record_not_found'),
+                'message' => __('messages.sale_period_not_found'),
                 'data' => null
             ];
         }
 
         $inputs['cloth_id'] = $cloth->id;
-        $result = $this->product_interface->editProduct($product, $inputs);
+        DB::beginTransaction();
+        $result[] = $this->product_interface->editProduct($product, $inputs);
+        $result[] = $this->product_accessory_interface->deleteProductAccessories($product->id);
+        foreach ($inputs['product_accessories'] as &$product_accessory) {
+            $product_accessory['product_id'] = $product->id;
+            if (!is_null($product_accessory['cloth_code'])) {
+                $cloth_accessory = Cloth::select('id')->whereCode($product_accessory['cloth_code'])->first();
+                if (!$cloth_accessory) {
+                    return [
+                        'result' => false,
+                        'message' => __('messages.cloth_accessory_not_found'),
+                        'data' => null
+                    ];
+                }
+
+                $product_accessory['model_type'] = Cloth::class;
+                $product_accessory['model_id'] = $cloth_accessory->id;
+            } else {
+                $accessory = Accessory::select('id')->where('id', $product_accessory['accessory_id'])->first();
+                if (!$accessory) {
+                    return [
+                        'result' => false,
+                        'message' => __('messages.accessory_not_found'),
+                        'data' => null
+                    ];
+                }
+
+                $product_accessory['model_type'] = Accessory::class;
+                $product_accessory['model_id'] = $accessory->id;
+            }
+
+            $res = $this->product_accessory_interface->addProductAccessory($product_accessory, $user);
+            $result[] = $res['result'];
+        }
+
+        $result = $this->prepareTransactionArray($result);
+
+        if (!in_array(false, $result)) {
+            $flag = true;
+            DB::commit();
+        } else {
+            $flag = false;
+            DB::rollBack();
+        }
+
         return [
-            'result' => (bool) $result,
-            'message' => $result ? __('messages.success') : __('messages.fail'),
+            'result' => $flag,
+            'message' => $flag ? __('messages.success') : __('messages.fail'),
             'data' => null
         ];
     }
