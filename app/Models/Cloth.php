@@ -64,4 +64,9 @@ class Cloth extends Model
         return $this->hasOne(Enumeration::class, 'enum_id', 'color_id')
             ->where('category_name', 'color');
     }
+
+    public function productAccessory()
+    {
+        return $this->morphOne(ProductAccessory::class, 'model');
+    }
 }

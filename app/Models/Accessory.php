@@ -64,4 +64,9 @@ class Accessory extends Model
     {
         return $this->hasOne(User::class, 'id', 'created_by');
     }
+
+    public function productAccessory()
+    {
+        return $this->morphOne(ProductAccessory::class, 'model');
+    }
 }
