@@ -2,26 +2,41 @@
 
 namespace App\Helpers;
 
+use App\Models\Accessory;
+use App\Models\Cloth;
+use App\Repositories\Interfaces\iAccessory;
+use App\Repositories\Interfaces\iCloth;
 use App\Repositories\Interfaces\iProduct;
 use App\Repositories\Interfaces\iProductAccessory;
+use App\Repositories\Interfaces\iProductAccessoryPrice;
 use App\Traits\Common;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ProductAccessoryHelper
 {
     use Common;
 
     // attributes
+    public iCloth $cloth_interface;
     public iProduct $product_interface;
+    public iAccessory $accessory_interface;
     public iProductAccessory $product_accessory_interface;
+    public iProductAccessoryPrice $product_accessory_price_interface;
 
     public function __construct(
+        iCloth $cloth_interface,
         iProduct $product_interface,
-        iProductAccessory $product_accessory_interface
+        iAccessory $accessory_interface,
+        iProductAccessory $product_accessory_interface,
+        iProductAccessoryPrice $product_accessory_price_interface,
     )
     {
+        $this->cloth_interface = $cloth_interface;
         $this->product_interface = $product_interface;
+        $this->accessory_interface = $accessory_interface;
         $this->product_accessory_interface = $product_accessory_interface;
+        $this->product_accessory_price_interface = $product_accessory_price_interface;
     }
 
     /**
@@ -91,32 +106,11 @@ class ProductAccessoryHelper
             ];
         }
 
-        return [
-            'result' => true,
-            'message' => __('messages.success'),
-            'data' => $product_accessory
+        $result = [
+            'id' => $product_accessory->id,
+            'product_accessory' => $product_accessory->model->name,
+            'amount' => $product_accessory->amount,
         ];
-    }
-
-    public function getProductAccessoryCombo($inputs)
-    {
-        $user = Auth::user();
-        $product_accessorys = $this->product_accessory_interface->getCombo($user);
-        if (is_null($product_accessorys)) {
-            return [
-                'result' => false,
-                'message' => __('messages.record_not_found'),
-                'data' => null
-            ];
-        }
-
-        $result = null;
-        foreach ($product_accessorys as $product_accessory) {
-            $result[] = [
-                'id' => $product_accessory->id,
-                'name' => $product_accessory->product->name . ' - ' . $product_accessory->name
-            ];
-        }
 
         return [
             'result' => true,
@@ -148,6 +142,30 @@ class ProductAccessoryHelper
             ];
         }
 
+        if (!is_null($inputs['cloth_code'])) {
+            $cloth = $this->cloth_interface->getClothByCode($inputs['cloth_code'], $user);
+            if (!$cloth) {
+                return [
+                    'result' => 'false',
+                    'message' => __('messages.cloth_not_found'),
+                    'data' => null
+                ];
+            }
+            $inputs['model_type'] = Cloth::class;
+            $inputs['model_id'] = $cloth->id;
+        } elseif (!is_null($inputs['accessory_id'])) {
+            $accessory = $this->accessory_interface->getAccessoryById($inputs['accessory_id'], ['id']);
+            if (!$accessory) {
+                return [
+                    'result' => 'false',
+                    'message' => __('messages.accessory_not_found'),
+                    'data' => null
+                ];
+            }
+            $inputs['model_type'] = Accessory::class;
+            $inputs['model_id'] = $accessory->id;
+        }
+
         $result = $this->product_accessory_interface->editProductAccessory($product_accessory, $inputs);
 
         return [
@@ -169,6 +187,30 @@ class ProductAccessoryHelper
             ];
         }
 
+        if (!is_null($inputs['cloth_code'])) {
+            $cloth = $this->cloth_interface->getClothByCode($inputs['cloth_code'], $user);
+            if (!$cloth) {
+                return [
+                    'result' => 'false',
+                    'message' => __('messages.cloth_not_found'),
+                    'data' => null
+                ];
+            }
+            $inputs['model_type'] = Cloth::class;
+            $inputs['model_id'] = $cloth->id;
+        } elseif (!is_null($inputs['accessory_id'])) {
+            $accessory = $this->accessory_interface->getAccessoryById($inputs['accessory_id'], ['id']);
+            if (!$accessory) {
+                return [
+                    'result' => 'false',
+                    'message' => __('messages.accessory_not_found'),
+                    'data' => null
+                ];
+            }
+            $inputs['model_type'] = Accessory::class;
+            $inputs['model_id'] = $accessory->id;
+        }
+
         $inputs['product_id'] = $product->id;
         $user = Auth::user();
         $result = $this->product_accessory_interface->addProductAccessory($inputs, $user);
@@ -181,7 +223,7 @@ class ProductAccessoryHelper
     }
 
     /**
-     * سرویس جزئیات خرج کارکالا
+     * سرویس حذف خرج کارکالا
      * @param $inputs
      * @return array
      */
@@ -208,11 +250,23 @@ class ProductAccessoryHelper
             ];
         }
 
-        $result = $this->product_accessory_interface->deleteProductAccessory($product_accessory);
+        DB::beginTransaction();
+        $result[] = $this->product_accessory_price_interface->deleteByProductAccessoryId($product_accessory->id);
+        $result[] = $this->product_accessory_interface->deleteProductAccessory($product_accessory);
+
+        $result = $this->prepareTransactionArray($result);
+
+        if (!in_array(false, $result)) {
+            $flag = true;
+            DB::commit();
+        } else {
+            $flag = false;
+            DB::rollBack();
+        }
 
         return [
-            'result' => (bool) $result,
-            'message' => $result ? __('messages.success') : __('messages.fail'),
+            'result' => $flag,
+            'message' => $flag ? __('messages.success') : __('messages.fail'),
             'data' => null
         ];
     }

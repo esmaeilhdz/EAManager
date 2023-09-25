@@ -34,7 +34,10 @@ class ProductAccessoryRepository implements Interfaces\iProductAccessory
         try {
             $company_id = $this->getCurrentCompanyOfUser($user);
             return ProductAccessory::query()
-                ->select('id', 'name', 'is_enable')
+                ->with([
+                    'model'
+                ])
+                ->select('id', 'product_id', 'model_type', 'model_id', 'amount')
                 ->whereHas('product', function ($q) use ($company_id) {
                     $q->where('company_id', $company_id);
                 })
@@ -68,8 +71,9 @@ class ProductAccessoryRepository implements Interfaces\iProductAccessory
     public function editProductAccessory($product_accessory, $inputs)
     {
         try {
-            $product_accessory->name = $inputs['name'];
-            $product_accessory->is_enable = $inputs['is_enable'];
+            $product_accessory->model_type = $inputs['model_type'];
+            $product_accessory->model_id = $inputs['model_id'];
+            $product_accessory->amount = $inputs['amount'];
 
             return $product_accessory->save();
         } catch (\Exception $e) {

@@ -6,6 +6,20 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class ProductAccessoryEditRequest extends FormRequest
 {
+
+    /**
+     * Prepare the data for validation.
+     *
+     * @return void
+     */
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'code' => $this->code,
+            'id' => $this->id,
+        ]);
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -13,7 +27,7 @@ class ProductAccessoryEditRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +38,11 @@ class ProductAccessoryEditRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'code' => 'required|string|size:32',
+            'id' => 'required|numeric|min:1',
+            'cloth_code' => 'nullable|string|size:32',
+            'accessory_id' => 'nullable|numeric|min:1',
+            'amount' => 'required|numeric',
         ];
     }
 }
