@@ -13,6 +13,7 @@ class CreateProductModelsTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('product_models');
         Schema::create('product_models', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('product_id');

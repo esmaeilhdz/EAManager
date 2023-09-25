@@ -13,6 +13,7 @@ class CreateProductAccessoriesTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('product_accessories');
         Schema::create('product_accessories', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('product_id');

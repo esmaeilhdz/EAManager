@@ -13,6 +13,7 @@ class CreateClothSellItemsTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('cloth_sell_items');
         Schema::create('cloth_sell_items', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('cloth_sell_id');
