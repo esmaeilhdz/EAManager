@@ -3,11 +3,9 @@
 namespace App\Repositories;
 
 use App\Exceptions\ApiException;
-use App\Models\Product;
 use App\Models\ProductPrice;
 use App\Traits\Common;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\DB;
 
 class ProductPriceRepository implements Interfaces\iProductPrice
 {
@@ -24,12 +22,23 @@ class ProductPriceRepository implements Interfaces\iProductPrice
     {
         try {
             return ProductPrice::query()
+                ->with([
+                    'product_accessory_price.product_accessory.model',
+                    'cutter_person:id,name,family',
+                    'cutter_place:id,name',
+                ])
                 ->select([
                     'id',
+                    'cutter_person_id',
+                    'cutter_place_id',
                     'total_count',
                     'serial_count',
                     'sewing_price',
+                    'sewing_date',
                     'cutting_price',
+                    'cutting_date',
+                    'packing_price',
+                    'sending_price',
                     'sewing_final_price',
                     'sale_profit_price',
                     'final_price',
@@ -83,10 +92,16 @@ class ProductPriceRepository implements Interfaces\iProductPrice
     public function editProductPrice($product_price, $inputs): mixed
     {
         try {
+            $product_price->product_id = $inputs['product_id'];
+            $product_price->cutter_person_id = $inputs['cutter_person_id'];
             $product_price->total_count = $inputs['total_count'];
             $product_price->serial_count = $inputs['serial_count'];
+            $product_price->sewing_date = $inputs['sewing_date'];
             $product_price->sewing_price = $inputs['sewing_price'];
+            $product_price->cutting_date = $inputs['cutting_date'];
             $product_price->cutting_price = $inputs['cutting_price'];
+            $product_price->packing_price = $inputs['packing_price'];
+            $product_price->sending_price = $inputs['sending_price'];
             $product_price->sewing_final_price = $inputs['sewing_final_price'];
             $product_price->sale_profit_price = $inputs['sale_profit_price'];
             $product_price->final_price = $inputs['final_price'];
@@ -127,10 +142,16 @@ class ProductPriceRepository implements Interfaces\iProductPrice
             $product_price = new ProductPrice();
 
             $product_price->product_id = $inputs['product_id'];
+            $product_price->cutter_person_id = $inputs['cutter_person_id'] ?? null;
+            $product_price->cutter_place_id = $inputs['cutter_place_id'] ?? null;
             $product_price->total_count = $inputs['total_count'];
             $product_price->serial_count = $inputs['serial_count'];
+            $product_price->sewing_date = $inputs['sewing_date'];
             $product_price->sewing_price = $inputs['sewing_price'];
+            $product_price->cutting_date = $inputs['cutting_date'];
             $product_price->cutting_price = $inputs['cutting_price'];
+            $product_price->packing_price = $inputs['packing_price'];
+            $product_price->sending_price = $inputs['sending_price'];
             $product_price->sewing_final_price = $inputs['sewing_final_price'];
             $product_price->sale_profit_price = $inputs['sale_profit_price'];
             $product_price->final_price = $inputs['final_price'];

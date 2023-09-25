@@ -61,6 +61,7 @@ use App\Repositories\Interfaces\iPermission;
 use App\Repositories\Interfaces\iPermissionGroup;
 use App\Repositories\Interfaces\iPersonCompany;
 use App\Repositories\Interfaces\iProductAccessory;
+use App\Repositories\Interfaces\iProductAccessoryPrice;
 use App\Repositories\Interfaces\iProductModel;
 use App\Repositories\Interfaces\iProvince;
 use App\Repositories\Interfaces\iReport;
@@ -85,6 +86,7 @@ use App\Repositories\PaymentRepository;
 use App\Repositories\PermissionGroupRepository;
 use App\Repositories\PermissionRepository;
 use App\Repositories\PersonCompanyRepository;
+use App\Repositories\ProductAccessoryPriceRepository;
 use App\Repositories\ProductAccessoryRepository;
 use App\Repositories\ProductModelRepository;
 use App\Repositories\ProvinceRepository;
@@ -163,6 +165,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(iClothSellItems::class, ClothSellItemsRepository::class);
         $this->app->bind(iProductModel::class, ProductModelRepository::class);
         $this->app->bind(iProductAccessory::class, ProductAccessoryRepository::class);
+        $this->app->bind(iProductAccessoryPrice::class, ProductAccessoryPriceRepository::class);
     }
 
     /**
