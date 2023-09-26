@@ -38,8 +38,6 @@ class ProductAccessoryListRequest extends FormRequest
     {
         return [
             'code' => 'required|string|size:32',
-            'page' => 'required|numeric|min:1',
-            'per_page' => 'required|numeric',
             'search_txt' => 'nullable|string'
         ];
     }

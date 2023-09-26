@@ -56,10 +56,8 @@ class ProductAccessoryHelper
             ];
         }
 
-        $inputs['product_id'] = $product->id;
-        $inputs['per_page'] = $this->calculatePerPage($inputs);
-
         $user = Auth::user();
+        $inputs['product_id'] = $product->id;
         $product_accessories = $this->product_accessory_interface->getProductAccessories($inputs, $user);
 
         $product_accessories->transform(function ($item) {

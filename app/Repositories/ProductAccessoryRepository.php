@@ -23,7 +23,7 @@ class ProductAccessoryRepository implements Interfaces\iProductAccessory
                     $q->where('company_id', $company_id);
                 })
                 ->orderByDesc('id')
-                ->paginate($inputs['per_page']);
+                ->get();
         } catch (\Exception $e) {
             throw new ApiException($e, false);
         }
