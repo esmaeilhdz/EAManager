@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class ProductWarehouse extends Model
 {
     use HasFactory;
-    protected $hidden = ['id', 'place_id', 'product_id', 'created_by', 'updated_at'];
+    protected $hidden = ['id', 'place_id', 'product_id', 'product_model_id', 'created_by', 'updated_at'];
 
     protected function createdAt(): Attribute
     {
@@ -37,6 +37,11 @@ class ProductWarehouse extends Model
     public function product()
     {
         return $this->hasOne(Product::class, 'id', 'product_id');
+    }
+
+    public function product_model()
+    {
+        return $this->hasOne(ProductModel::class, 'id', 'product_model_id');
     }
 
     public function creator()

@@ -10,6 +10,8 @@ class ProductModel extends Model
 {
     use HasFactory;
 
+    protected $hidden = ['product_id', 'updated_at'];
+
     protected function isEnable(): Attribute
     {
         return Attribute::get(

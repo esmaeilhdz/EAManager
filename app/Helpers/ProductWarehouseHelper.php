@@ -5,6 +5,7 @@ namespace App\Helpers;
 use App\Models\ProductWarehouse;
 use App\Repositories\Interfaces\iPlace;
 use App\Repositories\Interfaces\iProduct;
+use App\Repositories\Interfaces\iProductModel;
 use App\Repositories\Interfaces\iProductWarehouse;
 use App\Traits\Common;
 use Illuminate\Support\Facades\Auth;
@@ -17,21 +18,24 @@ class ProductWarehouseHelper
     // attributes
     public iPlace $place_interface;
     public iProduct $product_interface;
+    public iProductModel $product_model_interface;
     public iProductWarehouse $product_warehouse_interface;
 
     public function __construct(
         iPlace $place_interface,
         iProduct $product_interface,
+        iProductModel $product_model_interface,
         iProductWarehouse $product_warehouse_interface
     )
     {
         $this->place_interface = $place_interface;
         $this->product_interface = $product_interface;
+        $this->product_model_interface = $product_model_interface;
         $this->product_warehouse_interface = $product_warehouse_interface;
     }
 
     /**
-     * سرویس لیست قیمت های کالا
+     * سرویس لیست انبار های کالا
      * @param $inputs
      * @return array
      */
@@ -60,6 +64,10 @@ class ProductWarehouseHelper
                     'id' => $item->place_id,
                     'name' => $item->place->name
                 ],
+                'product_model' => [
+                    'id' => $item->product_model_id,
+                    'name' => $item->product_model->name
+                ],
                 'free_size_count' => $item->free_size_count,
                 'size1_count' => $item->size1_count,
                 'size2_count' => $item->size2_count,
@@ -86,7 +94,7 @@ class ProductWarehouseHelper
     }
 
     /**
-     * سرویس جزئیات قیمت کالا
+     * سرویس جزئیات انبار کالا
      * @param $inputs
      * @return array
      */
@@ -106,8 +114,11 @@ class ProductWarehouseHelper
 
         // انبار کالا
         $inputs['product_id'] = $product->id;
-        $relation = ['color:enum_id,enum_caption'];
-        $select = ['product_id', 'place_id', 'free_size_count', 'size1_count', 'size2_count', 'size3_count', 'size4_count', 'is_enable'];
+        $relation = [
+            'product_model:id,product_id,name',
+            'place:id,name',
+        ];
+        $select = ['product_id', 'product_model_id', 'place_id', 'free_size_count', 'size1_count', 'size2_count', 'size3_count', 'size4_count', 'is_enable'];
         $product_warehouse = $this->product_warehouse_interface->getProductWarehouseById($inputs, $user, $select, $relation);
         if (is_null($product_warehouse)) {
             return [
@@ -127,7 +138,11 @@ class ProductWarehouseHelper
         ];
     }
 
-    public function getProductsOfPlace($inputs)
+    /**
+     * @param $inputs
+     * @return array
+     */
+    public function getProductsOfPlace($inputs): array
     {
         $place = $this->place_interface->getPlaceById($inputs['id']);
         if (!$place) {
@@ -144,26 +159,7 @@ class ProductWarehouseHelper
         $product_warehouses->transform(function ($item) {
             return [
                 'id' => $item->id,
-                'caption' => $item->product->name
-            ];
-        });
-
-        return [
-            'result' => true,
-            'message' => __('messages.success'),
-            'data' => $product_warehouses
-        ];
-    }
-
-    public function getProductWarehouseCombo($inputs)
-    {
-        $user = Auth::user();
-        $product_warehouses = $this->product_warehouse_interface->getProductWarehouseCombo($inputs, $user);
-
-        $product_warehouses->transform(function ($item) {
-            return [
-                'id' => $item->id,
-                'caption' => $item->product->name
+                'caption' => $item->product->name . ' - ' . $item->product_model->name
             ];
         });
 
@@ -175,7 +171,30 @@ class ProductWarehouseHelper
     }
 
     /**
-     * سرویس ویرایش قیمت کالا
+     * @param $inputs
+     * @return array
+     */
+    public function getProductWarehouseCombo($inputs): array
+    {
+        $user = Auth::user();
+        $product_warehouses = $this->product_warehouse_interface->getProductWarehouseCombo($inputs, $user);
+
+        $product_warehouses->transform(function ($item) {
+            return [
+                'id' => $item->id,
+                'caption' => $item->product->name . ' - ' . $item->product_model->name
+            ];
+        });
+
+        return [
+            'result' => true,
+            'message' => __('messages.success'),
+            'data' => $product_warehouses
+        ];
+    }
+
+    /**
+     * سرویس ویرایش انبار کالا
      * @param $inputs
      * @return array
      */
@@ -186,6 +205,15 @@ class ProductWarehouseHelper
         $select = ['id', 'name'];
         $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
+            return [
+                'result' => false,
+                'message' => __('messages.record_not_found'),
+                'data' => null
+            ];
+        }
+
+        $product_model = $this->product_model_interface->getById($product->id, $inputs['product_model_id'], $user);
+        if (is_null($product_model)) {
             return [
                 'result' => false,
                 'message' => __('messages.record_not_found'),
@@ -225,7 +253,7 @@ class ProductWarehouseHelper
     }
 
     /**
-     * سرویس افزودن قیمت کالا
+     * سرویس افزودن انبار کالا
      * @param $inputs
      * @return array
      */
@@ -243,8 +271,17 @@ class ProductWarehouseHelper
             ];
         }
 
+        $product_model = $this->product_model_interface->getById($product->id, $inputs['product_model_id'], $user);
+        if (is_null($product_model)) {
+            return [
+                'result' => false,
+                'message' => __('messages.record_not_found'),
+                'data' => null
+            ];
+        }
+
         $inputs['product_id'] = $product->id;
-        $product_warehouse = $this->product_warehouse_interface->getByProductAndPlace($inputs['place_id'], $product->id, $user);
+        $product_warehouse = $this->product_warehouse_interface->getByProductAndPlace($inputs['place_id'], $product->id, $inputs['product_model_id'], $user);
         if ($product_warehouse) {
             return [
                 'result' => false,
@@ -276,7 +313,7 @@ class ProductWarehouseHelper
     }
 
     /**
-     * سرویس حذف قیمت کالا
+     * سرویس حذف انبار کالا
      * @param $inputs
      * @return array
      */
@@ -314,6 +351,11 @@ class ProductWarehouseHelper
         ];
     }
 
+    /**
+     * @param ProductWarehouse $product_warehouse
+     * @param array $data
+     * @return array
+     */
     public function checkStock(ProductWarehouse $product_warehouse, array $data): array
     {
         $flag = true;
