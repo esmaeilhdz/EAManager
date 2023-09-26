@@ -247,6 +247,8 @@ class ProductWarehouseHelper
         $res = $this->product_warehouse_interface->addProductWarehouse($inputs, $user);
         $result[] = $res['result'];
 
+        $result = $this->prepareTransactionArray($result);
+
         if (!in_array(false, $result)) {
             $flag = true;
             DB::commit();
