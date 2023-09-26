@@ -143,7 +143,7 @@ class ClothBuyHelper
                 'name' => $cloth_buy->warehouse_place->name
             ],
             'factor_no' => $cloth_buy->factor_no,
-            'price' => $cloth_buy->price,
+            'price' => (string) $cloth_buy->price,
             'receive_date' => $cloth_buy->receive_date,
             'items' => $items
         ];

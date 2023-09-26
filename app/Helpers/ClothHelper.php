@@ -162,6 +162,7 @@ class ClothHelper
         $res = $this->cloth_interface->addCloth($inputs, $user);
         $result[] = $res['result'];
         $inputs['cloth_id'] = $res['data']->id;
+        $cloth_code = $res['data']->code ?? null;
         $res = $this->cloth_buy_interface->addClothBuy($inputs, $user);
         $result[] = $res['result'];
         foreach ($inputs['items'] as $item) {
@@ -182,7 +183,7 @@ class ClothHelper
         return [
             'result' => $flag,
             'message' => $flag ? __('messages.success') : __('messages.fail'),
-            'data' => null
+            'data' => $cloth_code
         ];
     }
 
