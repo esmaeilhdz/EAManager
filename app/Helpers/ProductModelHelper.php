@@ -98,10 +98,10 @@ class ProductModelHelper
         ];
     }
 
-    public function getProductModelCombo($inputs)
+    public function getProductsModelCombo($inputs)
     {
         $user = Auth::user();
-        $product_models = $this->product_model_interface->getCombo($user);
+        $product_models = $this->product_model_interface->getProductsModelCombo($inputs, $user);
         if (is_null($product_models)) {
             return [
                 'result' => false,
@@ -122,6 +122,35 @@ class ProductModelHelper
             'result' => true,
             'message' => __('messages.success'),
             'data' => $result
+        ];
+    }
+
+    public function getProductModelCombo($inputs)
+    {
+        $user = Auth::user();
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, ['id']);
+        if (!$product) {
+            return [
+                'result' => 'false',
+                'message' => __('messages.product_not_found'),
+                'data' => null
+            ];
+        }
+
+        $inputs['product_id'] = $product->id;
+        $product_models = $this->product_model_interface->getProductModelCombo($inputs, $user);
+        if (is_null($product_models)) {
+            return [
+                'result' => false,
+                'message' => __('messages.record_not_found'),
+                'data' => null
+            ];
+        }
+
+        return [
+            'result' => true,
+            'message' => __('messages.success'),
+            'data' => $product_models
         ];
     }
 

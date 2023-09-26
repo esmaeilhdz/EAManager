@@ -6,6 +6,19 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class ProductModelComboRequest extends FormRequest
 {
+
+    /**
+     * Prepare the data for validation.
+     *
+     * @return void
+     */
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'code' => $this->code,
+        ]);
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -24,6 +37,7 @@ class ProductModelComboRequest extends FormRequest
     public function rules()
     {
         return [
+            'code' => 'required|string|size:32',
             'search_txt' => 'nullable|string|min:2'
         ];
     }

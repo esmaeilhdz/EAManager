@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Facades\ProductModelFacade;
 use App\Http\Requests\ProductModel\ProductModelAddRequest;
 use App\Http\Requests\ProductModel\ProductModelComboRequest;
+use App\Http\Requests\ProductModel\ProductsModelComboRequest;
 use App\Http\Requests\ProductModel\ProductModelDetailRequest;
 use App\Http\Requests\ProductModel\ProductModelEditRequest;
 use App\Http\Requests\ProductModel\ProductModelListRequest;
@@ -34,11 +35,25 @@ class ProductModelController extends Controller
      * @param ProductModelDetailRequest $request
      * @return JsonResponse
      */
-    public function getProductModelDetail(ProductModelDetailRequest $request): JsonResponse
+    public function getProductsModelDetail(ProductModelDetailRequest $request): JsonResponse
     {
         $inputs = $request->validated();
 
-        $result = ProductModelFacade::getProductModelDetail($inputs);
+        $result = ProductModelFacade::getProductsModelDetail($inputs);
+        return $this->api_response->response($result['result'], $result['message'], $result['data']);
+    }
+
+    /**
+     * سرویس کامبوی مدل کالا
+     * @param ProductsModelComboRequest $request
+     * @return JsonResponse
+     */
+    public function getProductsModelCombo(ProductsModelComboRequest $request): JsonResponse
+    {
+        $inputs = $request->validated();
+        $this->cleanInput($inputs, array_keys($request->rules()));
+
+        $result = ProductModelFacade::getProductsModelCombo($inputs);
         return $this->api_response->response($result['result'], $result['message'], $result['data']);
     }
 
@@ -50,6 +65,7 @@ class ProductModelController extends Controller
     public function getProductModelCombo(ProductModelComboRequest $request): JsonResponse
     {
         $inputs = $request->validated();
+        $this->cleanInput($inputs, array_keys($request->rules()));
 
         $result = ProductModelFacade::getProductModelCombo($inputs);
         return $this->api_response->response($result['result'], $result['message'], $result['data']);

@@ -46,7 +46,7 @@ class ProductModelRepository implements Interfaces\iProductModel
         }
     }
 
-    public function getCombo($user)
+    public function getProductsModelCombo($inputs, $user)
     {
         try {
             $company_id = $this->getCurrentCompanyOfUser($user);
@@ -58,6 +58,29 @@ class ProductModelRepository implements Interfaces\iProductModel
                     $q->where('company_id', $company_id);
                 })
                 ->where('is_enable', 1)
+                ->when(isset($inputs['search_txt']), function ($q) use ($inputs) {
+                    $q->where('name', 'like', '%' . $inputs['search_txt'] . '%');
+                })
+                ->limit(10)
+                ->get();
+        } catch (\Exception $e) {
+            throw new ApiException($e, false);
+        }
+    }
+
+    public function getProductModelCombo($inputs, $user)
+    {
+        try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
+            return ProductModel::select('id', 'name')
+                ->whereHas('product', function ($q) use ($company_id) {
+                    $q->where('company_id', $company_id);
+                })
+                ->where('product_id', $inputs['product_id'])
+                ->where('is_enable', 1)
+                ->when(isset($inputs['search_txt']), function ($q) use ($inputs) {
+                    $q->where('name', 'like', '%' . $inputs['search_txt'] . '%');
+                })
                 ->limit(10)
                 ->get();
         } catch (\Exception $e) {

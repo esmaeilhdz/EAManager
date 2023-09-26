@@ -8,7 +8,9 @@ interface iProductModel
 
     public function getById($product_id, $id, $user, $relation = []);
 
-    public function getCombo($user);
+    public function getProductsModelCombo($inputs, $user);
+
+    public function getProductModelCombo($inputs, $user);
 
     public function editProductModel($product_model, $inputs);
 
