@@ -15,6 +15,6 @@ Route::group(['prefix' => 'v1', 'middleware' => 'auth:sanctum'], function () {
     });
     Route::group(['middleware' => ['permission:admin-product']], function () {
         Route::post('product/{code}/warehouse', [ProductWarehouseController::class, 'addProductWarehouse']);
-        Route::delete('product/{code}/warehouse/{id}', [ProductWarehouseController::class, 'deleteProductWarehouse']);
+//        Route::delete('product/{code}/warehouse/{id}', [ProductWarehouseController::class, 'deleteProductWarehouse']);
     });
 });
