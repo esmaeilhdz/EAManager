@@ -204,11 +204,22 @@ class ProductWarehouseHelper
             ];
         }
 
-        $result = $this->product_warehouse_interface->editProductWarehouse($product_warehouse, $inputs);
+        DB::beginTransaction();
+        $result[] = $this->product_warehouse_interface->deActiveOldWarehouses($inputs);
+        $res = $this->product_warehouse_interface->addProductWarehouse($inputs, $user);
+        $result[] = $res['result'];
+
+        if (!in_array(false, $result)) {
+            $flag = true;
+            DB::commit();
+        } else {
+            $flag = false;
+            DB::rollBack();
+        }
 
         return [
-            'result' => $result,
-            'message' => $result ? __('messages.success') : __('messages.fail'),
+            'result' => $flag,
+            'message' => $flag ? __('messages.success') : __('messages.fail'),
             'data' => null
         ];
     }
