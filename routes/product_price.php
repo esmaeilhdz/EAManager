@@ -13,6 +13,6 @@ Route::group(['prefix' => 'v1', 'middleware' => 'auth:sanctum'], function () {
     });
     Route::group(['middleware' => ['permission:admin-product']], function () {
         Route::post('product/{code}/price', [ProductPriceController::class, 'addProductPrice']);
-        Route::delete('product/{code}/price/{id}', [ProductPriceController::class, 'deleteProductPrice']);
+//        Route::delete('product/{code}/price/{id}', [ProductPriceController::class, 'deleteProductPrice']);
     });
 });
