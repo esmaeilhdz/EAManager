@@ -199,7 +199,6 @@ class ProductPriceHelper
             $inputs['cutter_person_id'] = $cutter_person->id;
         }
 
-        $inputs['cutter_place_id'] = null;
         if (!is_null($inputs['cutter_place_id'])) {
             $cutter_place = $this->place_interface->getPlaceById($inputs['cutter_place_id']);
             if (!$cutter_place) {
@@ -222,6 +221,8 @@ class ProductPriceHelper
             $res = $this->product_accessory_price_interface->addProductAccessoryPrice($product_accessory, $product_price_id);
             $result[] = $res['result'];
         }
+
+        $result = $this->prepareTransactionArray($result);
 
         if (!in_array(false, $result)) {
             $flag = true;
