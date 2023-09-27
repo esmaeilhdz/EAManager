@@ -116,9 +116,21 @@ class ProductAccessoryHelper
             ];
         }
 
+        $type = $product_accessory->model_type == Cloth::class ? 'cloth' : 'accessory';
+        $product_accessory_array = [
+            'type' => $type,
+            'name' => $product_accessory->model->name
+        ];
+
+        if ($type == 'cloth') {
+            $product_accessory_array['code'] = $product_accessory->model->code;
+        } else {
+            $product_accessory_array['id'] = $product_accessory->model_id;
+        }
+
         $result = [
             'id' => $product_accessory->id,
-            'product_accessory' => $product_accessory->model->name,
+            'product_accessory' => $product_accessory_array,
             'amount' => $product_accessory->amount,
         ];
 
