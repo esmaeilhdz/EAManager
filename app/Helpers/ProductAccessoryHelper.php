@@ -61,9 +61,21 @@ class ProductAccessoryHelper
         $product_accessories = $this->product_accessory_interface->getProductAccessories($inputs, $user);
 
         $product_accessories->transform(function ($item) {
+            $type = $item->model_type == Cloth::class ? 'cloth' : 'accessory';
+            $product_accessory = [
+                'type' => $type,
+                'name' => $item->model->name
+            ];
+
+            if ($type == 'cloth') {
+                $product_accessory['code'] = $item->model->code;
+            } else {
+                $product_accessory['id'] = $item->model_id;
+            }
+
             return [
                 'id' => $item->id,
-                'product_accessory' => $item->model->name,
+                'product_accessory' => $product_accessory,
                 'amount' => $item->amount,
                 'created_at' => $item->created_at,
             ];
