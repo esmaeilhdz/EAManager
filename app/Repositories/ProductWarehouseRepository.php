@@ -226,10 +226,11 @@ class ProductWarehouseRepository implements Interfaces\iProductWarehouse
     {
         try {
             $company_id = $this->getCurrentCompanyOfUser($user);
-            return ProductWarehouse::select('id', 'product_id', 'product_model_id')
+            return ProductWarehouse::select('id', 'product_id', 'product_model_id', 'place_id')
                 ->with([
                     'product:id,name',
-                    'product_model:id,product_model_id,name',
+                    'product_model:id,name',
+                    'place:id,name',
                 ])
                 ->whereHas('product', function ($q) use ($company_id, $inputs) {
                     $q->where('company_id', $company_id);
@@ -237,6 +238,10 @@ class ProductWarehouseRepository implements Interfaces\iProductWarehouse
                         $q2->where('name', 'like', '%' . $inputs['search_txt'] . '%');
                     });
                 })
+                ->whereHas('product_model', function ($q) {
+                    $q->where('is_enable', 1);
+                })
+                ->where('is_enable', 1)
                 ->limit(10)
                 ->get();
         } catch (\Exception $e) {

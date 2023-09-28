@@ -182,7 +182,7 @@ class ProductWarehouseHelper
         $product_warehouses->transform(function ($item) {
             return [
                 'id' => $item->id,
-                'caption' => $item->product->name . ' - ' . $item->product_model->name
+                'caption' => $item->product->name . ' - ' . $item->product_model->name . ' (' . $item->place->name . ')'
             ];
         });
 
