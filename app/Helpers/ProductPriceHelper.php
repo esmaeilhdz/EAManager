@@ -139,8 +139,26 @@ class ProductPriceHelper
 
         // قیمت کالا
         $inputs['product_id'] = $product->id;
-        $relation = ['product:id,name'];
-        $select = ['product_id', 'total_count', 'serial_count', 'sewing_price', 'cutting_price', 'sewing_final_price', 'sale_profit_price', 'final_price', 'is_enable'];
+        $relation = [
+            'product:id,name',
+            'cutter_person:id,code,name,family',
+            'cutter_place:id,name'
+        ];
+        $select = ['id',
+            'cutter_person_id',
+            'cutter_place_id',
+            'total_count',
+            'serial_count',
+            'sewing_price',
+            'sewing_date',
+            'cutting_price',
+            'cutting_date',
+            'packing_price',
+            'sending_price',
+            'sewing_final_price',
+            'sale_profit_price',
+            'final_price',
+            'is_enable'];
         $product_price = $this->product_price_interface->getProductPriceById($inputs, $select, $relation);
         if (is_null($product_price)) {
             return [
@@ -150,10 +168,45 @@ class ProductPriceHelper
             ];
         }
 
+        $product_accessory_prices = null;
+        foreach ($product_price->product_accessory_price as $product_accessory_price) {
+            $product_accessory_prices[] = [
+                'product_accessory_id' => $product_accessory_price->product_accessory_id,
+                'type' => $product_accessory_price->product_accessory->model_type == Cloth::class ? 'cloth' : 'accessory',
+                'name' => $product_accessory_price->product_accessory->model->name,
+                'price' => $product_accessory_price->price
+            ];
+        }
+
+        $result = [
+            'id' => $product_price->id,
+            'cutter_place' => is_null($product_price->cutter_place_id) ? null : [
+                'id' => $product_price->cutter_place_id,
+                'name' => $product_price->cutter_place->name,
+            ],
+            'cutter_person' => is_null($product_price->cutter_person_id) ? null : [
+                'id' => $product_price->cutter_person->code,
+                'name' => $product_price->cutter_person->name . ' ' . $product_price->cutter_person->family,
+            ],
+            'total_count' => $product_price->total_count,
+            'serial_count' => $product_price->serial_count,
+            'sewing_date' => $product_price->sewing_date,
+            'sewing_price' => $product_price->sewing_price,
+            'cutting_price' => $product_price->cutting_price,
+            'cutting_date' => $product_price->cutting_date,
+            'packing_price' => $product_price->packing_price,
+            'sending_price' => $product_price->sending_price,
+            'sewing_final_price' => $product_price->sewing_final_price,
+            'sale_profit_price' => $product_price->sale_profit_price,
+            'final_price' => $product_price->final_price,
+            'is_enable' => $product_price->is_enable,
+            'product_accessory_prices' => $product_accessory_prices,
+        ];
+
         return [
             'result' => true,
             'message' => __('messages.success'),
-            'data' => $product_price
+            'data' => $result
         ];
     }
 
