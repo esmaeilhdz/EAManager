@@ -15,7 +15,7 @@ class ProductPrice extends Model
     {
         return Attribute::get(
             get: fn ($value) => [
-                'jalali' => jdate($value)->format('Y/m/d H:i'),
+                'jalali' => jdate($value)->format('Y/m/d'),
                 'gregorian' => $value
             ],
         );
@@ -25,7 +25,7 @@ class ProductPrice extends Model
     {
         return Attribute::get(
             get: fn ($value) => [
-                'jalali' => jdate($value)->format('Y/m/d H:i'),
+                'jalali' => jdate($value)->format('Y/m/d'),
                 'gregorian' => $value
             ],
         );
