@@ -171,6 +171,7 @@ class FactorRepository implements Interfaces\iFactor
             $factor->has_return_permission = $inputs['has_return_permission'];
             $factor->is_credit = $inputs['is_credit'];
             $factor->settlement_date = $inputs['settlement_date'];
+            $factor->returned_at = $inputs['returned_at'];
             $factor->description = $inputs['description'];
             $factor->final_price = $inputs['final_price'];
 
@@ -231,10 +232,7 @@ class FactorRepository implements Interfaces\iFactor
 
             return [
                 'result' => $result,
-                'data' => $result ? [
-                    'code' => $factor->code,
-                    'id' => $factor->id
-                ] : null
+                'data' => $result ? $factor : null
             ];
 
         } catch (\Exception $e) {
