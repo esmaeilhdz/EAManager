@@ -21,18 +21,21 @@ class FactorPaymentHelper
 
     // attributes
     public iFactor $factor_interface;
+    public iCustomer $customer_interface;
     public iFactorProduct $factor_product_interface;
     public iFactorPayment $factor_payment_interface;
     public iRequestProductWarehouse $request_product_interface;
 
     public function __construct(
         iFactor                  $factor_interface,
+        iCustomer                $customer_interface,
         iFactorProduct           $factor_product_interface,
         iFactorPayment           $factor_payment_interface,
         iRequestProductWarehouse $request_product_interface,
     )
     {
         $this->factor_interface = $factor_interface;
+        $this->customer_interface = $customer_interface;
         $this->factor_product_interface = $factor_product_interface;
         $this->factor_payment_interface = $factor_payment_interface;
         $this->request_product_interface = $request_product_interface;
@@ -222,7 +225,7 @@ class FactorPaymentHelper
 
         // مشتری
         $select = ['id'];
-        $customer = $this->customer_interface->getCustomerByCode($inputs['customer_code'], $select);
+        $customer = $this->customer_interface->getCustomerByCode($inputs['customer_code'], $user, $select);
         if (is_null($customer)) {
             return [
                 'result' => false,
@@ -347,8 +350,9 @@ class FactorPaymentHelper
      */
     public function addFactor($inputs): array
     {
+        $user = Auth::user();
         $select = ['id'];
-        $customer = $this->customer_interface->getCustomerByCode($inputs['customer_code'], $select);
+        $customer = $this->customer_interface->getCustomerByCode($inputs['customer_code'], $user, $select);
         if (is_null($customer)) {
             return [
                 'result' => false,
@@ -358,7 +362,6 @@ class FactorPaymentHelper
         }
         $inputs['customer_id'] = $customer->id;
 
-        $user = Auth::user();
         DB::beginTransaction();
         $res_factor = $this->factor_interface->addFactor($inputs, $user);
         $result[] = $res_factor['result'];

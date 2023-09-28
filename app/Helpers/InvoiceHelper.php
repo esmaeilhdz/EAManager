@@ -139,8 +139,9 @@ class InvoiceHelper
         }
 
         if (!empty($inputs['customer_code'])) {
+            $user = Auth::user();
             $select = ['id'];
-            $customer = $this->customer_interface->getCustomerByCode($inputs['customer_code'], $select);
+            $customer = $this->customer_interface->getCustomerByCode($inputs['customer_code'], $user, $select);
             if (is_null($customer)) {
                 return [
                     'result' => false,
@@ -187,9 +188,10 @@ class InvoiceHelper
      */
     public function addInvoice($inputs): array
     {
+        $user = Auth::user();
         if (!empty($inputs['customer_code'])) {
             $select = ['id'];
-            $customer = $this->customer_interface->getCustomerByCode($inputs['customer_code'], $select);
+            $customer = $this->customer_interface->getCustomerByCode($inputs['customer_code'], $user, $select);
             if (is_null($customer)) {
                 return [
                     'result' => false,
@@ -200,7 +202,6 @@ class InvoiceHelper
             $inputs['customer_id'] = $customer->id;
         }
 
-        $user = Auth::user();
         DB::beginTransaction();
         $res_invoice = $this->invoice_interface->addInvoice($inputs, $user);
         $result[] = $res_invoice['result'];

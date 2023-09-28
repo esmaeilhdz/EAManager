@@ -30,10 +30,11 @@ class CustomerHelper
      */
     public function getCustomers($inputs): array
     {
+        $user = Auth::user();
         $inputs['order_by'] = $this->orderBy($inputs, 'customers');
         $inputs['per_page'] = $this->calculatePerPage($inputs);
 
-        $customers = $this->customer_interface->getCustomers($inputs);
+        $customers = $this->customer_interface->getCustomers($inputs, $user);
 
         $customers->transform(function ($item) {
             return [
@@ -66,6 +67,7 @@ class CustomerHelper
      */
     public function getCustomerDetail($code): array
     {
+        $user = Auth::user();
         $select = ['id', 'code', 'parent_id', 'name', 'mobile', 'score'];
         $relation = [
             'parent:id,name',
@@ -73,7 +75,7 @@ class CustomerHelper
             'address.province:id,name',
             'address.city:id,name',
         ];
-        $customer = $this->customer_interface->getCustomerByCode($code, $select, $relation);
+        $customer = $this->customer_interface->getCustomerByCode($code, $user, $select, $relation);
         if (is_null($customer)) {
             return [
                 'result' => false,
@@ -108,7 +110,8 @@ class CustomerHelper
      */
     public function editCustomer($inputs): array
     {
-        $customer = $this->customer_interface->getCustomerByCode($inputs['code']);
+        $user = Auth::user();
+        $customer = $this->customer_interface->getCustomerByCode($inputs['code'], $user);
         if (is_null($customer)) {
             return [
                 'result' => false,
@@ -188,7 +191,8 @@ class CustomerHelper
      */
     public function deleteCustomer($code): array
     {
-        $customer = $this->customer_interface->getCustomerByCode($code);
+        $user = Auth::user();
+        $customer = $this->customer_interface->getCustomerByCode($code, $user);
         if (is_null($customer)) {
             return [
                 'result' => false,

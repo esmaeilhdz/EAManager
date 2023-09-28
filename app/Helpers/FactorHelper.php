@@ -228,7 +228,7 @@ class FactorHelper
 
         // مشتری
         $select = ['id'];
-        $customer = $this->customer_interface->getCustomerByCode($inputs['customer_code'], $select);
+        $customer = $this->customer_interface->getCustomerByCode($inputs['customer_code'], $user, $select);
         if (is_null($customer)) {
             return [
                 'result' => false,
@@ -320,7 +320,7 @@ class FactorHelper
         $user = Auth::user();
 
         $select = ['id'];
-        $customer = $this->customer_interface->getCustomerByCode($inputs['customer_code'], $select);
+        $customer = $this->customer_interface->getCustomerByCode($inputs['customer_code'], $user, $select);
         if (is_null($customer)) {
             return [
                 'result' => false,

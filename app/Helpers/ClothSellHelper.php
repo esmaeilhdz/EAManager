@@ -137,7 +137,7 @@ class ClothSellHelper
         $inputs['cloth_id'] = $cloth->id;
         $params['cloth_id'] = $cloth->id;
 
-        $customer = $this->customer_interface->getCustomerByCode($inputs['customer_code'], ['id']);
+        $customer = $this->customer_interface->getCustomerByCode($inputs['customer_code'], $user, ['id']);
         if (is_null($customer)) {
             return [
                 'result' => false,
@@ -235,7 +235,7 @@ class ClothSellHelper
             ];
         }
 
-        $customer = $this->customer_interface->getCustomerByCode($inputs['customer_code'], ['id']);
+        $customer = $this->customer_interface->getCustomerByCode($inputs['customer_code'], $user, ['id']);
         if (is_null($customer)) {
             return [
                 'result' => false,
