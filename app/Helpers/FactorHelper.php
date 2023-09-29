@@ -9,6 +9,7 @@ use App\Repositories\Interfaces\iFactorPayment;
 use App\Repositories\Interfaces\iFactorProduct;
 use App\Repositories\Interfaces\iProductWarehouse;
 use App\Repositories\Interfaces\iRequestProductWarehouse;
+use App\Service\Factor\CheckFactor;
 use App\Traits\Common;
 use App\Traits\FactorTrait;
 use App\Traits\RequestProductWarehouseTrait;
@@ -18,13 +19,6 @@ use Illuminate\Support\Facades\DB;
 class FactorHelper
 {
     use Common, RequestProductWarehouseTrait, FactorTrait;
-
-    // فاکتور ناقص
-    const InCompleteFactor = 1;
-    // فاکتور تایید شده
-    const ConfirmFactor = 2;
-    // فاکتور مرجوعی
-    const ReturnedFactor = 3;
 
     // attributes
     public iFactor $factor_interface;
@@ -237,6 +231,12 @@ class FactorHelper
             ];
         }
 
+        $check_factor = new CheckFactor();
+        $result = $check_factor->CheckForChangeProduct($factor);
+        if (!$result['result']) {
+            return $result;
+        }
+
         // مشتری
         $select = ['id'];
         $customer = $this->customer_interface->getCustomerByCode($inputs['customer_code'], $user, $select);
@@ -377,10 +377,16 @@ class FactorHelper
             ];
         }
 
+        $check_factor = new CheckFactor();
+        $result = $check_factor->CheckForChangeProduct($factor);
+        if (!$result['result']) {
+            return $result;
+        }
+
         DB::beginTransaction();
         $result[] = $this->factor_interface->deleteFactor($factor);
-        $result[] = (bool)$this->factor_product_interface->deleteFactorProduct($factor->id);
-        $result[] = (bool)$this->factor_payment_interface->deleteFactorPayment($factor->id);
+        $result[] = (bool)$this->factor_product_interface->deleteFactorProducts($factor->id);
+        $result[] = (bool)$this->factor_payment_interface->deleteFactorPayments($factor->id);
 
         if (!in_array(false, $result)) {
             $flag = true;
