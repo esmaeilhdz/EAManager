@@ -12,6 +12,13 @@ class FactorRepository implements Interfaces\iFactor
 {
     use Common;
 
+    // فاکتور ناقص
+    const InCompleteFactor = 1;
+    // فاکتور تایید شده
+    const ConfirmFactor = 2;
+    // فاکتور مرجوعی
+    const ReturnedFactor = 3;
+
     /**
      * لیست فاکتورها
      * @param $inputs
@@ -194,7 +201,7 @@ class FactorRepository implements Interfaces\iFactor
         try {
             $factor->status = $inputs['status'];
             // مرجوع فاکتور
-            if ($inputs['status'] == 3) {
+            if ($inputs['status'] == self::ReturnedFactor) {
                 $factor->returned_at = now();
             }
 
