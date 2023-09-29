@@ -6,6 +6,7 @@ use App\Repositories\Interfaces\iCustomer;
 use App\Repositories\Interfaces\iFactor;
 use App\Repositories\Interfaces\iFactorPayment;
 use App\Repositories\Interfaces\iRequestProductWarehouse;
+use App\Service\Factor\CheckFactor;
 use App\Traits\Common;
 use App\Traits\FactorTrait;
 use App\Traits\RequestProductWarehouseTrait;
@@ -14,13 +15,6 @@ use Illuminate\Support\Facades\Auth;
 class FactorPaymentHelper
 {
     use Common, RequestProductWarehouseTrait, FactorTrait;
-
-    // فاکتور ناقص
-    const InCompleteFactor = 1;
-    // فاکتور تایید شده
-    const ConfirmFactor = 2;
-    // فاکتور مرجوعی
-    const ReturnedFactor = 3;
 
     // attributes
     public iFactor $factor_interface;
@@ -132,22 +126,10 @@ class FactorPaymentHelper
             ];
         }
 
-        // برای افزودن پرداخت به فاکتور، فاکتور نباید تایید نهایی شده باشد.
-        if ($factor->status == self::ConfirmFactor) {
-            return [
-                'result' => false,
-                'message' => __('messages.factor_already_confirmed_cannot_add_payment'),
-                'data' => null
-            ];
-        }
-
-        // برای افزودن پرداخت  به فاکتور، فاکتور نباید مرجوع شده باشد.
-        if ($factor->status == self::ReturnedFactor) {
-            return [
-                'result' => false,
-                'message' => __('messages.factor_already_returned_cannot_add_payment'),
-                'data' => null
-            ];
+        $check_factor = new CheckFactor();
+        $result = $check_factor->CheckForChangePayment($factor);
+        if (!$result['result']) {
+            return $result;
         }
 
         $res_factor = $this->factor_payment_interface->addFactorPayment($inputs, $factor->id, $user);
@@ -177,22 +159,10 @@ class FactorPaymentHelper
             ];
         }
 
-        // برای افزودن پرداخت به فاکتور، فاکتور نباید تایید نهایی شده باشد.
-        if ($factor->status == self::ConfirmFactor) {
-            return [
-                'result' => false,
-                'message' => __('messages.factor_already_confirmed_cannot_add_payment'),
-                'data' => null
-            ];
-        }
-
-        // برای افزودن پرداخت به فاکتور، فاکتور نباید مرجوع شده باشد.
-        if ($factor->status == self::ReturnedFactor) {
-            return [
-                'result' => false,
-                'message' => __('messages.factor_already_returned_cannot_add_payment'),
-                'data' => null
-            ];
+        $check_factor = new CheckFactor();
+        $result = $check_factor->CheckForChangePayment($factor);
+        if (!$result['result']) {
+            return $result;
         }
 
         $result = (bool)$this->factor_payment_interface->deleteFactorPayments($factor->id);
@@ -221,22 +191,10 @@ class FactorPaymentHelper
             ];
         }
 
-        // برای افزودن پرداخت به فاکتور، فاکتور نباید تایید نهایی شده باشد.
-        if ($factor->status == self::ConfirmFactor) {
-            return [
-                'result' => false,
-                'message' => __('messages.factor_already_confirmed_cannot_add_payment'),
-                'data' => null
-            ];
-        }
-
-        // برای افزودن پرداخت به فاکتور، فاکتور نباید مرجوع شده باشد.
-        if ($factor->status == self::ReturnedFactor) {
-            return [
-                'result' => false,
-                'message' => __('messages.factor_already_returned_cannot_add_payment'),
-                'data' => null
-            ];
+        $check_factor = new CheckFactor();
+        $result = $check_factor->CheckForChangePayment($factor);
+        if (!$result['result']) {
+            return $result;
         }
 
         $result = (bool) $this->factor_payment_interface->deleteFactorPayment($factor->id, $inputs['id']);

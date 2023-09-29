@@ -9,6 +9,7 @@ use App\Repositories\Interfaces\iFactorPayment;
 use App\Repositories\Interfaces\iFactorProduct;
 use App\Repositories\Interfaces\iProductWarehouse;
 use App\Repositories\Interfaces\iRequestProductWarehouse;
+use App\Service\Factor\CheckFactor;
 use App\Traits\Common;
 use App\Traits\FactorTrait;
 use App\Traits\RequestProductWarehouseTrait;
@@ -18,13 +19,6 @@ use Illuminate\Support\Facades\DB;
 class FactorProductHelper
 {
     use Common, RequestProductWarehouseTrait, FactorTrait;
-
-    // فاکتور ناقص
-    const InCompleteFactor = 1;
-    // فاکتور تایید شده
-    const ConfirmFactor = 2;
-    // فاکتور مرجوعی
-    const ReturnedFactor = 3;
 
     // attributes
     public iFactor $factor_interface;
@@ -148,22 +142,10 @@ class FactorProductHelper
             ];
         }
 
-        // برای افزودن کالا به فاکتور، فاکتور نباید تایید نهایی شده باشد.
-        if ($factor->status == self::ConfirmFactor) {
-            return [
-                'result' => false,
-                'message' => __('messages.factor_already_confirmed_cannot_add_product'),
-                'data' => null
-            ];
-        }
-
-        // برای افزودن کالا به فاکتور، فاکتور نباید مرجوع شده باشد.
-        if ($factor->status == self::ReturnedFactor) {
-            return [
-                'result' => false,
-                'message' => __('messages.factor_already_returned_cannot_add_product'),
-                'data' => null
-            ];
+        $check_factor = new CheckFactor();
+        $result = $check_factor->CheckForChangeProduct($factor);
+        if (!$result['result']) {
+            return $result;
         }
 
         $product_warehouse = $this->product_warehouse_interface->getById($inputs['product_warehouse_id'], ['id']);
@@ -202,6 +184,12 @@ class FactorProductHelper
             ];
         }
 
+        $check_factor = new CheckFactor();
+        $result = $check_factor->CheckForChangeProduct($factor);
+        if (!$result['result']) {
+            return $result;
+        }
+
         $result = (bool)$this->factor_product_interface->deleteFactorProducts($factor->id);
 
         return [
@@ -226,6 +214,12 @@ class FactorProductHelper
                 'message' => __('messages.record_not_found'),
                 'data' => null
             ];
+        }
+
+        $check_factor = new CheckFactor();
+        $result = $check_factor->CheckForChangeProduct($factor);
+        if (!$result['result']) {
+            return $result;
         }
 
         $result = (bool) $this->factor_product_interface->deleteFactorProduct($factor->id, $inputs['id']);
