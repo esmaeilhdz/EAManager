@@ -24,6 +24,7 @@ class FactorRepository implements Interfaces\iFactor
             return Factor::query()
                 ->with([
                     'customer:id,name,mobile',
+                    'factor_status:enum_id,enum_caption',
                     'creator:id,person_id',
                     'creator.person:id,name,family'
                 ])
@@ -222,7 +223,7 @@ class FactorRepository implements Interfaces\iFactor
             $factor->factor_no = 'FF-'.rand(1111111,9999999);
             $factor->has_return_permission = $inputs['has_return_permission'];
             $factor->is_credit = $inputs['is_credit'];
-            $factor->status = $inputs['status'];
+//            $factor->status = $inputs['status'];
             $factor->settlement_date = $inputs['settlement_date'];
             $factor->description = $inputs['description'] ?? null;
             $factor->final_price = $inputs['final_price'];

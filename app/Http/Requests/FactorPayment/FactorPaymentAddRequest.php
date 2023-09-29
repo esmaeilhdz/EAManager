@@ -38,7 +38,6 @@ class FactorPaymentAddRequest extends FormRequest
     {
         return [
             'code' => 'required|string|size:32',
-            'product_model_id' => 'required|numeric|min:1',
             'product_warehouse_id' => 'required|numeric|min:1',
             'free_size_count' => 'required|numeric|min:1',
             'size1_count' => 'required|numeric|min:1',

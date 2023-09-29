@@ -19,6 +19,13 @@ class FactorHelper
 {
     use Common, RequestProductWarehouseTrait, FactorTrait;
 
+    // فاکتور ناقص
+    const InCompleteFactor = 1;
+    // فاکتور تایید شده
+    const ConfirmFactor = 2;
+    // فاکتور مرجوعی
+    const ReturnedFactor = 3;
+
     // attributes
     public iFactor $factor_interface;
     public iCustomer $customer_interface;
@@ -77,7 +84,10 @@ class FactorHelper
                 'settlement_date' => $item->settlement_date,
                 'has_return_permission' => $item->has_return_permission,
                 'is_credit' => $item->is_credit,
-                'status' => $item->status,
+                'status' => [
+                    'id' => $item->status,
+                    'caption' => $item->factor_status->enum_caption
+                ],
                 'final_price' => $item->final_price,
                 'creator' => is_null($item->creator->person) ? null : [
                     'person' => [
@@ -158,8 +168,9 @@ class FactorHelper
         $relation = [
             'customer:id,name,mobile,score',
             'factor_products:factor_id,product_warehouse_id,free_size_count,size1_count,size2_count,size3_count,size4_count,price',
-            'factor_products.product_warehouse:id,product_id',
+            'factor_products.product_warehouse:id,product_id,product_model_id',
             'factor_products.product_warehouse.product:id,name',
+            'factor_products.product_warehouse.product_model:id,product_id,name',
             'factor_payments:factor_id,payment_type_id,description,price',
             'factor_payments.payment_type:enum_id,enum_caption',
         ];
@@ -181,7 +192,7 @@ class FactorHelper
                 'size3_count' => $factor_product->size3_count,
                 'size4_count' => $factor_product->size4_count,
                 'price' => $factor_product->price,
-                'product' => $factor_product->product_warehouse->product->name
+                'product' => $factor_product->product_warehouse->product->name . ' - ' . $factor_product->product_warehouse->product_model->name
             ];
         }
 
@@ -263,6 +274,14 @@ class FactorHelper
             return [
                 'result' => false,
                 'message' => __('messages.record_not_found'),
+                'data' => null
+            ];
+        }
+
+        if ($factor->status == self::ConfirmFactor && $inputs['status'] == self::ConfirmFactor) {
+            return [
+                'result' => false,
+                'message' => __('messages.factor_already_confirmed'),
                 'data' => null
             ];
         }

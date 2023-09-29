@@ -76,7 +76,7 @@ class Factor extends Model
         return $this->hasMany(FactorPayment::class, 'factor_id', 'id');
     }
 
-    public function status()
+    public function factor_status()
     {
         return $this->hasOne(Enumeration::class, 'enum_id', 'status')
             ->where('category_name', 'factor_status');

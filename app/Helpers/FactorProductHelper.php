@@ -19,6 +19,13 @@ class FactorProductHelper
 {
     use Common, RequestProductWarehouseTrait, FactorTrait;
 
+    // فاکتور ناقص
+    const InCompleteFactor = 1;
+    // فاکتور تایید شده
+    const ConfirmFactor = 2;
+    // فاکتور مرجوعی
+    const ReturnedFactor = 3;
+
     // attributes
     public iFactor $factor_interface;
     public iFactorProduct $factor_product_interface;
@@ -61,6 +68,7 @@ class FactorProductHelper
             'product_warehouse:id,place_id,product_id',
             'product_warehouse.place:id,name',
             'product_warehouse.product:id,code,name',
+            'product_warehouse.product.factor_model:id,factor_id,name',
         ];
         $factor_products = $this->factor_product_interface->getByFactorId($factor->id, $select, $relation);
 
@@ -69,7 +77,7 @@ class FactorProductHelper
                 'id' => $item->id,
                 'product' => [
                     'code' => $item->product_warehouse->product->code,
-                    'name' => $item->product_warehouse->product->name,
+                    'name' => $item->product_warehouse->product->name . ' - ' . $item->product_warehouse->product->product_model->name,
                 ],
                 'place' => [
                     'id' => $item->product_warehouse->place->id,
@@ -136,6 +144,33 @@ class FactorProductHelper
             return [
                 'result' => false,
                 'message' => __('messages.record_not_found'),
+                'data' => null
+            ];
+        }
+
+        // برای افزودن کالا به فاکتور، فاکتور نباید تایید نهایی شده باشد.
+        if ($factor->status == self::ConfirmFactor) {
+            return [
+                'result' => false,
+                'message' => __('messages.factor_already_confirmed_cannot_add_product'),
+                'data' => null
+            ];
+        }
+
+        // برای افزودن کالا به فاکتور، فاکتور نباید مرجوع شده باشد.
+        if ($factor->status == self::ReturnedFactor) {
+            return [
+                'result' => false,
+                'message' => __('messages.factor_already_returned_cannot_add_product'),
+                'data' => null
+            ];
+        }
+
+        $product_warehouse = $this->product_warehouse_interface->getById($inputs['product_warehouse_id'], ['id']);
+        if (is_null($product_warehouse)) {
+            return [
+                'result' => false,
+                'message' => __('messages.product_warehouse_not_found'),
                 'data' => null
             ];
         }

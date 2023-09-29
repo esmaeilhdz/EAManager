@@ -51,4 +51,9 @@ return [
     'product_warehouse_already_exists' => 'انبار کالای مورد نظر وجود دارد. می توانید مقدار قبلی را ویرایش کنید.',
     'cloth_warehouse_not_found' => 'انبار پارچه یافت نشد.',
     'product_accessory_price_not_found' => 'قیمت خرج کار یافت نشد.',
+    'factor_already_confirmed' => 'ابن فاکتور قبلا تایید شده است.',
+    'factor_already_confirmed_cannot_add_product' => 'این فاکتور قبلا تایید شده است. شما قادر به افزودن کالا به فاکتور نیستید.',
+    'factor_already_confirmed_cannot_add_payment' => 'این فاکتور قبلا تایید شده است. شما قادر به افزودن پرداخت به فاکتور نیستید.',
+    'factor_already_returned_cannot_add_product' => 'این فاکتور قبلا مرجوع شده است. شما قادر به افزودن کالا به فاکتور نیستید.',
+    'factor_already_returned_cannot_add_payment' => 'این فاکتور قبلا مرجوع شده است. شما قادر به افزودن پرداخت به فاکتور نیستید.',
 ];
