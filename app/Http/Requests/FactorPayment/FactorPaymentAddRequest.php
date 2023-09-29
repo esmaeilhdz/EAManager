@@ -38,13 +38,9 @@ class FactorPaymentAddRequest extends FormRequest
     {
         return [
             'code' => 'required|string|size:32',
-            'product_warehouse_id' => 'required|numeric|min:1',
-            'free_size_count' => 'required|numeric|min:1',
-            'size1_count' => 'required|numeric|min:1',
-            'size2_count' => 'required|numeric|min:1',
-            'size3_count' => 'required|numeric|min:1',
-            'size4_count' => 'required|numeric|min:1',
+            'payment_type_id' => 'required|numeric|min:1',
             'price' => 'required|numeric|min:1',
+            'description' => 'nullable|string',
         ];
     }
 }
