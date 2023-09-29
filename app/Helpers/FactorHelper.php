@@ -20,6 +20,13 @@ class FactorHelper
 {
     use Common, RequestProductWarehouseTrait, FactorTrait;
 
+    // فاکتور ناقص
+    const InCompleteFactor = 1;
+    // فاکتور تایید شده
+    const ConfirmFactor = 2;
+    // فاکتور مرجوعی
+    const ReturnedFactor = 3;
+
     // attributes
     public iFactor $factor_interface;
     public iCustomer $customer_interface;
