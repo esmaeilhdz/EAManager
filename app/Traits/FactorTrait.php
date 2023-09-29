@@ -2,8 +2,25 @@
 
 namespace App\Traits;
 
+/*interface Definition
+{
+    // فاکتور ناقص
+    const InCompleteFactor = 1;
+    // فاکتور تایید شده
+    const ConfirmFactor = 2;
+    // فاکتور مرجوعی
+    const ReturnedFactor = 3;
+}*/
+
 trait FactorTrait
 {
+    // فاکتور ناقص
+    static int $inCompleteFactor = 1;
+    // فاکتور تایید شده
+    static int $confirmFactor = 2;
+    // فاکتور مرجوعی
+    static int $returnedFactor = 3;
+
     public function changeStatusFactorHelper($status, $factor): array
     {
         $params = null;
@@ -65,5 +82,69 @@ trait FactorTrait
         $inputs['size4_count'] = $product_warehouse->size4_count - $product_item['size4_count'];
 
         return $inputs;
+    }
+
+    /**
+     * بررسی برای تغییر کالا
+     * @param $factor
+     * @return array
+     */
+    public function CheckForChangeProduct($factor): array
+    {
+        $result = [
+            'result' => true,
+            'message' => null,
+            'data' => null
+        ];
+
+        if ($factor->status == self::$confirmFactor) {
+            $result = [
+                'result' => false,
+                'message' => __('messages.factor_already_confirmed_cannot_do_operation'),
+                'data' => null
+            ];
+        }
+
+        if ($factor->status == self::$returnedFactor) {
+            $result = [
+                'result' => false,
+                'message' => __('messages.factor_already_returned_cannot_do_operation'),
+                'data' => null
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * بررسی برای تغییر پرداخت
+     * @param $factor
+     * @return array
+     */
+    public function CheckForChangePayment($factor): array
+    {
+        $result = [
+            'result' => true,
+            'message' => null,
+            'data' => null
+        ];
+
+        if ($factor->status == self::$confirmFactor) {
+            $result = [
+                'result' => false,
+                'message' => __('messages.factor_already_confirmed_cannot_do_operation'),
+                'data' => null
+            ];
+        }
+
+        if ($factor->status == self::$returnedFactor) {
+            $result = [
+                'result' => false,
+                'message' => __('messages.factor_already_returned_cannot_do_operation'),
+                'data' => null
+            ];
+        }
+
+        return $result;
     }
 }

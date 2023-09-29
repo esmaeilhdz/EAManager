@@ -6,7 +6,6 @@ use App\Repositories\Interfaces\iCustomer;
 use App\Repositories\Interfaces\iFactor;
 use App\Repositories\Interfaces\iFactorPayment;
 use App\Repositories\Interfaces\iRequestProductWarehouse;
-use App\Service\Factor\CheckFactor;
 use App\Traits\Common;
 use App\Traits\FactorTrait;
 use App\Traits\RequestProductWarehouseTrait;
@@ -126,8 +125,7 @@ class FactorPaymentHelper
             ];
         }
 
-        $check_factor = new CheckFactor();
-        $result = $check_factor->CheckForChangePayment($factor);
+        $result = $this->CheckForChangePayment($factor);
         if (!$result['result']) {
             return $result;
         }
@@ -159,8 +157,7 @@ class FactorPaymentHelper
             ];
         }
 
-        $check_factor = new CheckFactor();
-        $result = $check_factor->CheckForChangePayment($factor);
+        $result = $this->CheckForChangePayment($factor);
         if (!$result['result']) {
             return $result;
         }
@@ -191,8 +188,7 @@ class FactorPaymentHelper
             ];
         }
 
-        $check_factor = new CheckFactor();
-        $result = $check_factor->CheckForChangePayment($factor);
+        $result = $this->CheckForChangePayment($factor);
         if (!$result['result']) {
             return $result;
         }

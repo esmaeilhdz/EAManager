@@ -2,14 +2,12 @@
 
 namespace App\Helpers;
 
-use App\Exceptions\ApiException;
 use App\Repositories\Interfaces\iCustomer;
 use App\Repositories\Interfaces\iFactor;
 use App\Repositories\Interfaces\iFactorPayment;
 use App\Repositories\Interfaces\iFactorProduct;
 use App\Repositories\Interfaces\iProductWarehouse;
 use App\Repositories\Interfaces\iRequestProductWarehouse;
-use App\Service\Factor\CheckFactor;
 use App\Traits\Common;
 use App\Traits\FactorTrait;
 use App\Traits\RequestProductWarehouseTrait;
@@ -238,8 +236,7 @@ class FactorHelper
             ];
         }
 
-        $check_factor = new CheckFactor();
-        $result = $check_factor->CheckForChangeProduct($factor);
+        $result = $this->CheckForChangeProduct($factor);
         if (!$result['result']) {
             return $result;
         }
@@ -384,8 +381,7 @@ class FactorHelper
             ];
         }
 
-        $check_factor = new CheckFactor();
-        $result = $check_factor->CheckForChangeProduct($factor);
+        $result = $this->CheckForChangeProduct($factor);
         if (!$result['result']) {
             return $result;
         }
