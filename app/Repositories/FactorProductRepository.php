@@ -33,7 +33,7 @@ class FactorProductRepository implements Interfaces\iFactorProduct
         }
     }
 
-    public function getByFactorId($factor_id, $select = [], $relation = [])
+    public function getByFactorId($factor_id, $inputs, $select = [], $relation = [])
     {
         try {
             $factor_product = FactorProduct::where('factor_id', $factor_id);
@@ -46,7 +46,8 @@ class FactorProductRepository implements Interfaces\iFactorProduct
                 $factor_product = $factor_product->with($relation);
             }
 
-            return $factor_product->get();
+            return $factor_product->orderByDesc('id')
+                ->paginate($inputs['per_page']);
         } catch (\Exception $e) {
             throw new ApiException($e);
         }

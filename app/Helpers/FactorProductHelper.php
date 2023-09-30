@@ -59,7 +59,7 @@ class FactorProductHelper
             'product_warehouse.product:id,code,name',
             'product_warehouse.product_model:id,product_id,name',
         ];
-        $factor_products = $this->factor_product_interface->getByFactorId($factor->id, $select, $relation);
+        $factor_products = $this->factor_product_interface->getByFactorId($factor->id, $inputs, $select, $relation);
 
         $factor_products->transform(function ($item) {
             return [
