@@ -58,7 +58,7 @@ class FactorPaymentHelper
         $relation = [
             'payment_type:enum_id,enum_caption'
         ];
-        $factor_payments = $this->factor_payment_interface->getByFactorId($factor->id, $select, $relation);
+        $factor_payments = $this->factor_payment_interface->getByFactorId($factor->id, $inputs, $select, $relation);
 
         $factor_payments->transform(function ($item) {
             return [

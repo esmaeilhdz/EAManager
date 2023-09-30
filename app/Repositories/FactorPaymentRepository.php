@@ -30,7 +30,7 @@ class FactorPaymentRepository implements Interfaces\iFactorPayment
         }
     }
 
-    public function getByFactorId($factor_id, $select = [], $relation = [])
+    public function getByFactorId($factor_id, $inputs, $select = [], $relation = [])
     {
         try {
             $factor_payment = FactorPayment::where('factor_id', $factor_id);
@@ -43,7 +43,8 @@ class FactorPaymentRepository implements Interfaces\iFactorPayment
                 $factor_payment = $factor_payment->with($relation);
             }
 
-            return $factor_payment->get();
+            return $factor_payment->orderByDesc('id')
+                ->paginate($inputs['per_page']);
         } catch (\Exception $e) {
             throw new ApiException($e);
         }

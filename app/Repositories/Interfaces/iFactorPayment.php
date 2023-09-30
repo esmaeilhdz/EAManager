@@ -6,7 +6,7 @@ interface iFactorPayment
 {
     public function getById($factor_id, $id, $select = [], $relation = []);
 
-    public function getByFactorId($factor_id, $select = [], $relation = []);
+    public function getByFactorId($factor_id, $inputs, $select = [], $relation = []);
 
     public function editFactorPayment($factor_payment, $inputs);
 
