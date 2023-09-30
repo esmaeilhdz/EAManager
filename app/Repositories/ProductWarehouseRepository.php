@@ -232,10 +232,17 @@ class ProductWarehouseRepository implements Interfaces\iProductWarehouse
                     'product_model:id,name',
                     'place:id,name',
                 ])
-                ->whereHas('product', function ($q) use ($company_id, $inputs) {
-                    $q->where('company_id', $company_id);
-                    $q->when(isset($inputs['search_txt']), function ($q2) use ($inputs) {
-                        $q2->where('name', 'like', '%' . $inputs['search_txt'] . '%');
+                ->where(function ($q) use ($company_id, $inputs) {
+                    $q->whereHas('product', function ($q2) use ($company_id, $inputs) {
+                        $q2->where('company_id', $company_id);
+                        $q2->when(isset($inputs['search_txt']), function ($q3) use ($inputs) {
+                            $q3->where('name', 'like', '%' . $inputs['search_txt'] . '%');
+                        });
+                    })
+                    ->orWhereHas('product_model', function ($q3) use ($company_id, $inputs) {
+                        $q3->when(isset($inputs['search_txt']), function ($q4) use ($inputs) {
+                            $q4->where('name', 'like', '%' . $inputs['search_txt'] . '%');
+                        });
                     });
                 })
                 ->whereHas('product_model', function ($q) {
