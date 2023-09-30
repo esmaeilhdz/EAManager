@@ -42,7 +42,6 @@ class FactorEditRequest extends FormRequest
             'factor_no' => 'required|string',
             'has_return_permission' => 'required|numeric:in:0,1',
             'is_credit' => 'required|numeric:in:0,1',
-            'status' => 'required|numeric:in:1,2,3',
             'settlement_date' => 'required|date',
             'returned_at' => 'nullable|date',
             'final_price' => 'required|numeric',
