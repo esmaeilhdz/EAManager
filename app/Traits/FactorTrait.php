@@ -2,16 +2,6 @@
 
 namespace App\Traits;
 
-/*interface Definition
-{
-    // فاکتور ناقص
-    const InCompleteFactor = 1;
-    // فاکتور تایید شده
-    const ConfirmFactor = 2;
-    // فاکتور مرجوعی
-    const ReturnedFactor = 3;
-}*/
-
 trait FactorTrait
 {
     // فاکتور ناقص
@@ -20,6 +10,7 @@ trait FactorTrait
     static int $confirmFactor = 2;
     // فاکتور مرجوعی
     static int $returnedFactor = 3;
+
 
     public function changeStatusFactorHelper($status, $factor): array
     {

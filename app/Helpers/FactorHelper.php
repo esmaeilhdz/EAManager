@@ -165,7 +165,7 @@ class FactorHelper
         $user = Auth::user();
         $select = ['id', 'code', 'customer_id', 'factor_no', 'has_return_permission', 'is_credit', 'status', 'settlement_date', 'final_price'];
         $relation = [
-            'customer:id,name,mobile,score',
+            'customer:id,code,name,mobile,score',
             'factor_products:factor_id,product_warehouse_id,free_size_count,size1_count,size2_count,size3_count,size4_count,price',
             'factor_products.product_warehouse:id,product_id,product_model_id',
             'factor_products.product_warehouse.product:id,name',
