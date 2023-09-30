@@ -163,7 +163,7 @@ class FactorHelper
     public function getFactorDetail($code): array
     {
         $user = Auth::user();
-        $select = ['id', 'code', 'customer_id', 'factor_no', 'has_return_permission', 'is_credit', 'status', 'settlement_date', 'final_price', 'description'];
+        $select = ['id', 'code', 'customer_id', 'factor_no', 'has_return_permission', 'is_credit', 'status', 'settlement_date', 'returned_at', 'final_price', 'description'];
         $relation = [
             'customer:id,code,name,mobile,score',
             'factor_products:factor_id,product_warehouse_id,free_size_count,size1_count,size2_count,size3_count,size4_count,price',
@@ -181,6 +181,11 @@ class FactorHelper
                 'data' => null
             ];
         }
+
+        $factor->returned_at = is_null($factor->returned_at) ? null : [
+            'jalali' => jdate($factor->returned_at)->format('Y/m/d H:i'),
+            'gregorian' => $factor->returned_at,
+        ];
 
         $factor_products = [];
         foreach ($factor->factor_products as $factor_product) {
