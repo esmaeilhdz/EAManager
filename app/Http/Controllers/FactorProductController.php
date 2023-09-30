@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Facades\FactorProductFacade;
-use App\Http\Requests\FactorPayment\FactorPaymentAddRequest;
-use App\Http\Requests\FactorPayment\FactorPaymentDetailRequest;
+use App\Http\Requests\FactorProduct\FactorProductAddRequest;
 use App\Http\Requests\FactorProduct\FactorProductDetailRequest;
 use App\Http\Requests\FactorProduct\FactorProductListRequest;
 
@@ -26,7 +25,7 @@ class FactorProductController extends Controller
         return $this->api_response->response($result['result'], $result['message'], $result['data']);
     }
 
-    public function addFactorProduct(FactorPaymentAddRequest $request)
+    public function addFactorProduct(FactorProductAddRequest $request)
     {
         $inputs = $request->validated();
 
