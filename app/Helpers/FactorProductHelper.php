@@ -54,10 +54,10 @@ class FactorProductHelper
 
         $select = ['id', 'factor_id', 'product_warehouse_id', 'free_size_count', 'size1_count', 'size2_count', 'size3_count', 'size4_count', 'price'];
         $relation = [
-            'product_warehouse:id,place_id,product_id',
+            'product_warehouse:id,place_id,product_id,product_model_id',
             'product_warehouse.place:id,name',
             'product_warehouse.product:id,code,name',
-            'product_warehouse.product.factor_model:id,factor_id,name',
+            'product_warehouse.product_model:id,product_id,name',
         ];
         $factor_products = $this->factor_product_interface->getByFactorId($factor->id, $select, $relation);
 
@@ -66,7 +66,7 @@ class FactorProductHelper
                 'id' => $item->id,
                 'product' => [
                     'code' => $item->product_warehouse->product->code,
-                    'name' => $item->product_warehouse->product->name . ' - ' . $item->product_warehouse->product->product_model->name,
+                    'name' => $item->product_warehouse->product->name . ' - ' . $item->product_warehouse->product_model->name,
                 ],
                 'place' => [
                     'id' => $item->product_warehouse->place->id,
