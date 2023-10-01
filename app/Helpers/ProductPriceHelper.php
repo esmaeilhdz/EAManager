@@ -69,6 +69,7 @@ class ProductPriceHelper
                     'product_accessory_id' => $product_accessory_price->product_accessory_id,
                     'type' => $product_accessory_price->product_accessory->model_type == Cloth::class ? 'cloth' : 'accessory',
                     'name' => $product_accessory_price->product_accessory->model->name,
+                    'amount' => $product_accessory_price->product_accessory->amount,
                     'price' => $product_accessory_price->price
                 ];
             }
