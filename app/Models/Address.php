@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Address extends Model
 {
     use HasFactory;
-    protected $hidden = ['model_type', 'model_id', 'province_id', 'city_id'];
+    protected $hidden = ['model_type', 'model_id', 'province_id', 'city_id', 'address_kind_id'];
 
     public function address()
     {
@@ -23,5 +23,11 @@ class Address extends Model
     public function city()
     {
         return $this->hasOne(City::class, 'id', 'city_id');
+    }
+
+    public function address_kind()
+    {
+        return $this->hasOne(Enumeration::class, 'enum_id', 'address_kind_id')
+            ->where('category_name', 'address_kind');
     }
 }

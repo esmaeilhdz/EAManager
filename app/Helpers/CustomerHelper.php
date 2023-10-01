@@ -71,7 +71,8 @@ class CustomerHelper
         $select = ['id', 'code', 'parent_id', 'name', 'mobile', 'score'];
         $relation = [
             'parent:id,name',
-            'address:model_type,model_id,province_id,city_id,address',
+            'address:model_type,model_id,province_id,city_id,address_kind_id,address',
+            'address.address_kind:enum_id,enum_caption',
             'address.province:id,name',
             'address.city:id,name',
         ];
