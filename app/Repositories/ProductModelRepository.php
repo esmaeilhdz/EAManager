@@ -59,6 +59,7 @@ class ProductModelRepository implements Interfaces\iProductModel
                     $q->where('company_id', $company_id);
                 })
                 ->where('is_enable', 1)
+                ->where('product_id', $inputs['product_id'])
                 ->when(isset($inputs['search_txt']), function ($q) use ($inputs) {
                     $q->where('name', 'like', '%' . $inputs['search_txt'] . '%');
                 })

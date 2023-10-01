@@ -101,6 +101,16 @@ class ProductModelHelper
     public function getProductsModelCombo($inputs)
     {
         $user = Auth::user();
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, ['id']);
+        if (!$product) {
+            return [
+                'result' => 'false',
+                'message' => __('messages.product_not_found'),
+                'data' => null
+            ];
+        }
+
+        $inputs['product_id'] = $product->id;
         $product_models = $this->product_model_interface->getProductsModelCombo($inputs, $user);
         if (is_null($product_models)) {
             return [
