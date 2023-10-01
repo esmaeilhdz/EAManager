@@ -141,10 +141,12 @@ class ProductPriceHelper
         $inputs['product_id'] = $product->id;
         $relation = [
             'product:id,name',
+            'product_accessory:id,product_id,amount',
             'cutter_person:id,code,name,family',
             'cutter_place:id,name'
         ];
-        $select = ['id',
+        $select = [
+            'id',
             'cutter_person_id',
             'cutter_place_id',
             'total_count',
@@ -158,7 +160,8 @@ class ProductPriceHelper
             'sewing_final_price',
             'sale_profit_price',
             'final_price',
-            'is_enable'];
+            'is_enable'
+        ];
         $product_price = $this->product_price_interface->getProductPriceById($inputs, $select, $relation);
         if (is_null($product_price)) {
             return [
@@ -174,7 +177,8 @@ class ProductPriceHelper
                 'product_accessory_id' => $product_accessory_price->product_accessory_id,
                 'type' => $product_accessory_price->product_accessory->model_type == Cloth::class ? 'cloth' : 'accessory',
                 'name' => $product_accessory_price->product_accessory->model->name,
-                'price' => $product_accessory_price->price
+                'amount' => $product_accessory_price->product_accessory->amount,
+                'price' => $product_accessory_price->price,
             ];
         }
 
