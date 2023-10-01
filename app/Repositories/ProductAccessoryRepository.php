@@ -22,6 +22,7 @@ class ProductAccessoryRepository implements Interfaces\iProductAccessory
                 ->whereHas('product', function ($q) use ($company_id) {
                     $q->where('company_id', $company_id);
                 })
+                ->where('product_id', $inputs['product_id'])
                 ->orderByDesc('id')
                 ->get();
         } catch (\Exception $e) {

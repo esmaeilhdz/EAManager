@@ -41,6 +41,7 @@ class ProductRepository implements Interfaces\iProduct
                     'created_at'
                 ])
                 ->whereRaw($inputs['where']['search']['condition'], $inputs['where']['search']['params'])
+                ->orderByDesc('id')
                 ->paginate($inputs['per_page']);
 
         } catch (\Exception $e) {
