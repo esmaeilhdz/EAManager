@@ -22,6 +22,7 @@ class ProductModelRepository implements Interfaces\iProductModel
                 ->whereHas('product', function ($q) use ($company_id) {
                     $q->where('company_id', $company_id);
                 })
+                ->where('product_id', $inputs['product_id'])
                 ->orderByDesc('id')
                 ->paginate($inputs['per_page']);
         } catch (\Exception $e) {
