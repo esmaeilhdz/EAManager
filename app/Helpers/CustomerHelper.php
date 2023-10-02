@@ -138,6 +138,8 @@ class CustomerHelper
         $result[] = $this->customer_interface->editCustomer($customer, $inputs);
         $result[] = $this->address_interface->editAddress($address, $inputs);
 
+        $result = $this->prepareTransactionArray($result);
+
         if (!in_array(false, $result)) {
             $flag = true;
             DB::commit();
