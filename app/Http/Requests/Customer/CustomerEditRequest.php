@@ -40,7 +40,7 @@ class CustomerEditRequest extends FormRequest
         return [
             'code' => 'required|string|size:32',
             'name' => ['required', 'string', new MbMax(150)],
-            'parent_id' => 'nullable|numeric|min:1',
+            'parent_code' => 'nullable|string|size:32',
             'mobile' => 'required|string|starts_with:09',
             'tel' => 'nullable|string',
             'score' => 'required|numeric|min:0',
