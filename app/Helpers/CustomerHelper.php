@@ -121,6 +121,18 @@ class CustomerHelper
             ];
         }
 
+        if (!is_null($inputs['parent_code'])) {
+            $parent_customer = $this->customer_interface->getCustomerByCode($inputs['parent_code'], $user, ['id']);
+            if (is_null($parent_customer)) {
+                return [
+                    'result' => false,
+                    'message' => __('messages.moarref_customer_not_found'),
+                    'data' => null
+                ];
+            }
+            $inputs['parent_id'] = $parent_customer->id;
+        }
+
         $inputs['model_type'] = Customer::class;
         $inputs['model_id'] = $customer->id;
         $inputs['id'] = $inputs['address_id'];
