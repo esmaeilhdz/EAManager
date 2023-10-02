@@ -9,12 +9,13 @@ use App\Repositories\Interfaces\iProduct;
 use App\Repositories\Interfaces\iProductAccessory;
 use App\Repositories\Interfaces\iSalePeriod;
 use App\Traits\Common;
+use App\Traits\ProductAccessoryTrait;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ProductHelper
 {
-    use Common;
+    use Common, ProductAccessoryTrait;
 
     // attributes
     public iProduct $product_interface;
@@ -164,9 +165,15 @@ class ProductHelper
         }
 
         $inputs['cloth_id'] = $cloth->id;
+
+        $insert_product_accessories = $this->getInsertableAccessories($product->id, $user);
+        $delete_product_accessory_ids = $this->getDeleteAbleAccessoryIds($product->id, $user);
+
         DB::beginTransaction();
         $result[] = $this->product_interface->editProduct($product, $inputs);
-        $result[] = $this->product_accessory_interface->deleteProductAccessories($product->id);
+        if (count($delete_product_accessory_ids)) {
+            $result[] = $this->product_accessory_interface->deleteProductAccessoriesByIds($product->id, $delete_product_accessory_ids);
+        }
         foreach ($inputs['product_accessories'] as &$product_accessory) {
             $product_accessory['product_id'] = $product->id;
             if (!is_null($product_accessory['cloth_code'])) {

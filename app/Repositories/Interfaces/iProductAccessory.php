@@ -16,5 +16,7 @@ interface iProductAccessory
 
     public function deleteProductAccessories($product_id);
 
+    public function deleteProductAccessoriesByIds($product_id, $ids);
+
     public function deleteProductAccessory($product_accessory);
 }

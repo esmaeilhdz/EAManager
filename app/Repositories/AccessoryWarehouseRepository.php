@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Exceptions\ApiException;
 use App\Models\Accessory;
-use App\Models\AccessoryWarehouse;
+use App\Models\AccessoryWareHouse;
 use App\Traits\Common;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -24,7 +24,7 @@ class AccessoryWarehouseRepository implements Interfaces\iAccessoryWarehouse
     public function getAccessoryWarehouses($inputs): LengthAwarePaginator
     {
         try {
-            return AccessoryWarehouse::with([
+            return AccessoryWareHouse::with([
                 'creator:id,person_id',
                 'creator.person:id,name,family',
                 'place:id,name'
@@ -56,7 +56,7 @@ class AccessoryWarehouseRepository implements Interfaces\iAccessoryWarehouse
     public function getAccessoryWarehouseById($id): Model|Collection|Builder|array|null
     {
         try {
-            return AccessoryWarehouse::with([
+            return AccessoryWareHouse::with([
                 'place:id,name'
             ])
                 ->select([
@@ -79,7 +79,7 @@ class AccessoryWarehouseRepository implements Interfaces\iAccessoryWarehouse
     public function editAccessoryWarehouse($inputs): mixed
     {
         try {
-            $accessory_warehouse = AccessoryWarehouse::where('accessory_id', $inputs['accessory_id'])->first();
+            $accessory_warehouse = AccessoryWareHouse::where('accessory_id', $inputs['accessory_id'])->first();
 
             if ($inputs['sign'] == 'plus') {
                 $accessory_warehouse->count += $inputs['count'];

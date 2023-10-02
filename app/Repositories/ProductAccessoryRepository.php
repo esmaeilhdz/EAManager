@@ -112,6 +112,15 @@ class ProductAccessoryRepository implements Interfaces\iProductAccessory
         }
     }
 
+    public function deleteProductAccessoriesByIds($product_id, $ids)
+    {
+        try {
+            return ProductAccessory::where('product_id', $product_id)->whereIn('id', $ids)->delete();
+        } catch (\Exception $e) {
+            throw new ApiException($e, false);
+        }
+    }
+
     public function deleteProductAccessory($product_accessory)
     {
         try {
