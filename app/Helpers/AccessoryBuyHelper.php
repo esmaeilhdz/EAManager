@@ -148,7 +148,7 @@ class AccessoryBuyHelper
         }
 
         DB::beginTransaction();
-        $result[] = $this->accessory_buy_interface->editAccessoryBuy($inputs);
+        $result[] = $this->accessory_buy_interface->editAccessoryBuy($accessory_buy, $inputs);
         $result[] = $this->accessory_warehouse_interface->editAccessoryWarehouse($params);
 
         if (!in_array(false, $result)) {
@@ -202,7 +202,7 @@ class AccessoryBuyHelper
         if (is_null($accessory)) {
             return [
                 'result' => false,
-                'message' => __('messages.record_not_found'),
+                'message' => __('messages.accessory_not_found'),
                 'data' => null
             ];
         }
@@ -211,7 +211,7 @@ class AccessoryBuyHelper
         if (is_null($accessory_buy)) {
             return [
                 'result' => false,
-                'message' => __('messages.record_not_found'),
+                'message' => __('messages.accessory_buy_not_found'),
                 'data' => null
             ];
         }
