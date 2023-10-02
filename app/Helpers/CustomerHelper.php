@@ -71,7 +71,7 @@ class CustomerHelper
         $select = ['id', 'code', 'parent_id', 'name', 'mobile', 'score'];
         $relation = [
             'parent:id,name',
-            'address:model_type,model_id,province_id,city_id,address_kind_id,address,tel',
+            'address:id,model_type,model_id,province_id,city_id,address_kind_id,address,tel',
             'address.address_kind:enum_id,enum_caption',
             'address.province:id,name',
             'address.city:id,name',
@@ -161,6 +161,18 @@ class CustomerHelper
     public function addCustomer($inputs): array
     {
         $user = Auth::user();
+
+        if (!is_null($inputs['parent_code'])) {
+            $parent_customer = $this->customer_interface->getCustomerByCode($inputs['parent_code'], $user, ['id']);
+            if (is_null($parent_customer)) {
+                return [
+                    'result' => false,
+                    'message' => __('messages.moarref_customer_not_found'),
+                    'data' => null
+                ];
+            }
+            $inputs['parent_id'] = $parent_customer->id;
+        }
 
         DB::beginTransaction();
         $res = $this->customer_interface->addCustomer($inputs, $user);
