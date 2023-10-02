@@ -59,6 +59,7 @@ class AccessoryBuyHelper
             return [
                 'id' => $item->id,
                 'place' => [
+                    'id' => $item->place_id,
                     'name' => $item->place->name
                 ],
                 'count' => $item->count,
@@ -193,7 +194,7 @@ class AccessoryBuyHelper
 
     /**
      * حذف خرید خرج کار
-     * @param $id
+     * @param $inputs
      * @return array
      */
     public function deleteAccessoryBuy($inputs): array
