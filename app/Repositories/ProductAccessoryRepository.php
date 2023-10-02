@@ -82,6 +82,20 @@ class ProductAccessoryRepository implements Interfaces\iProductAccessory
         }
     }
 
+    public function editProductAccessoryByData($product_id, $inputs)
+    {
+        try {
+            return ProductAccessory::where('product_id', $product_id)
+                ->where('model_type', $inputs['model_type'])
+                ->where('model_id', $inputs['model_id'])
+                ->update([
+                    'amount' => $inputs['amount']
+                ]);
+        } catch (\Exception $e) {
+            throw new ApiException($e, false);
+        }
+    }
+
     public function addProductAccessory($inputs, $user)
     {
         try {
@@ -112,10 +126,13 @@ class ProductAccessoryRepository implements Interfaces\iProductAccessory
         }
     }
 
-    public function deleteProductAccessoriesByIds($product_id, $ids)
+    public function deleteProductAccessoriesByData($product_id, $data)
     {
         try {
-            return ProductAccessory::where('product_id', $product_id)->whereIn('id', $ids)->delete();
+            return ProductAccessory::where('product_id', $product_id)
+                ->where('model_type', $data['model_type'])
+                ->where('model_id', $data['model_id'])
+                ->delete();
         } catch (\Exception $e) {
             throw new ApiException($e, false);
         }

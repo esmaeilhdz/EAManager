@@ -133,6 +133,7 @@ class ProductHelper
      * سرویس ویرایش کالا
      * @param $inputs
      * @return array
+     * @throws \App\Exceptions\ApiException
      */
     public function editProduct($inputs): array
     {
@@ -166,44 +167,23 @@ class ProductHelper
 
         $inputs['cloth_id'] = $cloth->id;
 
-        $insert_product_accessories = $this->getInsertableAccessories($product->id, $user);
-        $delete_product_accessory_ids = $this->getDeleteAbleAccessoryIds($product->id, $user);
+        $transaction_product_accessories = $this->getInsertableAccessories($product->id, $inputs, $user);
+        $inserts = $transaction_product_accessories['inserts'];
+        $deletes = $transaction_product_accessories['deletes'];
+        $updates = $transaction_product_accessories['updates'];
 
         DB::beginTransaction();
         $result[] = $this->product_interface->editProduct($product, $inputs);
-        if (count($delete_product_accessory_ids)) {
-            $result[] = $this->product_accessory_interface->deleteProductAccessoriesByIds($product->id, $delete_product_accessory_ids);
+        foreach ($inserts as $insert) {
+            $result[] = $this->product_accessory_interface->addProductAccessory($insert, $user);
         }
-        foreach ($inputs['product_accessories'] as &$product_accessory) {
-            $product_accessory['product_id'] = $product->id;
-            if (!is_null($product_accessory['cloth_code'])) {
-                $cloth_accessory = Cloth::select('id')->whereCode($product_accessory['cloth_code'])->first();
-                if (!$cloth_accessory) {
-                    return [
-                        'result' => false,
-                        'message' => __('messages.cloth_accessory_not_found'),
-                        'data' => null
-                    ];
-                }
 
-                $product_accessory['model_type'] = Cloth::class;
-                $product_accessory['model_id'] = $cloth_accessory->id;
-            } else {
-                $accessory = Accessory::select('id')->where('id', $product_accessory['accessory_id'])->first();
-                if (!$accessory) {
-                    return [
-                        'result' => false,
-                        'message' => __('messages.accessory_not_found'),
-                        'data' => null
-                    ];
-                }
+        foreach ($updates as $update) {
+            $result[] = $this->product_accessory_interface->editProductAccessoryByData($product->id, $update);
+        }
 
-                $product_accessory['model_type'] = Accessory::class;
-                $product_accessory['model_id'] = $accessory->id;
-            }
-
-            $res = $this->product_accessory_interface->addProductAccessory($product_accessory, $user);
-            $result[] = $res['result'];
+        foreach ($deletes as $delete) {
+            $result[] = $this->product_accessory_interface->deleteProductAccessoriesByData($product->id, $delete);
         }
 
         $result = $this->prepareTransactionArray($result);

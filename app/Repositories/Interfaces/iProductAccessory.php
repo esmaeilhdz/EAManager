@@ -12,11 +12,13 @@ interface iProductAccessory
 
     public function editProductAccessory($product_accessory, $inputs);
 
+    public function editProductAccessoryByData($product_id, $inputs);
+
     public function addProductAccessory($inputs, $user);
 
     public function deleteProductAccessories($product_id);
 
-    public function deleteProductAccessoriesByIds($product_id, $ids);
+    public function deleteProductAccessoriesByData($product_id, $data);
 
     public function deleteProductAccessory($product_accessory);
 }
