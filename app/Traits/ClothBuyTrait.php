@@ -17,7 +17,8 @@ trait ClothBuyTrait
                 ->whereHas('cloth_buy.cloth', function ($q) use ($company_id) {
                     $q->where('company_id', $company_id);
                 })
-                ->pluck('color_id');
+                ->pluck('color_id')
+                ->toArray();
         } catch (\Exception $e) {
             throw new ApiException($e);
         }
