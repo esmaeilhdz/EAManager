@@ -74,7 +74,7 @@ trait ProductAccessoryTrait
         $result = [];
 
         // insert
-        if (isset($inputs_product_accessories['cloth'])) {
+        if (isset($inputs_product_accessories['cloth'], $db_product_accessories['cloth'])) {
             foreach ($inputs_product_accessories['cloth'] as $key => $inputs_cloth) {
                 if (!in_array($inputs_cloth['id'], $db_product_accessories['cloth'])) {
                     $result['inserts'][$key]['product_id'] = $product_id;
@@ -85,7 +85,7 @@ trait ProductAccessoryTrait
             }
         }
 
-        if (isset($inputs_product_accessories['accessory'])) {
+        if (isset($inputs_product_accessories['accessory'], $db_product_accessories['accessory'])) {
             foreach ($inputs_product_accessories['accessory'] as $key => $inputs_accessory) {
                 if (!in_array($inputs_accessory['id'], $db_product_accessories['accessory'])) {
                     $result['inserts'][$key]['product_id'] = $product_id;
@@ -97,7 +97,7 @@ trait ProductAccessoryTrait
         }
 
         // update
-        if (isset($inputs_product_accessories['cloth'])) {
+        if (isset($inputs_product_accessories['cloth'], $db_product_accessories['cloth'])) {
             foreach ($inputs_product_accessories['cloth'] as $key => $inputs_cloth) {
                 if (in_array($inputs_cloth['id'], $db_product_accessories['cloth'])) {
                     $result['updates'][$key]['model_type'] = Cloth::class;
@@ -107,7 +107,7 @@ trait ProductAccessoryTrait
             }
         }
 
-        if (isset($inputs_product_accessories['accessory'])) {
+        if (isset($inputs_product_accessories['accessory'], $db_product_accessories['accessory'])) {
             foreach ($inputs_product_accessories['accessory'] as $key => $inputs_accessory) {
                 if (in_array($inputs_accessory['id'], $db_product_accessories['accessory'])) {
                     $result['updates'][$key]['model_type'] = Accessory::class;
