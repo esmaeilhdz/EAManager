@@ -74,38 +74,46 @@ trait ProductAccessoryTrait
         $result = [];
 
         // insert
-        foreach ($inputs_product_accessories['cloth'] as $key => $inputs_cloth) {
-            if (!in_array($inputs_cloth['id'], $db_product_accessories['cloth'])) {
-                $result['inserts'][$key]['product_id'] = $product_id;
-                $result['inserts'][$key]['model_type'] = Cloth::class;
-                $result['inserts'][$key]['model_id'] = $inputs_cloth['id'];
-                $result['inserts'][$key]['amount'] = $inputs_cloth['amount'];
+        if (isset($inputs_product_accessories['cloth'])) {
+            foreach ($inputs_product_accessories['cloth'] as $key => $inputs_cloth) {
+                if (!in_array($inputs_cloth['id'], $db_product_accessories['cloth'])) {
+                    $result['inserts'][$key]['product_id'] = $product_id;
+                    $result['inserts'][$key]['model_type'] = Cloth::class;
+                    $result['inserts'][$key]['model_id'] = $inputs_cloth['id'];
+                    $result['inserts'][$key]['amount'] = $inputs_cloth['amount'];
+                }
             }
         }
 
-        foreach ($inputs_product_accessories['accessory'] as $key => $inputs_accessory) {
-            if (!in_array($inputs_accessory['id'], $db_product_accessories['accessory'])) {
-                $result['inserts'][$key]['product_id'] = $product_id;
-                $result['inserts'][$key]['model_type'] = Accessory::class;
-                $result['inserts'][$key]['model_id'] = $inputs_accessory['id'];
-                $result['inserts'][$key]['amount'] = $inputs_accessory['amount'];
+        if (isset($inputs_product_accessories['accessory'])) {
+            foreach ($inputs_product_accessories['accessory'] as $key => $inputs_accessory) {
+                if (!in_array($inputs_accessory['id'], $db_product_accessories['accessory'])) {
+                    $result['inserts'][$key]['product_id'] = $product_id;
+                    $result['inserts'][$key]['model_type'] = Accessory::class;
+                    $result['inserts'][$key]['model_id'] = $inputs_accessory['id'];
+                    $result['inserts'][$key]['amount'] = $inputs_accessory['amount'];
+                }
             }
         }
 
         // update
-        foreach ($inputs_product_accessories['cloth'] as $key => $inputs_cloth) {
-            if (in_array($inputs_cloth['id'], $db_product_accessories['cloth'])) {
-                $result['updates'][$key]['model_type'] = Cloth::class;
-                $result['updates'][$key]['model_id'] = $inputs_cloth['id'];
-                $result['updates'][$key]['amount'] = $inputs_cloth['amount'];
+        if (isset($inputs_product_accessories['cloth'])) {
+            foreach ($inputs_product_accessories['cloth'] as $key => $inputs_cloth) {
+                if (in_array($inputs_cloth['id'], $db_product_accessories['cloth'])) {
+                    $result['updates'][$key]['model_type'] = Cloth::class;
+                    $result['updates'][$key]['model_id'] = $inputs_cloth['id'];
+                    $result['updates'][$key]['amount'] = $inputs_cloth['amount'];
+                }
             }
         }
 
-        foreach ($inputs_product_accessories['accessory'] as $key => $inputs_accessory) {
-            if (in_array($inputs_accessory['id'], $db_product_accessories['accessory'])) {
-                $result['updates'][$key]['model_type'] = Accessory::class;
-                $result['updates'][$key]['model_id'] = $inputs_accessory['id'];
-                $result['updates'][$key]['amount'] = $inputs_accessory['amount'];
+        if (isset($inputs_product_accessories['accessory'])) {
+            foreach ($inputs_product_accessories['accessory'] as $key => $inputs_accessory) {
+                if (in_array($inputs_accessory['id'], $db_product_accessories['accessory'])) {
+                    $result['updates'][$key]['model_type'] = Accessory::class;
+                    $result['updates'][$key]['model_id'] = $inputs_accessory['id'];
+                    $result['updates'][$key]['amount'] = $inputs_accessory['amount'];
+                }
             }
         }
 
