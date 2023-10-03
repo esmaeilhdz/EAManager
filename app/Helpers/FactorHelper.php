@@ -393,8 +393,8 @@ class FactorHelper
 
         DB::beginTransaction();
         $result[] = $this->factor_interface->deleteFactor($factor);
-        $result[] = (bool)$this->factor_product_interface->deleteFactorProducts($factor->id);
-        $result[] = (bool)$this->factor_payment_interface->deleteFactorPayments($factor->id);
+        $result[] = $this->factor_product_interface->deleteFactorProducts($factor->id);
+        $result[] = $this->factor_payment_interface->deleteFactorPayments($factor->id);
 
         $result = $this->prepareTransactionArray($result);
 
