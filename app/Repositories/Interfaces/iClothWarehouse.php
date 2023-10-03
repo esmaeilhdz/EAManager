@@ -8,6 +8,8 @@ interface iClothWarehouse
 
     public function getClothWarehousesByCloth($cloth_id, $color_id, $place_id);
 
+    public function addWarehouse($inputs, $user);
+
     public function editWarehouse($inputs);
 
     public function editWarehouseMetre($inputs);

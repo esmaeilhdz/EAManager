@@ -77,6 +77,23 @@ class ClothWarehouseRepository implements Interfaces\iClothWarehouse
         }
     }
 
+    public function addWarehouse($inputs, $user)
+    {
+        try {
+            $cloth_warehouse = new ClothWareHouse();
+
+            $cloth_warehouse->cloth_id = $inputs['cloth_id'];
+            $cloth_warehouse->place_id = $inputs['place_id'];
+            $cloth_warehouse->metre = $inputs['metre'];
+            $cloth_warehouse->color_id = $inputs['color_id'];
+            $cloth_warehouse->created_by = $user->id;
+
+            return $cloth_warehouse->save();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
     public function editWarehouse($inputs)
     {
         try {

@@ -8,7 +8,7 @@ use App\Models\ClothBuyItem;
 trait ClothBuyTrait
 {
 
-    public function getItemsTransaction($cloth_buy_id, $items, $user): array
+    public function getItemsTransaction($cloth_buy_id, $inputs, $user): array
     {
         try {
             $company_id = $this->getCurrentCompanyOfUser($user);
@@ -28,11 +28,13 @@ trait ClothBuyTrait
         $result['update'] = [];
 
         // insert
-        foreach ($items as $item) {
+        foreach ($inputs['items'] as $item) {
             if (!in_array($item['color_id'], $db_color_ids)) {
                 $result['insert'][] = [
                     'cloth_buy_id' => $cloth_buy_id,
+                    'cloth_id' => $inputs['cloth_id'],
                     'color_id' => $item['color_id'],
+                    'place_id' => $inputs['warehouse_place_id'],
                     'metre' => $item['metre'],
                     'unit_price' => $item['price'],
                     'price' => $item['price'] * $item['metre'],
@@ -41,7 +43,7 @@ trait ClothBuyTrait
         }
 
         // delete
-        $input_color_ids = array_column($items, 'color_id');
+        $input_color_ids = array_column($inputs['items'], 'color_id');
         foreach ($db_color_ids as $db_color_id) {
             if (!in_array($db_color_id, $input_color_ids)) {
                 $result['delete'][] = [
@@ -52,9 +54,11 @@ trait ClothBuyTrait
         }
 
         // update
-        foreach ($items as $item) {
+        foreach ($inputs['items'] as $item) {
             if (in_array($item['color_id'], $db_color_ids)) {
-                $result['insert'][] = [
+                $result['update'][] = [
+                    'cloth_buy_id' => $cloth_buy_id,
+                    'color_id' => $db_color_ids,
                     'metre' => $item['metre'],
                     'unit_price' => $item['price'],
                     'price' => $item['price'] * $item['metre'],
