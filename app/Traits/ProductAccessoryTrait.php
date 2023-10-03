@@ -118,19 +118,23 @@ trait ProductAccessoryTrait
         }
 
         // delete
-        $inputs_cloth_ids = array_column($inputs_product_accessories['cloth'], 'id');
-        foreach ($db_product_accessories['cloth'] as $key => $db_cloth_id) {
-            if (!in_array($db_cloth_id, $inputs_cloth_ids)) {
-                $result['deletes'][$key]['model_type'] = Cloth::class;
-                $result['deletes'][$key]['model_id'] = $db_cloth_id;
+        if (isset($inputs_product_accessories['cloth'])) {
+            $inputs_cloth_ids = array_column($inputs_product_accessories['cloth'], 'id');
+            foreach ($db_product_accessories['cloth'] as $key => $db_cloth_id) {
+                if (!in_array($db_cloth_id, $inputs_cloth_ids)) {
+                    $result['deletes'][$key]['model_type'] = Cloth::class;
+                    $result['deletes'][$key]['model_id'] = $db_cloth_id;
+                }
             }
         }
 
-        $inputs_accessory_ids = array_column($inputs_product_accessories['accessory'], 'id');
-        foreach ($db_product_accessories['accessory'] as $key => $db_accessory_id) {
-            if (!in_array($db_accessory_id, $inputs_accessory_ids)) {
-                $result['deletes'][$key]['model_type'] = Accessory::class;
-                $result['deletes'][$key]['model_id'] = $db_accessory_id;
+        if (isset($inputs_product_accessories['accessory'])) {
+            $inputs_accessory_ids = array_column($inputs_product_accessories['accessory'], 'id');
+            foreach ($db_product_accessories['accessory'] as $key => $db_accessory_id) {
+                if (!in_array($db_accessory_id, $inputs_accessory_ids)) {
+                    $result['deletes'][$key]['model_type'] = Accessory::class;
+                    $result['deletes'][$key]['model_id'] = $db_accessory_id;
+                }
             }
         }
 
