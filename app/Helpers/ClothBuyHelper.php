@@ -7,13 +7,14 @@ use App\Repositories\Interfaces\iCloth;
 use App\Repositories\Interfaces\iClothBuy;
 use App\Repositories\Interfaces\iClothBuyItems;
 use App\Repositories\Interfaces\iClothWarehouse;
+use App\Traits\ClothBuyTrait;
 use App\Traits\Common;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ClothBuyHelper
 {
-    use Common;
+    use Common, ClothBuyTrait;
 
     // attributes
     public iClothWarehouse $cloth_warehouse_interface;
@@ -185,18 +186,47 @@ class ClothBuyHelper
             ];
         }
 
+        $cloth_buy_transaction = $this->getItemsTransaction($cloth_buy->id, $inputs['items'], $user);
+        $inserts = $cloth_buy_transaction['insert'];
+        $deletes = $cloth_buy_transaction['delete'];
+        $updates = $cloth_buy_transaction['update'];
+
         DB::beginTransaction();
-        foreach ($inputs['items'] as $key => $item) {
-            $item['cloth_buy_id'] = $cloth_buy->id;
+
+        $result[] = $this->cloth_buy_interface->editClothBuy($cloth_buy, $inputs);
+
+        // insert
+        foreach ($inserts as $insert) {
+            $params['sign'] = 'plus';
+            $params['metre'] = $insert['metre'];
+
+            $result[] = $this->cloth_warehouse_interface->editWarehouse($params);
+
+            $res = $this->cloth_buy_item_interface->addClothBuyItem($insert, $user, true);
+            $result[] = $res['result'];
+        }
+
+        // delete
+        foreach ($deletes as $delete) {
+            $result[] = $this->cloth_buy_item_interface->deleteClothBuyData($delete);
+        }
+
+        // update
+        foreach ($updates as $update) {
+            $result[] = $this->cloth_buy_item_interface->editClothBuyItem($update);
+        }
+
+        foreach ($inputs['items'] as $item) {
+//            $item['cloth_buy_id'] = $cloth_buy->id;
             $params['color_id'] = $item['color_id'];
             $cloth_buy_item = $this->cloth_buy_item_interface->getClothBuyItemById($item);
-            if (is_null($cloth_buy_item)) {
+            /*if (is_null($cloth_buy_item)) {
                 return [
                     'result' => false,
                     'message' => __('messages.cloth_item_not_found'),
                     'data' => null
                 ];
-            }
+            }*/
 
             if ($cloth_buy_item->metre > $item['metre']) {
                 $params['sign'] = 'minus';
@@ -212,14 +242,15 @@ class ClothBuyHelper
             $result[] = $this->cloth_warehouse_interface->editWarehouse($params);
         }
 
-        $result[] = $this->cloth_buy_interface->editClothBuy($cloth_buy, $inputs);
-        $result[] = $this->cloth_buy_item_interface->deleteClothBuyItems($cloth_buy->id);
-        foreach ($inputs['items'] as $key => $item) {
+//        $result[] = $this->cloth_buy_item_interface->deleteClothBuyItems($cloth_buy->id);
+        /*foreach ($inputs['items'] as $key => $item) {
             $item['cloth_buy_id'] = $cloth_buy->id;
 
             $res = $this->cloth_buy_item_interface->addClothBuyItem($item, $user, true);
             $result[] = $res['result'];
-        }
+        }*/
+
+        $result = $this->prepareTransactionArray($result);
 
         if (!in_array(false, $result)) {
             $flag = true;
