@@ -396,6 +396,8 @@ class FactorHelper
         $result[] = (bool)$this->factor_product_interface->deleteFactorProducts($factor->id);
         $result[] = (bool)$this->factor_payment_interface->deleteFactorPayments($factor->id);
 
+        $result = $this->prepareTransactionArray($result);
+
         if (!in_array(false, $result)) {
             $flag = true;
             DB::commit();
