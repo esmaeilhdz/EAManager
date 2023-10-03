@@ -118,7 +118,7 @@ trait ProductAccessoryTrait
         }
 
         // delete
-        if (isset($inputs_product_accessories['cloth'])) {
+        if (isset($inputs_product_accessories['cloth'], $db_product_accessories['cloth'])) {
             $inputs_cloth_ids = array_column($inputs_product_accessories['cloth'], 'id');
             foreach ($db_product_accessories['cloth'] as $key => $db_cloth_id) {
                 if (!in_array($db_cloth_id, $inputs_cloth_ids)) {
@@ -128,7 +128,7 @@ trait ProductAccessoryTrait
             }
         }
 
-        if (isset($inputs_product_accessories['accessory'])) {
+        if (isset($inputs_product_accessories['accessory'], $db_product_accessories['accessory'])) {
             $inputs_accessory_ids = array_column($inputs_product_accessories['accessory'], 'id');
             foreach ($db_product_accessories['accessory'] as $key => $db_accessory_id) {
                 if (!in_array($db_accessory_id, $inputs_accessory_ids)) {
