@@ -7,13 +7,14 @@ use App\Repositories\Interfaces\iClothSell;
 use App\Repositories\Interfaces\iClothSellItems;
 use App\Repositories\Interfaces\iClothWarehouse;
 use App\Repositories\Interfaces\iCustomer;
+use App\Traits\ClothSellTrait;
 use App\Traits\Common;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ClothSellHelper
 {
-    use Common;
+    use Common, ClothSellTrait;
 
     // attributes
     public iClothWarehouse $cloth_warehouse_interface;
@@ -121,6 +122,7 @@ class ClothSellHelper
      * ویرایش فروش پارچه
      * @param $inputs
      * @return array
+     * @throws \App\Exceptions\ApiException
      */
     public function editClothSell($inputs): array
     {
@@ -160,7 +162,70 @@ class ClothSellHelper
             ];
         }
 
+        $cloth_sell_transaction = $this->getItemsTransaction($cloth_sell->id, $inputs, $user);
+        $inserts = $cloth_sell_transaction['insert'];
+        $deletes = $cloth_sell_transaction['delete'];
+        $updates = $cloth_sell_transaction['update'];
+
         DB::beginTransaction();
+
+        $result[] = $this->cloth_sell_interface->editClothSell($cloth_sell, $inputs);
+
+        // insert
+        foreach ($inserts as $insert) {
+            $result[] = $this->cloth_warehouse_interface->addWarehouse($insert, $user);
+
+
+            $res = $this->cloth_sell_item_interface->addClothSellItem($insert, $user, true);
+            $result[] = $res['result'];
+        }
+
+        // delete
+        foreach ($deletes as $delete) {
+            $result[] = $this->cloth_sell_item_interface->deleteClothSellData($delete);
+        }
+
+        // update
+        foreach ($updates as $update) {
+            $result[] = $this->cloth_sell_item_interface->editClothSellItem($update);
+
+            $params['color_id'] = $update['color_id'];
+            $cloth_sell_item = $this->cloth_sell_item_interface->getClothSellItemById($update);
+            if ($cloth_sell_item->metre > $update['metre']) {
+                $params['sign'] = 'minus';
+                $params['metre'] = $cloth_sell_item->metre - $update['metre'];
+            } elseif ($cloth_sell_item->metre < $update['metre']) {
+                $params['sign'] = 'plus';
+                $params['metre'] = $update['metre'] - $cloth_sell_item->metre;
+            } else {
+                $params['sign'] = 'equal';
+                $params['metre'] = $update['metre'];
+            }
+
+            $result[] = $this->cloth_warehouse_interface->editWarehouse($params);
+        }
+
+        $result = $this->prepareTransactionArray($result);
+
+        if (!in_array(false, $result)) {
+            $flag = true;
+            DB::commit();
+        } else {
+            $flag = false;
+            DB::rollBack();
+        }
+
+        return [
+            'result' => $flag,
+            'message' => $flag ? __('messages.success') : __('messages.fail'),
+            'data' => null
+        ];
+
+
+
+
+
+        /*DB::beginTransaction();
         foreach ($inputs['items'] as $key => $item) {
             $item['cloth_sell_id'] = $cloth_sell->id;
             $params['color_id'] = $item['color_id'];
@@ -215,7 +280,7 @@ class ClothSellHelper
             'result' => $flag,
             'message' => $flag ? __('messages.success') : __('messages.fail'),
             'data' => null
-        ];
+        ];*/
     }
 
     /**

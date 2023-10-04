@@ -101,6 +101,21 @@ class ClothSellItemsRepository implements Interfaces\iClothSellItems
         }
     }
 
+    public function editClothSellItem($inputs)
+    {
+        try {
+            return ClothSellItem::where('cloth_sell_id', $inputs['cloth_sell_id'])
+                ->where('color_id', $inputs['color_id'])
+                ->update([
+                    'metre' => $inputs['metre'],
+                    'unit_price' => $inputs['price'],
+                    'price' => $inputs['price'] * $inputs['metre']
+                ]);
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
     public function deleteClothSellItem($cloth_sell_item)
     {
         try {
@@ -114,6 +129,17 @@ class ClothSellItemsRepository implements Interfaces\iClothSellItems
     {
         try {
             return ClothSellItem::where('cloth_sell_id', $cloth_sell_id)->delete();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
+    public function deleteClothSellData($inputs)
+    {
+        try {
+            return ClothSellItem::where('cloth_sell_id', $inputs['cloth_sell_id'])
+                ->where('color_id', $inputs['color_id'])
+                ->delete();
         } catch (\Exception $e) {
             throw new ApiException($e);
         }

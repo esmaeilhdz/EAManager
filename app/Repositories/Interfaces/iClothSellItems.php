@@ -10,7 +10,11 @@ interface iClothSellItems
 
     public function addClothSellItem($inputs, $user, $quiet = false);
 
+    public function editClothSellItem($inputs);
+
     public function deleteClothSellItem($cloth_sell_item);
 
     public function deleteClothSellItems($cloth_sell_id);
+
+    public function deleteClothSellData($inputs);
 }
