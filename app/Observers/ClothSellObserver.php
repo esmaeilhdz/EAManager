@@ -15,7 +15,6 @@ class ClothSellObserver
      */
     public function created(ClothSellItem $clothSellItem)
     {
-        dd(1);
         $cloth_warehouse = ClothWareHouse::where('cloth_id', $clothSellItem->cloth_sell->cloth_id)
             ->where('place_id', $clothSellItem->cloth_sell->warehouse_place_id)
             ->where('color_id', $clothSellItem->color_id)
@@ -35,7 +34,6 @@ class ClothSellObserver
     public function updated(ClothSellItem $clothSellItem)
     {
         //
-        dd(2);
     }
 
     /**
@@ -46,7 +44,6 @@ class ClothSellObserver
      */
     public function deleted(ClothSellItem $clothSellItem)
     {
-        dd(3);
         $cloth_warehouse = ClothWareHouse::where('cloth_id', $clothSellItem->cloth_sell->cloth_id)
             ->where('place_id', $clothSellItem->cloth_sell->warehouse_place_id)
             ->where('color_id', $clothSellItem->color_id)->first();
