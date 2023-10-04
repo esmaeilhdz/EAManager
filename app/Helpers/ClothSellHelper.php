@@ -192,10 +192,17 @@ class ClothSellHelper
             $params['color_id'] = $update['color_id'];
             $cloth_sell_item = $this->cloth_sell_item_interface->getClothSellItemById($update);
             if ($cloth_sell_item->metre > $update['metre']) {
-                $params['sign'] = 'minus';
+                $params['sign'] = 'plus';
                 $params['metre'] = $cloth_sell_item->metre - $update['metre'];
             } elseif ($cloth_sell_item->metre < $update['metre']) {
-                $params['sign'] = 'plus';
+                if ($update['metre'] - $cloth_sell_item->metre < 0) {
+                    return [
+                        'result' => false,
+                        'message' => __('messages.not_enough_warehouse_stock'),
+                        'data' => null
+                    ];
+                }
+                $params['sign'] = 'minus';
                 $params['metre'] = $update['metre'] - $cloth_sell_item->metre;
             } else {
                 $params['sign'] = 'equal';
