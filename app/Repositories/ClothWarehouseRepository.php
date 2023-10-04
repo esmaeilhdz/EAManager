@@ -52,10 +52,10 @@ class ClothWarehouseRepository implements Interfaces\iClothWarehouse
      * @param $cloth_id
      * @param $color_id
      * @param $place_id
-     * @return object
+     * @return object|null
      * @throws ApiException
      */
-    public function getClothWarehousesByCloth($cloth_id, $color_id, $place_id): object
+    public function getClothWarehousesByCloth($cloth_id, $color_id, $place_id): object|null
     {
         try {
             return ClothWareHouse::with([

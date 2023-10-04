@@ -229,25 +229,6 @@ class ClothBuyHelper
             $result[] = $this->cloth_warehouse_interface->editWarehouse($params);
         }
 
-        foreach ($inputs['items'] as $item) {
-//            $item['cloth_buy_id'] = $cloth_buy->id;
-            /*if (is_null($cloth_buy_item)) {
-                return [
-                    'result' => false,
-                    'message' => __('messages.cloth_item_not_found'),
-                    'data' => null
-                ];
-            }*/
-        }
-
-//        $result[] = $this->cloth_buy_item_interface->deleteClothBuyItems($cloth_buy->id);
-        /*foreach ($inputs['items'] as $key => $item) {
-            $item['cloth_buy_id'] = $cloth_buy->id;
-
-            $res = $this->cloth_buy_item_interface->addClothBuyItem($item, $user, true);
-            $result[] = $res['result'];
-        }*/
-
         $result = $this->prepareTransactionArray($result);
 
         if (!in_array(false, $result)) {
