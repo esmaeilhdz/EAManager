@@ -38,7 +38,7 @@ trait ClothSellTrait
                     'place_id' => $inputs['warehouse_place_id'],
                     'metre' => $item['metre'],
                     'unit_price' => $item['price'],
-                    'price' => $item['price'] * $item['metre'],
+                    'price' => $item['price'],
                 ];
             }
         }
@@ -59,10 +59,10 @@ trait ClothSellTrait
             if (in_array($item['color_id'], $db_color_ids)) {
                 $result['update'][] = [
                     'cloth_sell_id' => $cloth_sell_id,
-                    'color_id' => $db_color_ids,
+                    'color_id' => $item['color_id'],
                     'metre' => $item['metre'],
                     'unit_price' => $item['price'],
-                    'price' => $item['price'] * $item['metre'],
+                    'price' => $item['price'],
                 ];
             }
         }

@@ -175,7 +175,6 @@ class ClothSellHelper
         foreach ($inserts as $insert) {
             $result[] = $this->cloth_warehouse_interface->addWarehouse($insert, $user);
 
-
             $res = $this->cloth_sell_item_interface->addClothSellItem($insert, $user, true);
             $result[] = $res['result'];
         }
@@ -208,6 +207,8 @@ class ClothSellHelper
                 $params['sign'] = 'equal';
                 $params['metre'] = $update['metre'];
             }
+
+//            dd($params);
 
             $result[] = $this->cloth_warehouse_interface->editWarehouse($params);
         }
