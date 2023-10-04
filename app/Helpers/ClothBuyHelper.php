@@ -211,8 +211,6 @@ class ClothBuyHelper
 
         // update
         foreach ($updates as $update) {
-            $result[] = $this->cloth_buy_item_interface->editClothBuyItem($update);
-
             $params['color_id'] = $update['color_id'];
             $cloth_buy_item = $this->cloth_buy_item_interface->getClothBuyItemById($update);
             if ($cloth_buy_item->metre > $update['metre']) {
@@ -226,7 +224,11 @@ class ClothBuyHelper
                 $params['metre'] = $update['metre'];
             }
 
+//            dd($cloth_buy_item, $update);
+//            dd($params);
+
             $result[] = $this->cloth_warehouse_interface->editWarehouse($params);
+            $result[] = $this->cloth_buy_item_interface->editClothBuyItem($update);
         }
 
         $result = $this->prepareTransactionArray($result);

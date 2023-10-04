@@ -109,8 +109,8 @@ class ClothWarehouseRepository implements Interfaces\iClothWarehouse
                 case 'minus':
                     $cloth_warehouse->metre -= $inputs['metre'];
                     break;
-                default:
-                    $cloth_warehouse->metre = $inputs['metre'];
+//                default:
+//                    $cloth_warehouse->metre = $inputs['metre'];
             }
 
             return $cloth_warehouse->save();

@@ -186,8 +186,6 @@ class ClothSellHelper
 
         // update
         foreach ($updates as $update) {
-            $result[] = $this->cloth_sell_item_interface->editClothSellItem($update);
-
             $params['color_id'] = $update['color_id'];
             $cloth_sell_item = $this->cloth_sell_item_interface->getClothSellItemById($update);
             if ($cloth_sell_item->metre > $update['metre']) {
@@ -208,9 +206,8 @@ class ClothSellHelper
                 $params['metre'] = $update['metre'];
             }
 
-//            dd($params);
-
             $result[] = $this->cloth_warehouse_interface->editWarehouse($params);
+            $result[] = $this->cloth_sell_item_interface->editClothSellItem($update);
         }
 
         $result = $this->prepareTransactionArray($result);
