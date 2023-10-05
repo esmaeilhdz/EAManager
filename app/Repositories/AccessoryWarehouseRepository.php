@@ -79,7 +79,8 @@ class AccessoryWarehouseRepository implements Interfaces\iAccessoryWarehouse
     public function editAccessoryWarehouse($inputs): mixed
     {
         try {
-            $accessory_warehouse = AccessoryWareHouse::where('accessory_id', $inputs['accessory_id'])->first();
+            $accessory_warehouse = AccessoryWareHouse::where('accessory_id', $inputs['accessory_id'])
+                ->where('place_id', $inputs['place_id'])->first();
 
             if ($inputs['sign'] == 'plus') {
                 $accessory_warehouse->count += $inputs['count'];
