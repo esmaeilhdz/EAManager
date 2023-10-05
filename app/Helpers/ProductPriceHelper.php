@@ -142,7 +142,9 @@ class ProductPriceHelper
         $inputs['product_id'] = $product->id;
         $relation = [
             'product:id,name',
-            'product_accessory_price.product_accessory:id,product_id,amount',
+            'product_accessory_price:product_accessory_id,product_price_id,price',
+            'product_accessory_price.product_accessory:id,model_type,model_id,product_id,amount',
+            'product_accessory_price.product_accessory.model:id,name',
             'cutter_person:id,code,name,family',
             'cutter_place:id,name'
         ];
