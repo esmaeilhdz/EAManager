@@ -137,6 +137,7 @@ class AccessoryBuyHelper
         }
 
         $params['accessory_id'] = $accessory->id;
+        $params['place_id'] = $inputs['place_id'];
         if ($accessory_buy->count > $inputs['count']) {
             $params['sign'] = 'minus';
             $params['count'] = $accessory_buy->count - $inputs['count'];
