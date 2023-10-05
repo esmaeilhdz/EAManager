@@ -27,8 +27,6 @@ class AccessoryRepository implements Interfaces\iAccessory
         try {
             $company_id = $this->getCurrentCompanyOfUser($user);
             return Accessory::with([
-                'warehouse:accessory_id,place_id,count',
-                'warehouse.place:id,name',
                 'creator:id,person_id',
                 'creator.person:id,name,family',
             ])

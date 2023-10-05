@@ -31,22 +31,10 @@ class AccessoryHelper
         $accessories = $this->accessory_interface->getAccessories($inputs, $user);
 
         $accessories->transform(function ($item) {
-            $warehouses = [];
-            foreach ($item->warehouse as $warehouse) {
-                $warehouses[] = [
-                    'place' => [
-                        'id' => $warehouse->place_id,
-                        'name' => $warehouse->place->name,
-                    ],
-                    'count' => $warehouse->count
-                ];
-            }
-
             return [
                 'id' => $item->id,
                 'name' => $item->name,
                 'is_enable' => $item->is_enable,
-                'warehouse' => $warehouses,
                 'creator' => is_null($item->creator->person) ? null : [
                     'person' => [
                         'full_name' => $item->creator->person->name . ' ' . $item->creator->person->family,
