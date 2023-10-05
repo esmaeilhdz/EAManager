@@ -25,8 +25,6 @@ class AccessoryWarehouseRepository implements Interfaces\iAccessoryWarehouse
     {
         try {
             return AccessoryWareHouse::with([
-                'creator:id,person_id',
-                'creator.person:id,name,family',
                 'place:id,name'
             ])
                 ->select([
@@ -34,11 +32,11 @@ class AccessoryWarehouseRepository implements Interfaces\iAccessoryWarehouse
                     'accessory_id',
                     'place_id',
                     'count',
-                    'created_by',
-                    'created_at'
                 ])
-                ->whereHas('place', function ($q) use ($inputs) {
-                    $q->whereRaw($inputs['where']['place']['condition'], $inputs['where']['place']['params']);
+                ->when(isset($inputs['search_txt']), function ($q) use ($inputs) {
+                    $q->whereHas('place', function ($q) use ($inputs) {
+                        $q->where('name', 'like', '%' . $inputs['search_txt'] . '%');
+                    });
                 })
                 ->where('accessory_id', $inputs['accessory_id'])
                 ->paginate($inputs['per_page']);

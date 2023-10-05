@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Helpers\AccessoryBuyHelper;
 use App\Helpers\AccessoryHelper;
+use App\Helpers\AccessoryWarehouseHelper;
 use App\Helpers\AccountHelper;
 use App\Helpers\AddressHelper;
 use App\Helpers\AttachmentHelper;
@@ -104,6 +105,7 @@ class HelperServiceProvider extends ServiceProvider
         App::alias(CityHelper::class, 'city_helper');
         App::alias(ProductModelHelper::class, 'product_model_helper');
         App::alias(ProductAccessoryHelper::class, 'product_accessory_helper');
+        App::alias(AccessoryWarehouseHelper::class, 'accessory_warehouse_helper');
     }
 
     /**
