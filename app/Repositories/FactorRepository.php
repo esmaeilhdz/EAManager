@@ -182,6 +182,7 @@ class FactorRepository implements Interfaces\iFactor
             $factor->returned_at = $inputs['returned_at'];
             $factor->description = $inputs['description'];
             $factor->final_price = $inputs['final_price'];
+            $factor->status = $inputs['status'];
 
             return $factor->save();
         } catch (\Exception $e) {

@@ -45,6 +45,7 @@ class FactorEditRequest extends FormRequest
             'settlement_date' => 'required|date',
             'returned_at' => 'nullable|date',
             'final_price' => 'required|numeric',
+            'status' => 'required|numeric|min:1',
             'description' => 'nullable|string',
         ];
     }
