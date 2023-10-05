@@ -35,7 +35,7 @@ class AccessoryHelper
                 'id' => $item->id,
                 'name' => $item->name,
                 'is_enable' => $item->is_enable,
-                'warehouse_count' => count($item->warehouse),
+                'warehouse_count' => $item->warehouse->count,
                 'creator' => is_null($item->creator->person) ? null : [
                     'person' => [
                         'full_name' => $item->creator->person->name . ' ' . $item->creator->person->family,
