@@ -52,7 +52,7 @@ class Accessory extends Model
 
     public function warehouse()
     {
-        return $this->hasOne(AccessoryWareHouse::class, 'accessory_id', 'id');
+        return $this->hasMany(AccessoryWareHouse::class, 'accessory_id', 'id');
     }
 
     public function accessoryBuys()
