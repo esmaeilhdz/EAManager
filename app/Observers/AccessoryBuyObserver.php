@@ -24,6 +24,7 @@ class AccessoryBuyObserver
             $accessory_warehouse = new AccessoryWareHouse();
 
             $accessory_warehouse->accessory_id = $accessory_buy->accessory_id;
+            $accessory_warehouse->place_id = $accessory_buy->place_id;
             $accessory_warehouse->count = $accessory_buy->count;
         } else {
             $accessory_warehouse->count += $accessory_buy->count;

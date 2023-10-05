@@ -81,7 +81,7 @@ class AccessoryBuyHelper
 
     /**
      * جزئیات خرید خرج کار
-     * @param $id
+     * @param $inputs
      * @return array
      */
     public function getAccessoryBuyDetail($inputs): array
