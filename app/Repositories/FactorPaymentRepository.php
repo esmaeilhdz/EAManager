@@ -44,7 +44,7 @@ class FactorPaymentRepository implements Interfaces\iFactorPayment
             }
 
             return $factor_payment->orderByDesc('id')
-                ->paginate($inputs['per_page']);
+                ->paginate($inputs['per_page'] ?? 10);
         } catch (\Exception $e) {
             throw new ApiException($e);
         }

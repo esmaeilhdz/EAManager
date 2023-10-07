@@ -38,7 +38,7 @@ class FactorProductRepository implements Interfaces\iFactorProduct
         try {
             $factor_product = FactorProduct::where('factor_id', $factor_id);
 
-            if ($select) {
+            if (count($select)) {
                 $factor_product = $factor_product->select($select);
             }
 
@@ -47,7 +47,7 @@ class FactorProductRepository implements Interfaces\iFactorProduct
             }
 
             return $factor_product->orderByDesc('id')
-                ->paginate($inputs['per_page']);
+                ->paginate($inputs['per_page'] ?? 10);
         } catch (\Exception $e) {
             throw new ApiException($e);
         }

@@ -201,6 +201,7 @@ class FactorRepository implements Interfaces\iFactor
     {
         try {
             $factor->status = $inputs['status'];
+            $factor->description = $inputs['description'];
             // مرجوع فاکتور
             if ($inputs['status'] == self::ReturnedFactor) {
                 $factor->returned_at = now();

@@ -19,7 +19,7 @@ trait FactorTrait
         $relation = [
             'product_warehouse:id,free_size_count,size1_count,size2_count,size3_count,size4_count'
         ];
-        $factor_products = $this->factor_product_interface->getByFactorId($factor->id, $select, $relation);
+        $factor_products = $this->factor_product_interface->getByFactorId($factor->id, [], $select, $relation);
         // تکمیل فاکتور ناقص
         // باید موجودی انبار موردنظر به تعداد خریداری شده، کسر شود.
         if ($status == 2) {
