@@ -52,7 +52,7 @@ class Accessory extends Model
 
     public function warehouse()
     {
-        return $this->hasOne(AccessoryWareHouse::class, 'accessory_id', 'id');
+        return $this->hasMany(AccessoryWareHouse::class, 'accessory_id', 'id');
     }
 
     public function accessoryBuys()
@@ -63,5 +63,10 @@ class Accessory extends Model
     public function creator()
     {
         return $this->hasOne(User::class, 'id', 'created_by');
+    }
+
+    public function productAccessory()
+    {
+        return $this->morphOne(ProductAccessory::class, 'model');
     }
 }

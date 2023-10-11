@@ -26,4 +26,10 @@ class ClothWareHouse extends Model
     {
         return $this->hasOne(Place::class, 'id', 'place_id');
     }
+
+    public function color()
+    {
+        return $this->hasOne(Enumeration::class, 'enum_id', 'color_id')
+            ->where('category_name', 'color');
+    }
 }

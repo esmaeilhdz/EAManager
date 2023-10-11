@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
-class ProductWarehouseTrait
+trait ProductWarehouseTrait
 {
+
 }

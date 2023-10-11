@@ -2,8 +2,6 @@
 
 namespace App\Helpers;
 
-use App\Exceptions\ApiException;
-use App\Facades\ProductWarehouseFacade;
 use App\Repositories\Interfaces\iCustomer;
 use App\Repositories\Interfaces\iFactor;
 use App\Repositories\Interfaces\iFactorPayment;
@@ -19,6 +17,13 @@ use Illuminate\Support\Facades\DB;
 class FactorHelper
 {
     use Common, RequestProductWarehouseTrait, FactorTrait;
+
+    // فاکتور ناقص
+    const InCompleteFactor = 1;
+    // فاکتور تایید شده
+    const ConfirmFactor = 2;
+    // فاکتور مرجوعی
+    const ReturnedFactor = 3;
 
     // attributes
     public iFactor $factor_interface;
@@ -78,7 +83,10 @@ class FactorHelper
                 'settlement_date' => $item->settlement_date,
                 'has_return_permission' => $item->has_return_permission,
                 'is_credit' => $item->is_credit,
-                'status' => $item->status,
+                'status' => [
+                    'id' => $item->status,
+                    'caption' => $item->factor_status->enum_caption
+                ],
                 'final_price' => $item->final_price,
                 'creator' => is_null($item->creator->person) ? null : [
                     'person' => [
@@ -154,16 +162,18 @@ class FactorHelper
      */
     public function getFactorDetail($code): array
     {
-        $select = ['id', 'code', 'customer_id', 'factor_no', 'has_return_permission', 'is_credit', 'status', 'settlement_date', 'final_price'];
+        $user = Auth::user();
+        $select = ['id', 'code', 'customer_id', 'factor_no', 'has_return_permission', 'is_credit', 'status', 'settlement_date', 'returned_at', 'final_price', 'description'];
         $relation = [
-            'customer:id,name,mobile,score',
+            'customer:id,code,name,mobile,score',
             'factor_products:factor_id,product_warehouse_id,free_size_count,size1_count,size2_count,size3_count,size4_count,price',
-            'factor_products.product_warehouse:id,product_id',
+            'factor_products.product_warehouse:id,product_id,product_model_id',
             'factor_products.product_warehouse.product:id,name',
+            'factor_products.product_warehouse.product_model:id,product_id,name',
             'factor_payments:factor_id,payment_type_id,description,price',
             'factor_payments.payment_type:enum_id,enum_caption',
         ];
-        $factor = $this->factor_interface->getFactorByCode($code, $select, $relation);
+        $factor = $this->factor_interface->getFactorByCode($code, $user, $select, $relation);
         if (is_null($factor)) {
             return [
                 'result' => false,
@@ -171,6 +181,11 @@ class FactorHelper
                 'data' => null
             ];
         }
+
+        $factor->returned_at = is_null($factor->returned_at) ? null : [
+            'jalali' => jdate($factor->returned_at)->format('Y/m/d H:i'),
+            'gregorian' => $factor->returned_at,
+        ];
 
         $factor_products = [];
         foreach ($factor->factor_products as $factor_product) {
@@ -181,7 +196,7 @@ class FactorHelper
                 'size3_count' => $factor_product->size3_count,
                 'size4_count' => $factor_product->size4_count,
                 'price' => $factor_product->price,
-                'product' => $factor_product->product_warehouse->product->name
+                'product' => $factor_product->product_warehouse->product->name . ' - ' . $factor_product->product_warehouse->product_model->name
             ];
         }
 
@@ -216,7 +231,8 @@ class FactorHelper
     public function editFactor($inputs): array
     {
         // فاکتور
-        $factor = $this->factor_interface->getFactorByCode($inputs['code'], ['id']);
+        $user = Auth::user();
+        $factor = $this->factor_interface->getFactorByCode($inputs['code'], $user, ['id']);
         if (is_null($factor)) {
             return [
                 'result' => false,
@@ -225,9 +241,14 @@ class FactorHelper
             ];
         }
 
+        $result = $this->CheckForChangeProduct($factor);
+        if (!$result['result']) {
+            return $result;
+        }
+
         // مشتری
         $select = ['id'];
-        $customer = $this->customer_interface->getCustomerByCode($inputs['customer_code'], $select);
+        $customer = $this->customer_interface->getCustomerByCode($inputs['customer_code'], $user, $select);
         if (is_null($customer)) {
             return [
                 'result' => false,
@@ -237,47 +258,12 @@ class FactorHelper
         }
         $inputs['customer_id'] = $customer->id;
 
-        DB::beginTransaction();
         // ویرایش فاکتور
-        $result[] = $this->factor_interface->editFactor($factor, $inputs);
-
-        // ویرایش محصولات فاکتور
-        foreach ($inputs['products'] as $product_item) {
-            $factor_product = $this->factor_product_interface->getById($factor->id, $product_item['id']);
-            if (is_null($factor_product)) {
-                return [
-                    'result' => false,
-                    'message' => __('messages.factor_product_not_found'),
-                    'data' => null
-                ];
-            }
-            $result[] = $this->factor_product_interface->editFactorProduct($factor_product, $product_item);
-        }
-
-        // ویرایش پرداخت های فاکتور
-        foreach ($inputs['payments'] as $payment_item) {
-            $factor_payment = $this->factor_payment_interface->getById($factor->id, $payment_item['id']);
-            if (is_null($factor_payment)) {
-                return [
-                    'result' => false,
-                    'message' => __('messages.factor_product_not_found'),
-                    'data' => null
-                ];
-            }
-            $result[] = $this->factor_payment_interface->editFactorPayment($factor_payment, $payment_item);
-        }
-
-        if (!in_array(false, $result)) {
-            $flag = true;
-            DB::commit();
-        } else {
-            $flag = false;
-            DB::rollBack();
-        }
+        $result = $this->factor_interface->editFactor($factor, $inputs);
 
         return [
-            'result' => $flag,
-            'message' => $flag ? __('messages.success') : __('messages.fail'),
+            'result' => $result,
+            'message' => $result ? __('messages.success') : __('messages.fail'),
             'data' => null
         ];
     }
@@ -289,13 +275,22 @@ class FactorHelper
      */
     public function changeStatusFactor($inputs): array
     {
+        $user = Auth::user();
         // فاکتور
         $select = ['id', 'status', 'has_return_permission'];
-        $factor = $this->factor_interface->getFactorByCode($inputs['code'], $select);
+        $factor = $this->factor_interface->getFactorByCode($inputs['code'], $user, $select);
         if (is_null($factor)) {
             return [
                 'result' => false,
                 'message' => __('messages.record_not_found'),
+                'data' => null
+            ];
+        }
+
+        if ($factor->status == self::ConfirmFactor && $inputs['status'] == self::ConfirmFactor) {
+            return [
+                'result' => false,
+                'message' => __('messages.factor_already_confirmed'),
                 'data' => null
             ];
         }
@@ -347,12 +342,13 @@ class FactorHelper
      * افزودن فاکتور
      * @param $inputs
      * @return array
-     * @throws ApiException
      */
     public function addFactor($inputs): array
     {
+        $user = Auth::user();
+
         $select = ['id'];
-        $customer = $this->customer_interface->getCustomerByCode($inputs['customer_code'], $select);
+        $customer = $this->customer_interface->getCustomerByCode($inputs['customer_code'], $user, $select);
         if (is_null($customer)) {
             return [
                 'result' => false,
@@ -362,92 +358,14 @@ class FactorHelper
         }
         $inputs['customer_id'] = $customer->id;
 
-        $user = Auth::user();
-        DB::beginTransaction();
         $res_factor = $this->factor_interface->addFactor($inputs, $user);
-        $result[] = $res_factor['result'];
-
-        $company_id = $this->getCurrentCompanyOfUser($user);
-        foreach ($inputs['products'] as $product_item) {
-
-            // درج کالای فاکتور
-            $res = $this->factor_product_interface->addFactorProduct($product_item, $res_factor['data']['id'], $user);
-            $result[] = $res['result'];
-
-            // باید موجودی انبار موردنظر به تعداد خریداری شده، کسر شود.
-            $select = ['id', 'product_id', 'free_size_count', 'size1_count', 'size2_count', 'size3_count', 'size4_count'];
-            $product_warehouse_primary = $this->product_warehouse_interface->getById($product_item['product_warehouse_id'], $select);
-
-            // بررسی موجودی انبار انتخابی با تعداد فاکتور
-            $result_check_stock = ProductWarehouseFacade::checkStock($product_warehouse_primary, $product_item);
-
-            // تکمیل فاکتور
-            if ($inputs['status'] == 2) {
-                // انبار موجودی ندارد.
-                if (!$result_check_stock['result']) {
-                    return [
-                        'result' => false,
-                        'message' => $result_check_stock['message'],
-                        'data' => $result_check_stock['data']
-                    ];
-                }
-
-                $inputs = $this->prepareWarehouseToAddCompleteFactor($inputs, $product_warehouse_primary, $product_item);
-
-                $result[] = $this->product_warehouse_interface->editProductWarehouse($product_warehouse_primary, $inputs);
-            } elseif ($inputs['status'] == 1) {
-                // درج فاکتور به صورت ناقص
-                // درج خودکار درخواست کالا از انباری که موجودی مورد نیاز را دارد.
-                if (!$result_check_stock['result']) {
-                    $params = [
-                        'company_id' => $company_id,
-                        'product_id' => $product_warehouse_primary->product_id
-                    ];
-                    $select = ['id', 'product_id', 'free_size_count', 'size1_count', 'size2_count', 'size3_count', 'size4_count'];
-                    // انبار کالا به ازای موجود بودن تمام انبارهای کالا
-                    $product_warehouse = $this->product_warehouse_interface->getByStockProduct($params, $product_item, $select);
-                    if (is_null($product_warehouse)) {
-                        DB::rollBack();
-                        return [
-                            'result' => false,
-                            'message' => $result_check_stock['message'],
-                            'data' => $result_check_stock['data']
-                        ];
-                    }
-
-                    // محاسبه برای درخواست کسری موجودی برای انبار اول
-                    $params = $this->calculateForRequest($product_warehouse_primary, $result_check_stock, $product_item);
-                    // درج درخواست کسری موجودی برای سفارش جاری
-                    $result[] = $this->request_product_interface->addRequestProductWarehouse($params, $user)['result'];
-
-                    // کسر موجودی فروخته شده از انبار اتومات
-                    $inputs['free_size_count'] = $product_warehouse->free_size_count - $product_item['free_size_count'];
-                    $inputs['size1_count'] = $product_warehouse->size1_count - $product_item['size1_count'];
-                    $inputs['size2_count'] = $product_warehouse->size2_count - $product_item['size2_count'];
-                    $inputs['size3_count'] = $product_warehouse->size3_count - $product_item['size3_count'];
-                    $inputs['size4_count'] = $product_warehouse->size4_count - $product_item['size4_count'];
-                    $result[] = $this->product_warehouse_interface->editProductWarehouse($product_warehouse, $inputs);
-                }
-            }
-        }
-
-        foreach ($inputs['payments'] as $payment_item) {
-            $res = $this->factor_payment_interface->addFactorPayment($payment_item, $res_factor['data']['id'], $user);
-            $result[] = $res['result'];
-        }
-
-        if (!in_array(false, $result)) {
-            $flag = true;
-            DB::commit();
-        } else {
-            $flag = false;
-            DB::rollBack();
-        }
+        $factor_result = $res_factor['result'];
+        $factor_data = $res_factor['data'];
 
         return [
-            'result' => $flag,
-            'message' => $flag ? __('messages.success') : __('messages.fail'),
-            'data' => $flag ? $res_factor['data']['code'] : null
+            'result' => $factor_result,
+            'message' => $factor_result ? __('messages.success') : __('messages.fail'),
+            'data' => $factor_data->code ?? null
         ];
     }
 
@@ -458,7 +376,8 @@ class FactorHelper
      */
     public function deleteFactor($code): array
     {
-        $factor = $this->factor_interface->getFactorByCode($code, ['id']);
+        $user = Auth::user();
+        $factor = $this->factor_interface->getFactorByCode($code, $user, ['id']);
         if (is_null($factor)) {
             return [
                 'result' => false,
@@ -467,10 +386,17 @@ class FactorHelper
             ];
         }
 
+        $result = $this->CheckForChangeProduct($factor);
+        if (!$result['result']) {
+            return $result;
+        }
+
         DB::beginTransaction();
         $result[] = $this->factor_interface->deleteFactor($factor);
-        $result[] = (bool)$this->factor_product_interface->deleteFactorProduct($factor->id);
-        $result[] = (bool)$this->factor_payment_interface->deleteFactorPayment($factor->id);
+        $result[] = $this->factor_product_interface->deleteFactorProducts($factor->id);
+        $result[] = $this->factor_payment_interface->deleteFactorPayments($factor->id);
+
+        $result = $this->prepareTransactionArray($result);
 
         if (!in_array(false, $result)) {
             $flag = true;

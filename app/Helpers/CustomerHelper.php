@@ -30,10 +30,11 @@ class CustomerHelper
      */
     public function getCustomers($inputs): array
     {
+        $user = Auth::user();
         $inputs['order_by'] = $this->orderBy($inputs, 'customers');
         $inputs['per_page'] = $this->calculatePerPage($inputs);
 
-        $customers = $this->customer_interface->getCustomers($inputs);
+        $customers = $this->customer_interface->getCustomers($inputs, $user);
 
         $customers->transform(function ($item) {
             return [
@@ -66,14 +67,16 @@ class CustomerHelper
      */
     public function getCustomerDetail($code): array
     {
+        $user = Auth::user();
         $select = ['id', 'code', 'parent_id', 'name', 'mobile', 'score'];
         $relation = [
-            'parent:id,name',
-            'address:model_type,model_id,province_id,city_id,address',
+            'parent:id,code,name',
+            'address:id,model_type,model_id,province_id,city_id,address_kind_id,address,tel',
+            'address.address_kind:enum_id,enum_caption',
             'address.province:id,name',
             'address.city:id,name',
         ];
-        $customer = $this->customer_interface->getCustomerByCode($code, $select, $relation);
+        $customer = $this->customer_interface->getCustomerByCode($code, $user, $select, $relation);
         if (is_null($customer)) {
             return [
                 'result' => false,
@@ -108,13 +111,26 @@ class CustomerHelper
      */
     public function editCustomer($inputs): array
     {
-        $customer = $this->customer_interface->getCustomerByCode($inputs['code']);
+        $user = Auth::user();
+        $customer = $this->customer_interface->getCustomerByCode($inputs['code'], $user);
         if (is_null($customer)) {
             return [
                 'result' => false,
                 'message' => __('messages.record_not_found'),
                 'data' => null
             ];
+        }
+
+        if (!is_null($inputs['parent_code'])) {
+            $parent_customer = $this->customer_interface->getCustomerByCode($inputs['parent_code'], $user, ['id']);
+            if (is_null($parent_customer)) {
+                return [
+                    'result' => false,
+                    'message' => __('messages.moarref_customer_not_found'),
+                    'data' => null
+                ];
+            }
+            $inputs['parent_id'] = $parent_customer->id;
         }
 
         $inputs['model_type'] = Customer::class;
@@ -133,6 +149,8 @@ class CustomerHelper
         DB::beginTransaction();
         $result[] = $this->customer_interface->editCustomer($customer, $inputs);
         $result[] = $this->address_interface->editAddress($address, $inputs);
+
+        $result = $this->prepareTransactionArray($result);
 
         if (!in_array(false, $result)) {
             $flag = true;
@@ -157,6 +175,18 @@ class CustomerHelper
     public function addCustomer($inputs): array
     {
         $user = Auth::user();
+
+        if (!is_null($inputs['parent_code'])) {
+            $parent_customer = $this->customer_interface->getCustomerByCode($inputs['parent_code'], $user, ['id']);
+            if (is_null($parent_customer)) {
+                return [
+                    'result' => false,
+                    'message' => __('messages.moarref_customer_not_found'),
+                    'data' => null
+                ];
+            }
+            $inputs['parent_id'] = $parent_customer->id;
+        }
 
         DB::beginTransaction();
         $res = $this->customer_interface->addCustomer($inputs, $user);
@@ -188,7 +218,8 @@ class CustomerHelper
      */
     public function deleteCustomer($code): array
     {
-        $customer = $this->customer_interface->getCustomerByCode($code);
+        $user = Auth::user();
+        $customer = $this->customer_interface->getCustomerByCode($code, $user);
         if (is_null($customer)) {
             return [
                 'result' => false,

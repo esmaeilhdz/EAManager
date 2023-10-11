@@ -26,7 +26,7 @@ class CompanyComboRequest extends FormRequest
     public function rules()
     {
         return [
-            'search_txt' => ['required', 'string', new MbMin(3), new MbMax(20)]
+            'search_txt' => ['required', 'string', new MbMin(3)]
         ];
     }
 }

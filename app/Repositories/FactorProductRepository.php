@@ -33,12 +33,12 @@ class FactorProductRepository implements Interfaces\iFactorProduct
         }
     }
 
-    public function getByFactorId($factor_id, $select = [], $relation = [])
+    public function getByFactorId($factor_id, $inputs, $select = [], $relation = [])
     {
         try {
             $factor_product = FactorProduct::where('factor_id', $factor_id);
 
-            if ($select) {
+            if (count($select)) {
                 $factor_product = $factor_product->select($select);
             }
 
@@ -46,7 +46,8 @@ class FactorProductRepository implements Interfaces\iFactorProduct
                 $factor_product = $factor_product->with($relation);
             }
 
-            return $factor_product->get();
+            return $factor_product->orderByDesc('id')
+                ->paginate($inputs['per_page'] ?? 10);
         } catch (\Exception $e) {
             throw new ApiException($e);
         }
@@ -116,10 +117,26 @@ class FactorProductRepository implements Interfaces\iFactorProduct
      * @return mixed
      * @throws ApiException
      */
-    public function deleteFactorProduct($factor_id): mixed
+    public function deleteFactorProducts($factor_id): mixed
     {
         try {
             return FactorProduct::where('factor_id', $factor_id)->delete();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
+    /**
+     * حذف محصول فاکتور
+     * @param $factor_id
+     * @param $id
+     * @return mixed
+     * @throws ApiException
+     */
+    public function deleteFactorProduct($factor_id, $id): mixed
+    {
+        try {
+            return FactorProduct::where('factor_id', $factor_id)->where('id', $id)->delete();
         } catch (\Exception $e) {
             throw new ApiException($e);
         }

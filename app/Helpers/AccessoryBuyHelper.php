@@ -59,6 +59,7 @@ class AccessoryBuyHelper
             return [
                 'id' => $item->id,
                 'place' => [
+                    'id' => $item->place_id,
                     'name' => $item->place->name
                 ],
                 'count' => $item->count,
@@ -80,7 +81,7 @@ class AccessoryBuyHelper
 
     /**
      * جزئیات خرید خرج کار
-     * @param $id
+     * @param $inputs
      * @return array
      */
     public function getAccessoryBuyDetail($inputs): array
@@ -136,6 +137,7 @@ class AccessoryBuyHelper
         }
 
         $params['accessory_id'] = $accessory->id;
+        $params['place_id'] = $inputs['place_id'];
         if ($accessory_buy->count > $inputs['count']) {
             $params['sign'] = 'minus';
             $params['count'] = $accessory_buy->count - $inputs['count'];
@@ -148,7 +150,7 @@ class AccessoryBuyHelper
         }
 
         DB::beginTransaction();
-        $result[] = $this->accessory_buy_interface->editAccessoryBuy($inputs);
+        $result[] = $this->accessory_buy_interface->editAccessoryBuy($accessory_buy, $inputs);
         $result[] = $this->accessory_warehouse_interface->editAccessoryWarehouse($params);
 
         if (!in_array(false, $result)) {
@@ -193,7 +195,7 @@ class AccessoryBuyHelper
 
     /**
      * حذف خرید خرج کار
-     * @param $id
+     * @param $inputs
      * @return array
      */
     public function deleteAccessoryBuy($inputs): array
@@ -202,7 +204,7 @@ class AccessoryBuyHelper
         if (is_null($accessory)) {
             return [
                 'result' => false,
-                'message' => __('messages.record_not_found'),
+                'message' => __('messages.accessory_not_found'),
                 'data' => null
             ];
         }
@@ -211,7 +213,7 @@ class AccessoryBuyHelper
         if (is_null($accessory_buy)) {
             return [
                 'result' => false,
-                'message' => __('messages.record_not_found'),
+                'message' => __('messages.accessory_buy_not_found'),
                 'data' => null
             ];
         }

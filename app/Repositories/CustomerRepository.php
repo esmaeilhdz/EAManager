@@ -14,12 +14,14 @@ class CustomerRepository implements Interfaces\iCustomer
     /**
      * لیست مشتری ها
      * @param $inputs
+     * @param $user
      * @return LengthAwarePaginator
      * @throws ApiException
      */
-    public function getCustomers($inputs): LengthAwarePaginator
+    public function getCustomers($inputs, $user): LengthAwarePaginator
     {
         try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
             return Customer::with([
                 'creator:id,person_id',
                 'creator.person:id,name,family',
@@ -46,6 +48,7 @@ class CustomerRepository implements Interfaces\iCustomer
                         $q2->where('name', 'like', '%' . $inputs['search_txt'] . '%');
                     });
                 })
+                ->where('company_id', $company_id)
                 ->orderByRaw($inputs['order_by'])
                 ->paginate($inputs['per_page']);
         } catch (\Exception $e) {
@@ -56,15 +59,18 @@ class CustomerRepository implements Interfaces\iCustomer
     /**
      * جزئیات مشتری
      * @param $code
+     * @param $user
      * @param array $select
      * @param array $relation
      * @return mixed
      * @throws ApiException
      */
-    public function getCustomerByCode($code, $select = [], $relation = []): mixed
+    public function getCustomerByCode($code, $user, $select = [], $relation = []): mixed
     {
         try {
-            $customer = Customer::whereCode($code);
+            $company_id = $this->getCurrentCompanyOfUser($user);
+            $customer = Customer::whereCode($code)
+                ->where('company_id', $company_id);
 
             if (count($relation)) {
                 $customer = $customer->with($relation);

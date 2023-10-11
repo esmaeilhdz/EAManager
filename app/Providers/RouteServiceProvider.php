@@ -63,8 +63,6 @@ class RouteServiceProvider extends ServiceProvider
             $this->mapCloth();
             // روت خرج کار
             $this->mapAccessory();
-            // روت خرید خرج کار
-            $this->mapAccessoryBuy();
             // روت کالا
             $this->mapProduct();
             // روت اعلان ها
@@ -197,14 +195,15 @@ class RouteServiceProvider extends ServiceProvider
             ->namespace($this->namespace)
             ->group(base_path('routes/accessories.php'));
 
-    }
-
-    private function mapAccessoryBuy()
-    {
         Route::prefix('api')
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/accessory_buy.php'));
+
+        Route::prefix('api')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/accessory_warehouse.php'));
 
     }
 
@@ -229,6 +228,16 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/product_warehouse.php'));
+
+        Route::prefix('api')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/product_model.php'));
+
+        Route::prefix('api')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/product_accessory.php'));
 
     }
 
@@ -301,6 +310,16 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/factor.php'));
+
+        Route::prefix('api')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/factor_product.php'));
+
+        Route::prefix('api')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/factor_payment.php'));
 
     }
 

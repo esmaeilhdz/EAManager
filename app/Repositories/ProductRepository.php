@@ -25,8 +25,7 @@ class ProductRepository implements Interfaces\iProduct
                 ->with([
                     'productWarehouse:product_id,free_size_count,size1_count,size2_count,size3_count,size4_count',
                     'productPrice:product_id,final_price',
-                    'cloth:id,code,color_id,name',
-                    'cloth.color:enum_id,enum_caption',
+                    'cloth:id,code,name',
                     'sale_period:id,name',
                     'creator:id,person_id',
                     'creator.person:id,name,family'
@@ -36,13 +35,13 @@ class ProductRepository implements Interfaces\iProduct
                     'code',
                     'internal_code',
                     'name',
-                    'has_accessories',
                     'cloth_id',
                     'sale_period_id',
                     'created_by',
                     'created_at'
                 ])
                 ->whereRaw($inputs['where']['search']['condition'], $inputs['where']['search']['params'])
+                ->orderByDesc('id')
                 ->paginate($inputs['per_page']);
 
         } catch (\Exception $e) {
@@ -53,16 +52,17 @@ class ProductRepository implements Interfaces\iProduct
     /**
      * جزئیات کالا
      * @param $code
+     * @param $user
      * @param array $select
      * @return mixed
      * @throws ApiException
      */
-    public function getProductByCode($code, $select = []): mixed
+    public function getProductByCode($code, $user, $select = []): mixed
     {
         try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
             $product = Product::with([
-                'cloth:id,code,color_id,name',
-                'cloth.color:enum_id,enum_caption',
+                'cloth:id,code,name',
                 'sale_period:id,name',
             ]);
 
@@ -70,7 +70,9 @@ class ProductRepository implements Interfaces\iProduct
                 $product = $product->select($select);
             }
 
-            return $product->whereCode($code)->first();
+            return $product->where('company_id', $company_id)
+                ->whereCode($code)
+                ->first();
         } catch (\Exception $e) {
             throw new ApiException($e);
         }
@@ -80,7 +82,7 @@ class ProductRepository implements Interfaces\iProduct
     {
         try {
             $company_id = $this->getCurrentCompanyOfUser($user);
-            return Product::select('id', 'name')
+            return Product::select('id', 'code', 'name')
                 ->when(isset($inputs['search_txt']), function ($q) use ($inputs) {
                     $q->where('name', 'like', '%' . $inputs['search_txt'] . '%');
                 })
@@ -106,7 +108,6 @@ class ProductRepository implements Interfaces\iProduct
             $product->cloth_id = $inputs['cloth_id'];
             $product->sale_period_id = $inputs['sale_period_id'];
             $product->name = $inputs['name'];
-            $product->has_accessories = $inputs['has_accessories'];
 
             return $product->save();
         } catch (\Exception $e) {
@@ -133,7 +134,6 @@ class ProductRepository implements Interfaces\iProduct
             $product->name = $inputs['name'];
             $product->cloth_id = $inputs['cloth_id'];
             $product->sale_period_id = $inputs['sale_period_id'];
-            $product->has_accessories = $inputs['has_accessories'];
             $product->created_by = $user->id;
 
             $result = $product->save();

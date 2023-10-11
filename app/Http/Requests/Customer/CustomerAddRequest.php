@@ -26,7 +26,7 @@ class CustomerAddRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', new MbMax(150)],
-            'parent_id' => 'nullable|numeric|min:1',
+            'parent_code' => 'nullable|string|size:32',
             'mobile' => 'required|string|starts_with:09',
             'tel' => 'nullable|string',
             'province_id' => 'required|numeric|min:1',

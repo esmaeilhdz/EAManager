@@ -23,16 +23,18 @@ class ClothBuyRepository implements Interfaces\iClothBuy
             return ClothBuy::with([
                 'cloth:id,name',
                 'seller_place:id,name',
-                'warehouse_place:id,name'
+                'warehouse_place:id,name',
+                'items:cloth_buy_id,color_id,metre,unit_price,price',
+                'items.color:enum_id,enum_caption',
             ])
                 ->select([
                     'id',
                     'cloth_id',
                     'seller_place_id',
                     'warehouse_place_id',
-                    'metre',
-                    'roll_count',
                     'receive_date',
+                    'factor_no',
+                    'price',
                     'created_by',
                     'created_at'
                 ])
@@ -64,15 +66,18 @@ class ClothBuyRepository implements Interfaces\iClothBuy
             return ClothBuy::with([
                 'cloth:id,code,name',
                 'seller_place:id,name',
-                'warehouse_place:id,name'
+                'warehouse_place:id,name',
+                'items:id,cloth_buy_id,color_id,metre,unit_price,price',
+                'items.cloth_buy',
+                'items.color:enum_id,enum_caption',
             ])
                 ->select([
                     'id',
                     'cloth_id',
                     'seller_place_id',
                     'warehouse_place_id',
-                    'metre',
-                    'roll_count',
+                    'factor_no',
+                    'price',
                     'receive_date'
                 ])
                 ->where('cloth_id', $inputs['cloth_id'])
@@ -88,8 +93,6 @@ class ClothBuyRepository implements Interfaces\iClothBuy
         try {
             $cloth_buy->seller_place_id = $inputs['seller_place_id'];
             $cloth_buy->warehouse_place_id = $inputs['warehouse_place_id'];
-            $cloth_buy->metre = $inputs['metre'];
-            $cloth_buy->roll_count = $inputs['roll_count'];
             $cloth_buy->receive_date = $inputs['receive_date'];
             $cloth_buy->factor_no = $inputs['factor_no'];
             $cloth_buy->price = $inputs['price'];
@@ -108,8 +111,6 @@ class ClothBuyRepository implements Interfaces\iClothBuy
             $cloth_buy->cloth_id = $inputs['cloth_id'];
             $cloth_buy->seller_place_id = $inputs['seller_place_id'];
             $cloth_buy->warehouse_place_id = $inputs['warehouse_place_id'];
-            $cloth_buy->metre = $inputs['metre'];
-            $cloth_buy->roll_count = $inputs['roll_count'];
             $cloth_buy->receive_date = $inputs['receive_date'];
             $cloth_buy->factor_no = $inputs['factor_no'];
             $cloth_buy->price = $inputs['price'];

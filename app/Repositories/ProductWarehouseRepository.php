@@ -30,11 +30,13 @@ class ProductWarehouseRepository implements Interfaces\iProductWarehouse
             return ProductWarehouse::query()
                 ->with([
                     'place:id,name',
+                    'product_model:id,product_id,name',
                     'creator:id,person_id',
                     'creator.person:id,name,family'
                 ])
                 ->select([
                     'id',
+                    'product_model_id',
                     'place_id',
                     'free_size_count',
                     'size1_count',
@@ -49,7 +51,6 @@ class ProductWarehouseRepository implements Interfaces\iProductWarehouse
                 ->whereHas('place', function ($q) use ($company_id) {
                     $q->where('company_id', $company_id);
                 })
-//                ->whereRaw($inputs['where']['search']['condition'], $inputs['where']['search']['params'])
                 ->paginate($inputs['per_page']);
         } catch (\Exception $e) {
             throw new ApiException($e);
@@ -187,9 +188,10 @@ class ProductWarehouseRepository implements Interfaces\iProductWarehouse
         try {
             $company_id = $this->getCurrentCompanyOfUser($user);
             return ProductWarehouse::with([
-                'product:id,name'
+                'product:id,name',
+                'product_model:id,product_id,name'
             ])
-                ->select('id', 'product_id')
+                ->select('id', 'product_id', 'product_model_id')
                 ->where('place_id', $inputs['id'])
                 ->whereHas('product', function ($q) use ($inputs, $company_id) {
                     $q->when(isset($inputs['search_txt']), function ($q2) use ($inputs) {
@@ -203,13 +205,14 @@ class ProductWarehouseRepository implements Interfaces\iProductWarehouse
         }
     }
 
-    public function getByProductAndPlace($place_id, $product_id, $user)
+    public function getByProductAndPlace($place_id, $product_id, $product_model_id, $user)
     {
         try {
             $company_id = $this->getCurrentCompanyOfUser($user);
             return ProductWarehouse::select('id')
                 ->where('place_id', $place_id)
                 ->where('product_id', $product_id)
+                ->where('product_model_id', $product_model_id)
                 ->whereHas('product', function ($q) use ($company_id) {
                     $q->where('company_id', $company_id);
                 })
@@ -223,16 +226,29 @@ class ProductWarehouseRepository implements Interfaces\iProductWarehouse
     {
         try {
             $company_id = $this->getCurrentCompanyOfUser($user);
-            return ProductWarehouse::select('id', 'product_id')
+            return ProductWarehouse::select('id', 'product_id', 'product_model_id', 'place_id')
                 ->with([
-                    'product'
+                    'product:id,name',
+                    'product_model:id,name',
+                    'place:id,name',
                 ])
-                ->whereHas('product', function ($q) use ($company_id, $inputs) {
-                    $q->where('company_id', $company_id);
-                    $q->when(isset($inputs['search_txt']), function ($q2) use ($inputs) {
-                        $q2->where('name', 'like', '%' . $inputs['search_txt'] . '%');
+                ->where(function ($q) use ($company_id, $inputs) {
+                    $q->whereHas('product', function ($q2) use ($company_id, $inputs) {
+                        $q2->where('company_id', $company_id);
+                        $q2->when(isset($inputs['search_txt']), function ($q3) use ($inputs) {
+                            $q3->where('name', 'like', '%' . $inputs['search_txt'] . '%');
+                        });
+                    })
+                    ->orWhereHas('product_model', function ($q3) use ($company_id, $inputs) {
+                        $q3->when(isset($inputs['search_txt']), function ($q4) use ($inputs) {
+                            $q4->where('name', 'like', '%' . $inputs['search_txt'] . '%');
+                        });
                     });
                 })
+                ->whereHas('product_model', function ($q) {
+                    $q->where('is_enable', 1);
+                })
+                ->where('is_enable', 1)
                 ->limit(10)
                 ->get();
         } catch (\Exception $e) {
@@ -280,6 +296,7 @@ class ProductWarehouseRepository implements Interfaces\iProductWarehouse
     {
         try {
             return ProductWarehouse::where('product_id', $inputs['product_id'])
+                ->where('product_model_id', $inputs['product_model_id'])
                 ->where('place_id', $inputs['place_id'])
                 ->update(['is_enable' => 0]);
         } catch (\Exception $e) {
@@ -300,6 +317,7 @@ class ProductWarehouseRepository implements Interfaces\iProductWarehouse
             $product_warehouse = new ProductWarehouse();
 
             $product_warehouse->product_id = $inputs['product_id'];
+            $product_warehouse->product_model_id = $inputs['product_model_id'];
             $product_warehouse->place_id = $inputs['place_id'];
             $product_warehouse->free_size_count = $inputs['free_size_count'];
             $product_warehouse->size1_count = $inputs['size1_count'];
@@ -322,7 +340,7 @@ class ProductWarehouseRepository implements Interfaces\iProductWarehouse
 
     /**
      * حذف انبار کالا
-     * @param $product
+     * @param $product_warehouse
      * @return mixed
      * @throws ApiException
      */

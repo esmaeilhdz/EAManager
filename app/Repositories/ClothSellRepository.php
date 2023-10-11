@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Exceptions\ApiException;
 use App\Models\ClothSell;
+use App\Models\ClothSellItem;
 use App\Traits\Common;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
@@ -23,16 +24,18 @@ class ClothSellRepository implements Interfaces\iClothSell
             return ClothSell::with([
                 'cloth:id,name',
                 'customer:id,name',
-                'warehouse_place:id,name'
+                'warehouse_place:id,name',
+                'items:cloth_sell_id,color_id,metre,unit_price,price',
+                'items.color:enum_id,enum_caption'
             ])
                 ->select([
                     'id',
                     'cloth_id',
                     'customer_id',
                     'warehouse_place_id',
-                    'metre',
-                    'roll_count',
                     'sell_date',
+                    'factor_no',
+                    'price',
                     'created_by',
                     'created_at'
                 ])
@@ -63,16 +66,18 @@ class ClothSellRepository implements Interfaces\iClothSell
         try {
             return ClothSell::with([
                 'cloth:id,code,name',
-                'customer:id,name',
-                'warehouse_place:id,name'
+                'customer:id,code,name',
+                'warehouse_place:id,name',
+                'items:id,cloth_sell_id,color_id,metre,unit_price,price',
+                'items.color:enum_id,enum_caption'
             ])
                 ->select([
                     'id',
                     'cloth_id',
                     'customer_id',
                     'warehouse_place_id',
-                    'metre',
-                    'roll_count',
+                    'factor_no',
+                    'price',
                     'sell_date'
                 ])
                 ->where('cloth_id', $inputs['cloth_id'])
@@ -88,8 +93,6 @@ class ClothSellRepository implements Interfaces\iClothSell
         try {
             $cloth_sell->customer_id = $inputs['customer_id'];
             $cloth_sell->warehouse_place_id = $inputs['warehouse_place_id'];
-            $cloth_sell->metre = $inputs['metre'];
-            $cloth_sell->roll_count = $inputs['roll_count'];
             $cloth_sell->sell_date = $inputs['sell_date'];
             $cloth_sell->factor_no = $inputs['factor_no'];
             $cloth_sell->price = $inputs['price'];
@@ -108,8 +111,6 @@ class ClothSellRepository implements Interfaces\iClothSell
             $cloth_sell->cloth_id = $inputs['cloth_id'];
             $cloth_sell->customer_id = $inputs['customer_id'];
             $cloth_sell->warehouse_place_id = $inputs['warehouse_place_id'];
-            $cloth_sell->metre = $inputs['metre'];
-            $cloth_sell->roll_count = $inputs['roll_count'];
             $cloth_sell->sell_date = $inputs['sell_date'];
             $cloth_sell->factor_no = $inputs['factor_no'];
             $cloth_sell->price = $inputs['price'];

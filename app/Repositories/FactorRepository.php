@@ -12,6 +12,13 @@ class FactorRepository implements Interfaces\iFactor
 {
     use Common;
 
+    // فاکتور ناقص
+    const InCompleteFactor = 1;
+    // فاکتور تایید شده
+    const ConfirmFactor = 2;
+    // فاکتور مرجوعی
+    const ReturnedFactor = 3;
+
     /**
      * لیست فاکتورها
      * @param $inputs
@@ -24,6 +31,7 @@ class FactorRepository implements Interfaces\iFactor
             return Factor::query()
                 ->with([
                     'customer:id,name,mobile',
+                    'factor_status:enum_id,enum_caption',
                     'creator:id,person_id',
                     'creator.person:id,name,family'
                 ])
@@ -129,15 +137,18 @@ class FactorRepository implements Interfaces\iFactor
     /**
      * جزئیات فاکتور
      * @param $code
+     * @param $user
      * @param array $select
      * @param array $relation
      * @return mixed
      * @throws ApiException
      */
-    public function getFactorByCode($code, $select = [], $relation = []): mixed
+    public function getFactorByCode($code, $user, $select = [], $relation = []): mixed
     {
         try {
-            $factor = Factor::whereCode($code);
+            $company_id = $this->getCurrentCompanyOfUser($user);
+            $factor = Factor::whereCode($code)
+                ->where('company_id', $company_id);
 
             if (count($relation)) {
                 $factor = $factor->with($relation);
@@ -168,8 +179,10 @@ class FactorRepository implements Interfaces\iFactor
             $factor->has_return_permission = $inputs['has_return_permission'];
             $factor->is_credit = $inputs['is_credit'];
             $factor->settlement_date = $inputs['settlement_date'];
+            $factor->returned_at = $inputs['returned_at'];
             $factor->description = $inputs['description'];
             $factor->final_price = $inputs['final_price'];
+            $factor->status = $inputs['status'];
 
             return $factor->save();
         } catch (\Exception $e) {
@@ -188,8 +201,9 @@ class FactorRepository implements Interfaces\iFactor
     {
         try {
             $factor->status = $inputs['status'];
+//            $factor->description = $inputs['description'];
             // مرجوع فاکتور
-            if ($inputs['status'] == 3) {
+            if ($inputs['status'] == self::ReturnedFactor) {
                 $factor->returned_at = now();
             }
 
@@ -218,7 +232,7 @@ class FactorRepository implements Interfaces\iFactor
             $factor->factor_no = 'FF-'.rand(1111111,9999999);
             $factor->has_return_permission = $inputs['has_return_permission'];
             $factor->is_credit = $inputs['is_credit'];
-            $factor->status = $inputs['status'];
+//            $factor->status = $inputs['status'];
             $factor->settlement_date = $inputs['settlement_date'];
             $factor->description = $inputs['description'] ?? null;
             $factor->final_price = $inputs['final_price'];
@@ -228,10 +242,7 @@ class FactorRepository implements Interfaces\iFactor
 
             return [
                 'result' => $result,
-                'data' => $result ? [
-                    'code' => $factor->code,
-                    'id' => $factor->id
-                ] : null
+                'data' => $result ? $factor : null
             ];
 
         } catch (\Exception $e) {

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class FactorPayment extends Model
 {
     use HasFactory;
-    protected $hidden = ['id', 'factor_id', 'updated_at'];
+    protected $hidden = ['factor_id', 'payment_type_id', 'updated_at'];
 
     protected function createdAt(): Attribute
     {
@@ -25,6 +25,6 @@ class FactorPayment extends Model
     public function payment_type()
     {
         return $this->hasOne(Enumeration::class, 'enum_id', 'payment_type_id')
-            ->where('category_name', 'payment_type');
+            ->where('category_name', 'pay_type');
     }
 }

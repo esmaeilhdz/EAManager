@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Exceptions\ApiException;
 use App\Models\Accessory;
-use App\Models\AccessoryWarehouse;
+use App\Models\AccessoryWareHouse;
 use App\Traits\Common;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -24,9 +24,7 @@ class AccessoryWarehouseRepository implements Interfaces\iAccessoryWarehouse
     public function getAccessoryWarehouses($inputs): LengthAwarePaginator
     {
         try {
-            return AccessoryWarehouse::with([
-                'creator:id,person_id',
-                'creator.person:id,name,family',
+            return AccessoryWareHouse::with([
                 'place:id,name'
             ])
                 ->select([
@@ -34,11 +32,11 @@ class AccessoryWarehouseRepository implements Interfaces\iAccessoryWarehouse
                     'accessory_id',
                     'place_id',
                     'count',
-                    'created_by',
-                    'created_at'
                 ])
-                ->whereHas('place', function ($q) use ($inputs) {
-                    $q->whereRaw($inputs['where']['place']['condition'], $inputs['where']['place']['params']);
+                ->when(isset($inputs['search_txt']), function ($q) use ($inputs) {
+                    $q->whereHas('place', function ($q) use ($inputs) {
+                        $q->where('name', 'like', '%' . $inputs['search_txt'] . '%');
+                    });
                 })
                 ->where('accessory_id', $inputs['accessory_id'])
                 ->paginate($inputs['per_page']);
@@ -56,7 +54,7 @@ class AccessoryWarehouseRepository implements Interfaces\iAccessoryWarehouse
     public function getAccessoryWarehouseById($id): Model|Collection|Builder|array|null
     {
         try {
-            return AccessoryWarehouse::with([
+            return AccessoryWareHouse::with([
                 'place:id,name'
             ])
                 ->select([
@@ -79,7 +77,8 @@ class AccessoryWarehouseRepository implements Interfaces\iAccessoryWarehouse
     public function editAccessoryWarehouse($inputs): mixed
     {
         try {
-            $accessory_warehouse = AccessoryWarehouse::where('accessory_id', $inputs['accessory_id'])->first();
+            $accessory_warehouse = AccessoryWareHouse::where('accessory_id', $inputs['accessory_id'])
+                ->where('place_id', $inputs['place_id'])->first();
 
             if ($inputs['sign'] == 'plus') {
                 $accessory_warehouse->count += $inputs['count'];

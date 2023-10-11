@@ -4,9 +4,9 @@ namespace App\Repositories\Interfaces;
 
 interface iCustomer
 {
-    public function getCustomers($inputs);
+    public function getCustomers($inputs, $user);
 
-    public function getCustomerByCode($code, $select = [], $relation = []);
+    public function getCustomerByCode($code, $user, $select = [], $relation = []);
 
     public function getCustomersCombo($inputs, $user);
 

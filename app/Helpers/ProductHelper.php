@@ -2,26 +2,38 @@
 
 namespace App\Helpers;
 
+use App\Models\Accessory;
+use App\Models\Cloth;
 use App\Repositories\Interfaces\iCloth;
 use App\Repositories\Interfaces\iProduct;
+use App\Repositories\Interfaces\iProductAccessory;
 use App\Repositories\Interfaces\iSalePeriod;
 use App\Traits\Common;
+use App\Traits\ProductAccessoryTrait;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ProductHelper
 {
-    use Common;
+    use Common, ProductAccessoryTrait;
 
     // attributes
     public iProduct $product_interface;
     public iCloth $cloth_interface;
     public iSalePeriod $sale_period_interface;
+    public iProductAccessory $product_accessory_interface;
 
-    public function __construct(iProduct $product_interface, iCloth $cloth_interface, iSalePeriod $sale_period_interface)
+    public function __construct(
+        iProduct $product_interface,
+        iCloth $cloth_interface,
+        iSalePeriod $sale_period_interface,
+        iProductAccessory $product_accessory_interface
+    )
     {
         $this->product_interface = $product_interface;
         $this->cloth_interface = $cloth_interface;
         $this->sale_period_interface = $sale_period_interface;
+        $this->product_accessory_interface = $product_accessory_interface;
     }
 
     /**
@@ -49,14 +61,10 @@ class ProductHelper
                 'code' => $item->code,
                 'name' => $item->name,
                 'internal_code' => $item->internal_code,
-                'has_accessories' => $item->has_accessories,
                 'product_warehouse_count' => $warehouse_count,
                 'price' => $item->productPrice->final_price ?? null,
                 'cloth' => [
                     'name' => $item->cloth->name,
-                    'color' => [
-                        $item->cloth->color->caption
-                    ]
                 ],
                 'sale_period' => [
                     'name' => $item->sale_period->name,
@@ -85,9 +93,10 @@ class ProductHelper
     public function getProductDetail($code): array
     {
         $select = [
-            'code', 'internal_code', 'name', 'has_accessories', 'cloth_id', 'sale_period_id'
+            'code', 'internal_code', 'name', 'cloth_id', 'sale_period_id'
         ];
-        $product = $this->product_interface->getProductByCode($code, $select);
+        $user = Auth::user();
+        $product = $this->product_interface->getProductByCode($code, $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,
@@ -124,23 +133,25 @@ class ProductHelper
      * سرویس ویرایش کالا
      * @param $inputs
      * @return array
+     * @throws \App\Exceptions\ApiException
      */
     public function editProduct($inputs): array
     {
-        $product = $this->product_interface->getProductByCode($inputs['code']);
+        $user = Auth::user();
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user);
         if (is_null($product)) {
             return [
                 'result' => false,
-                'message' => __('messages.record_not_found'),
+                'message' => __('messages.product_not_found'),
                 'data' => null
             ];
         }
 
-        $cloth = $this->cloth_interface->getClothByCode($inputs['cloth_code']);
+        $cloth = $this->cloth_interface->getClothByCode($inputs['cloth_code'], $user);
         if (is_null($cloth)) {
             return [
                 'result' => false,
-                'message' => __('messages.record_not_found'),
+                'message' => __('messages.cloth_not_found'),
                 'data' => null
             ];
         }
@@ -149,16 +160,45 @@ class ProductHelper
         if (is_null($sale_period)) {
             return [
                 'result' => false,
-                'message' => __('messages.record_not_found'),
+                'message' => __('messages.sale_period_not_found'),
                 'data' => null
             ];
         }
 
         $inputs['cloth_id'] = $cloth->id;
-        $result = $this->product_interface->editProduct($product, $inputs);
+
+        $transaction_product_accessories = $this->getInsertableAccessories($product->id, $inputs, $user);
+        $inserts = $transaction_product_accessories['inserts'];
+        $deletes = $transaction_product_accessories['deletes'];
+        $updates = $transaction_product_accessories['updates'];
+
+        DB::beginTransaction();
+        $result[] = $this->product_interface->editProduct($product, $inputs);
+        foreach ($inserts as $insert) {
+            $result[] = $this->product_accessory_interface->addProductAccessory($insert, $user);
+        }
+
+        foreach ($updates as $update) {
+            $result[] = $this->product_accessory_interface->editProductAccessoryByData($product->id, $update);
+        }
+
+        foreach ($deletes as $delete) {
+            $result[] = $this->product_accessory_interface->deleteProductAccessoriesByData($product->id, $delete);
+        }
+
+        $result = $this->prepareTransactionArray($result);
+
+        if (!in_array(false, $result)) {
+            $flag = true;
+            DB::commit();
+        } else {
+            $flag = false;
+            DB::rollBack();
+        }
+
         return [
-            'result' => (bool) $result,
-            'message' => $result ? __('messages.success') : __('messages.fail'),
+            'result' => $flag,
+            'message' => $flag ? __('messages.success') : __('messages.fail'),
             'data' => null
         ];
     }
@@ -171,8 +211,7 @@ class ProductHelper
     public function addProduct($inputs): array
     {
         $user = Auth::user();
-
-        $cloth = $this->cloth_interface->getClothByCode($inputs['cloth_code']);
+        $cloth = $this->cloth_interface->getClothByCode($inputs['cloth_code'], $user);
         if (is_null($cloth)) {
             return [
                 'result' => false,
@@ -206,7 +245,8 @@ class ProductHelper
      */
     public function deleteProduct($inputs): array
     {
-        $product = $this->product_interface->getProductByCode($inputs['code'], ['id', 'code']);
+        $user = Auth::user();
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, ['id', 'code']);
         if (is_null($product)) {
             return [
                 'result' => false,

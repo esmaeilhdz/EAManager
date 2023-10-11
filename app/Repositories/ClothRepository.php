@@ -12,24 +12,35 @@ class ClothRepository implements Interfaces\iCloth
 {
     use Common;
 
-    public function getClothes($inputs): LengthAwarePaginator
+    /**
+     * @param $inputs
+     * @param $user
+     * @return LengthAwarePaginator
+     * @throws ApiException
+     */
+    public function getClothes($inputs, $user): LengthAwarePaginator
     {
+        $company_id = $this->getCurrentCompanyOfUser($user);
         try {
             return Cloth::with([
                 'creator:id,person_id',
                 'creator.person:id,name,family',
                 'color:enum_id,enum_caption',
-                'cloth_buy:cloth_id',
-                'cloth_sell:cloth_id'
+                'cloth_buy:cloth_id,receive_date,seller_place_id,warehouse_place_id,factor_no,price',
+                'cloth_buy.seller_place:id,name',
+                'cloth_buy.warehouse_place:id,name',
+                'cloth_sell:cloth_id,sell_date,customer_id,warehouse_place_id,factor_no,price',
+                'cloth_sell.customer:id,name',
+                'cloth_sell.warehouse_place:id,name'
             ])
                 ->select([
                     'id',
                     'code',
                     'name',
-                    'color_id',
                     'created_by',
                     'created_at'
                 ])
+                ->where('company_id', $company_id)
                 ->when(isset($inputs['search_txt']), function ($q) use ($inputs) {
                     $q->where('name', 'like', '%' . $inputs['search_txt'] . '%');
                 })
@@ -39,20 +50,37 @@ class ClothRepository implements Interfaces\iCloth
         }
     }
 
-    public function getClothByCode($code)
+    public function getClothByCode($code, $user)
     {
         try {
-            return Cloth::with([
-                'color:enum_id,enum_caption'
+            $company_id = $this->getCurrentCompanyOfUser($user);
+            return Cloth::select([
+                'id',
+                'code',
+                'name',
             ])
-                ->select([
-                    'id',
-                    'code',
-                    'name',
-                    'color_id'
-                ])
                 ->whereCode($code)
+                ->where('company_id', $company_id)
                 ->first();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
+    public function getClothCombo($inputs, $user)
+    {
+        try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
+            return Cloth::select([
+                'code',
+                'name'
+            ])
+                ->when(isset($inputs['search_txt']), function ($q) use ($inputs) {
+                    $q->where('name', 'like', '%' . $inputs['search_txt'] . '%');
+                })
+                ->where('company_id', $company_id)
+                ->limit(10)
+                ->get();
         } catch (\Exception $e) {
             throw new ApiException($e);
         }
@@ -62,7 +90,6 @@ class ClothRepository implements Interfaces\iCloth
     {
         try {
             $cloth->name = $inputs['name'];
-            $cloth->color_id = $inputs['color_id'];
 
             return $cloth->save();
         } catch (\Exception $e) {
@@ -70,22 +97,22 @@ class ClothRepository implements Interfaces\iCloth
         }
     }
 
-    public function addCloth($inputs, $user, $company_id): array
+    public function addCloth($inputs, $user): array
     {
         try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
             $cloth = new Cloth();
 
             $cloth->code = $this->randomString();
             $cloth->company_id = $company_id;
             $cloth->name = $inputs['name'];
-            $cloth->color_id = $inputs['color_id_item'];
             $cloth->created_by = $user->id;
 
             $result = $cloth->save();
 
             return [
                 'result' => $result,
-                'data' => $result ? $cloth->code : null
+                'data' => $result ? $cloth : null
             ];
 
         } catch (\Exception $e) {

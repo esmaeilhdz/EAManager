@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class FactorProduct extends Model
 {
     use HasFactory;
-    protected $hidden = ['id', 'factor_id', 'product_warehouse_id', 'updated_at'];
+    protected $hidden = ['factor_id', 'product_warehouse_id', 'updated_at'];
 
     protected function createdAt(): Attribute
     {

@@ -9,6 +9,7 @@ use App\Traits\Common;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class ClothWarehouseRepository implements Interfaces\iClothWarehouse
 {
@@ -24,13 +25,15 @@ class ClothWarehouseRepository implements Interfaces\iClothWarehouse
     {
         try {
             return ClothWareHouse::with([
-                'place:id,name'
+                'cloth:id,name',
+                'place:id,name',
+                'color:enum_id,enum_caption'
             ])
                 ->select([
                     'cloth_id',
                     'place_id',
+                    'color_id',
                     'metre',
-                    'roll_count'
                 ])
                 ->where('cloth_id', $inputs['cloth_id'])
                 ->where(function ($q) use ($inputs) {
@@ -47,24 +50,45 @@ class ClothWarehouseRepository implements Interfaces\iClothWarehouse
 
     /**
      * @param $cloth_id
+     * @param $color_id
      * @param $place_id
+     * @return object|null
      * @throws ApiException
      */
-    public function getClothWarehousesByCloth($cloth_id, $place_id)
+    public function getClothWarehousesByCloth($cloth_id, $color_id, $place_id): object|null
     {
         try {
             return ClothWareHouse::with([
                 'place:id,name'
             ])
                 ->select([
+                    'id',
                     'cloth_id',
                     'place_id',
-                    'metre',
-                    'roll_count'
+                    'color_id',
+                    'metre'
                 ])
                 ->where('cloth_id', $cloth_id)
+                ->where('color_id', $color_id)
                 ->where('place_id', $place_id)
                 ->first();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
+    public function addWarehouse($inputs, $user)
+    {
+        try {
+            $cloth_warehouse = new ClothWareHouse();
+
+            $cloth_warehouse->cloth_id = $inputs['cloth_id'];
+            $cloth_warehouse->place_id = $inputs['place_id'];
+            $cloth_warehouse->metre = $inputs['metre'];
+            $cloth_warehouse->color_id = $inputs['color_id'];
+            $cloth_warehouse->created_by = $user->id;
+
+            return $cloth_warehouse->save();
         } catch (\Exception $e) {
             throw new ApiException($e);
         }
@@ -75,14 +99,18 @@ class ClothWarehouseRepository implements Interfaces\iClothWarehouse
         try {
             $cloth_warehouse = ClothWareHouse::where('cloth_id', $inputs['cloth_id'])
                 ->where('place_id', $inputs['warehouse_place_id'])
+                ->where('color_id', $inputs['color_id'])
                 ->first();
 
-            if ($inputs['sign'] == 'plus') {
-                $cloth_warehouse->metre += $inputs['metre'];
-                $cloth_warehouse->roll_count += $inputs['roll_count'];
-            } elseif ($inputs['sign'] == 'minus') {
-                $cloth_warehouse->metre -= $inputs['metre'];
-                $cloth_warehouse->roll_count -= $inputs['roll_count'];
+            switch ($inputs['sign']) {
+                case 'plus':
+                    $cloth_warehouse->metre += $inputs['metre'];
+                    break;
+                case 'minus':
+                    $cloth_warehouse->metre -= $inputs['metre'];
+                    break;
+//                default:
+//                    $cloth_warehouse->metre = $inputs['metre'];
             }
 
             return $cloth_warehouse->save();
@@ -116,12 +144,6 @@ class ClothWarehouseRepository implements Interfaces\iClothWarehouse
             $cloth_warehouse = ClothWareHouse::where('cloth_id', $inputs['cloth_id'])
                 ->where('place_id', $inputs['warehouse_place_id'])
                 ->first();
-
-            if ($inputs['sign'] == 'plus') {
-                $cloth_warehouse->roll_count += $inputs['roll_count'];
-            } elseif ($inputs['sign'] == 'minus') {
-                $cloth_warehouse->roll_count -= $inputs['roll_count'];
-            }
 
             return $cloth_warehouse->save();
         } catch (\Exception $e) {

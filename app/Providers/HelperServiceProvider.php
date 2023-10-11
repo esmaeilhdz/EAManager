@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Helpers\AccessoryBuyHelper;
 use App\Helpers\AccessoryHelper;
+use App\Helpers\AccessoryWarehouseHelper;
 use App\Helpers\AccountHelper;
 use App\Helpers\AddressHelper;
 use App\Helpers\AttachmentHelper;
@@ -12,6 +13,8 @@ use App\Helpers\CityHelper;
 use App\Helpers\ClothSellHelper;
 use App\Helpers\ClothWarehouseHelper;
 use App\Helpers\EnumerationHelper;
+use App\Helpers\FactorPaymentHelper;
+use App\Helpers\FactorProductHelper;
 use App\Helpers\GroupConversationHelper;
 use App\Helpers\ChatGroupPersonHelper;
 use App\Helpers\ChatHelper;
@@ -28,6 +31,8 @@ use App\Helpers\NotifHelper;
 use App\Helpers\PaymentHelper;
 use App\Helpers\PermissionHelper;
 use App\Helpers\PersonCompanyHelper;
+use App\Helpers\ProductAccessoryHelper;
+use App\Helpers\ProductModelHelper;
 use App\Helpers\ProvinceHelper;
 use App\Helpers\ReportHelper;
 use App\Helpers\RoleHelper;
@@ -76,6 +81,8 @@ class HelperServiceProvider extends ServiceProvider
         App::alias(AddressHelper::class, 'address_helper');
         App::alias(InvoiceHelper::class, 'invoice_helper');
         App::alias(FactorHelper::class, 'factor_helper');
+        App::alias(FactorProductHelper::class, 'factor_product_helper');
+        App::alias(FactorPaymentHelper::class, 'factor_payment_helper');
         App::alias(AttachmentHelper::class, 'attachment_helper');
         App::alias(PaymentHelper::class, 'payment_helper');
         App::alias(BillHelper::class, 'bill_helper');
@@ -96,6 +103,9 @@ class HelperServiceProvider extends ServiceProvider
         App::alias(SalaryDeductionHelper::class, 'salary_deduction_helper');
         App::alias(ProvinceHelper::class, 'province_helper');
         App::alias(CityHelper::class, 'city_helper');
+        App::alias(ProductModelHelper::class, 'product_model_helper');
+        App::alias(ProductAccessoryHelper::class, 'product_accessory_helper');
+        App::alias(AccessoryWarehouseHelper::class, 'accessory_warehouse_helper');
     }
 
     /**

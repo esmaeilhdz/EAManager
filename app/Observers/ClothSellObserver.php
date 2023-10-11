@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Models\ClothSell;
+use App\Models\ClothSellItem;
 use App\Models\ClothWareHouse;
 
 class ClothSellObserver
@@ -10,17 +10,17 @@ class ClothSellObserver
     /**
      * Handle the ClothSell "created" event.
      *
-     * @param ClothSell $clothSell
+     * @param ClothSellItem $clothSellItem
      * @return void
      */
-    public function created(ClothSell $clothSell)
+    public function created(ClothSellItem $clothSellItem)
     {
-        $cloth_warehouse = ClothWareHouse::where('cloth_id', $clothSell->cloth_id)
-            ->where('place_id', $clothSell->warehouse_place_id)
+        $cloth_warehouse = ClothWareHouse::where('cloth_id', $clothSellItem->cloth_sell->cloth_id)
+            ->where('place_id', $clothSellItem->cloth_sell->warehouse_place_id)
+            ->where('color_id', $clothSellItem->color_id)
             ->first();
 
-        $cloth_warehouse->metre -= $clothSell->metre;
-        $cloth_warehouse->roll_count -= $clothSell->roll_count;
+        $cloth_warehouse->metre -= intval($clothSellItem->metre);
 
         $cloth_warehouse->save();
     }
@@ -28,10 +28,10 @@ class ClothSellObserver
     /**
      * Handle the ClothSell "updated" event.
      *
-     * @param ClothSell $clothSell
+     * @param ClothSellItem $clothSellItem
      * @return void
      */
-    public function updated(ClothSell $clothSell)
+    public function updated(ClothSellItem $clothSellItem)
     {
         //
     }
@@ -39,31 +39,30 @@ class ClothSellObserver
     /**
      * Handle the ClothSell "deleted" event.
      *
-     * @param ClothSell $clothSell
+     * @param ClothSellItem $clothSellItem
      * @return void
      */
-    public function deleted(ClothSell $clothSell)
+    public function deleted(ClothSellItem $clothSellItem)
     {
-        $cloth_warehouse = ClothWareHouse::where('cloth_id', $clothSell->cloth_id)->first();
+        $cloth_warehouse = ClothWareHouse::where('cloth_id', $clothSellItem->cloth_sell->cloth_id)
+            ->where('place_id', $clothSellItem->cloth_sell->warehouse_place_id)
+            ->where('color_id', $clothSellItem->color_id)->first();
 
-        if (!is_null($clothSell)) {
-            $cloth_warehouse->metre += $clothSell->metre;
-            $cloth_warehouse->roll_count += $clothSell->roll_count;
+        if (!is_null($cloth_warehouse)) {
+            $cloth_warehouse->metre += $clothSellItem->metre;
             $cloth_warehouse->save();
         } else {
             $cloth_warehouse->delete();
         }
-
-        $cloth_warehouse->save();
     }
 
     /**
      * Handle the ClothSell "restored" event.
      *
-     * @param ClothSell $clothSell
+     * @param ClothSellItem $clothSellItem
      * @return void
      */
-    public function restored(ClothSell $clothSell)
+    public function restored(ClothSellItem $clothSellItem)
     {
         //
     }
@@ -71,10 +70,10 @@ class ClothSellObserver
     /**
      * Handle the ClothSell "force deleted" event.
      *
-     * @param ClothSell $clothSell
+     * @param ClothSellItem $clothSellItem
      * @return void
      */
-    public function forceDeleted(ClothSell $clothSell)
+    public function forceDeleted(ClothSellItem $clothSellItem)
     {
         //
     }

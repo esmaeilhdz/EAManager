@@ -39,6 +39,7 @@ class ProductWarehouseEditRequest extends FormRequest
     {
         return [
             'code' => 'required|string|size:32',
+            'product_model_id' => 'required|numeric|min:1',
             'warehouse_id' => 'required|numeric|min:1',
             'place_id' => 'required|numeric|min:1',
             'free_size_count' => 'required|numeric|min:1',

@@ -18,26 +18,29 @@ class AccessoryRepository implements Interfaces\iAccessory
     /**
      * لیست خرج کار ها
      * @param $inputs
+     * @param $user
      * @return LengthAwarePaginator
      * @throws ApiException
      */
-    public function getAccessories($inputs): LengthAwarePaginator
+    public function getAccessories($inputs, $user): LengthAwarePaginator
     {
         try {
-            return AccessoryBuy::with([
-                'place:id,name',
-                'accessory.creator:id,person_id',
-                'accessory.creator.person:id,name,family',
+            $company_id = $this->getCurrentCompanyOfUser($user);
+            return Accessory::with([
+                'creator:id,person_id',
+                'creator.person:id,name,family',
             ])
                 ->select([
                     'id',
-                    'accessory_id',
-                    'place_id',
-                    'count'
+                    'name',
+                    'is_enable',
+                    'created_by',
+                    'created_at',
                 ])
-                ->whereHas('accessory', function ($q) use ($inputs) {
-                    $q->whereRaw($inputs['where']['search']['condition'], $inputs['where']['search']['params']);
+                ->when(isset($inputs['search_txt']), function ($q) use ($inputs) {
+                    $q->where('name', 'like', '%' . $inputs['search_txt'] . '%');
                 })
+                ->where('company_id', $company_id)
                 ->paginate($inputs['per_page']);
         } catch (\Exception $e) {
             throw new ApiException($e);
@@ -66,6 +69,26 @@ class AccessoryRepository implements Interfaces\iAccessory
             }
 
             return $accessory->first();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
+    public function getAccessoryCombo($inputs, $user)
+    {
+        try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
+            return Accessory::select([
+                'id',
+                'name'
+            ])
+                ->when(isset($inputs['search_txt']), function ($q) use ($inputs) {
+                    $q->where('name', 'like', '%' . $inputs['search_txt'] . '%');
+                })
+                ->where('company_id', $company_id)
+                ->where('is_enable', 1)
+                ->limit(10)
+                ->get();
         } catch (\Exception $e) {
             throw new ApiException($e);
         }

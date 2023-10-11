@@ -41,8 +41,9 @@ class RequestProductWarehouseHelper
      */
     public function getRequestProductWarehouses($inputs): array
     {
+        $user = Auth::user();
         $select = ['id'];
-        $product = $this->product_interface->getProductByCode($inputs['code'], $select);
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,
@@ -110,8 +111,9 @@ class RequestProductWarehouseHelper
      */
     public function getRequestProductWarehouseDetail($inputs): array
     {
+        $user = Auth::user();
         $select = ['id'];
-        $product = $this->product_interface->getProductByCode($inputs['code'], $select);
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,
@@ -162,8 +164,9 @@ class RequestProductWarehouseHelper
      */
     public function editRequestProductWarehouse($inputs): array
     {
+        $user = Auth::user();
         $select = ['id'];
-        $product = $this->product_interface->getProductByCode($inputs['code'], $select);
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,
@@ -218,9 +221,10 @@ class RequestProductWarehouseHelper
      */
     public function confirmRequestProductWarehouse($inputs): array
     {
+        $user = Auth::user();
         // محصول
         $select = ['id'];
-        $product = $this->product_interface->getProductByCode($inputs['code'], $select);
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,
@@ -265,7 +269,6 @@ class RequestProductWarehouseHelper
             ];
         }
 
-        $user = Auth::user();
         $inputs = [
             'product_warehouse_id' => $destination_product_warehouse->id,
             'free_size_count' => $request_product_warehouse->free_size_count,
@@ -311,8 +314,9 @@ class RequestProductWarehouseHelper
      */
     public function addRequestProductWarehouse($inputs): array
     {
+        $user = Auth::user();
         $select = ['id'];
-        $product = $this->product_interface->getProductByCode($inputs['code'], $select);
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,
@@ -332,7 +336,6 @@ class RequestProductWarehouseHelper
             ];
         }
 
-        $user = Auth::user();
         $result = $this->request_product_warehouse_interface->addRequestProductWarehouse($inputs, $user);
         return [
             'result' => $result['result'],
@@ -348,8 +351,9 @@ class RequestProductWarehouseHelper
      */
     public function deleteRequestProductWarehouse($inputs): array
     {
+        $user = Auth::user();
         $select = ['id'];
-        $product = $this->product_interface->getProductByCode($inputs['code'], $select);
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,

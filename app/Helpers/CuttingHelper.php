@@ -33,8 +33,9 @@ class CuttingHelper
     public function getCuttings($inputs): array
     {
         // کالا
+        $user = Auth::user();
         $select = ['id', 'name'];
-        $product = $this->product_interface->getProductByCode($inputs['code'], $select);
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,
@@ -85,8 +86,9 @@ class CuttingHelper
     public function getCuttingDetail($inputs): array
     {
         // کالا
+        $user = Auth::user();
         $select = ['id', 'name'];
-        $product = $this->product_interface->getProductByCode($inputs['code'], $select);
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,
@@ -123,8 +125,9 @@ class CuttingHelper
     public function editCutting($inputs): array
     {
         // کالا
+        $user = Auth::user();
         $select = ['id'];
-        $product = $this->product_interface->getProductByCode($inputs['code'], $select);
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,
@@ -163,8 +166,9 @@ class CuttingHelper
     public function addCutting($inputs): array
     {
         // کالا
+        $user = Auth::user();
         $select = ['id'];
-        $product = $this->product_interface->getProductByCode($inputs['code'], $select);
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,
@@ -191,8 +195,9 @@ class CuttingHelper
     public function deleteCutting($inputs): array
     {
         // کالا
+        $user = Auth::user();
         $select = ['id'];
-        $product = $this->product_interface->getProductByCode($inputs['code'], $select);
+        $product = $this->product_interface->getProductByCode($inputs['code'], $user, $select);
         if (is_null($product)) {
             return [
                 'result' => false,
