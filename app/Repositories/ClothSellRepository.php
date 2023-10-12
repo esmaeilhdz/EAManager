@@ -5,12 +5,13 @@ namespace App\Repositories;
 use App\Exceptions\ApiException;
 use App\Models\ClothSell;
 use App\Models\ClothSellItem;
+use App\Traits\ClothSellTrait;
 use App\Traits\Common;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ClothSellRepository implements Interfaces\iClothSell
 {
-    use Common;
+    use Common, ClothSellTrait;
 
     /**
      * لیست فروش پارچه
@@ -112,7 +113,7 @@ class ClothSellRepository implements Interfaces\iClothSell
             $cloth_sell->customer_id = $inputs['customer_id'];
             $cloth_sell->warehouse_place_id = $inputs['warehouse_place_id'];
             $cloth_sell->sell_date = $inputs['sell_date'];
-            $cloth_sell->factor_no = $inputs['factor_no'];
+            $cloth_sell->factor_no = $this->generateFactorNumber();
             $cloth_sell->price = $inputs['price'];
             $cloth_sell->created_by = $user->id;
 

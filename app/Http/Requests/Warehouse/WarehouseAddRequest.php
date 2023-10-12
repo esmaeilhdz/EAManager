@@ -1,24 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Warehouse;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AccessoryEditStatusRequest extends FormRequest
+class WarehouseAddRequest extends FormRequest
 {
-
-    /**
-     * Prepare the data for validation.
-     *
-     * @return void
-     */
-    protected function prepareForValidation()
-    {
-        $this->merge([
-            'id' => $this->id,
-        ]);
-    }
-
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -37,8 +24,8 @@ class AccessoryEditStatusRequest extends FormRequest
     public function rules()
     {
         return [
-            'id' => 'required|numeric|min:1',
-            'is_enable' => 'required|numeric|in:0,1',
+            'parent_code' => 'nullable|string|size:32',
+            'name' => 'required|string',
         ];
     }
 }

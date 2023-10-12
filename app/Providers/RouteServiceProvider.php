@@ -101,6 +101,8 @@ class RouteServiceProvider extends ServiceProvider
             $this->mapPersonCompany();
             // روت مقادیر
             $this->mapEnumeration();
+            // روت انبار
+            $this->mapWarehouse();
 
         });
     }
@@ -424,6 +426,14 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/enumeration.php'));
+    }
+
+    private function mapWarehouse()
+    {
+        Route::prefix('api')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/warehouse.php'));
     }
 
     /**

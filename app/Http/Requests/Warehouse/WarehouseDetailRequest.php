@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Requests\ClothSell;
+namespace App\Http\Requests\Warehouse;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ClothSellAddRequest extends FormRequest
+class WarehouseDetailRequest extends FormRequest
 {
+
     /**
      * Prepare the data for validation.
      *
@@ -14,7 +15,7 @@ class ClothSellAddRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'code' => $this->code
+            'code' => $this->code,
         ]);
     }
 
@@ -37,15 +38,6 @@ class ClothSellAddRequest extends FormRequest
     {
         return [
             'code' => 'required|string|size:32',
-            'customer_code' => 'required|string|size:32',
-            'warehouse_place_id' => 'required|numeric|min:1',
-            'sell_date' => 'required|date',
-            'price' => 'required|string',
-//            'factor_no' => 'required|string',
-            'items' => 'required|array',
-            'items.*.metre' => 'required|numeric|min:1',
-            'items.*.price' => 'required|numeric|min:1',
-            'items.*.color_id' => 'required|numeric|min:1',
         ];
     }
 }

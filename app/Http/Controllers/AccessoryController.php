@@ -7,8 +7,8 @@ use App\Http\Requests\Accessory\AccessoryAddRequest;
 use App\Http\Requests\Accessory\AccessoryComboRequest;
 use App\Http\Requests\Accessory\AccessoryDetailRequest;
 use App\Http\Requests\Accessory\AccessoryEditRequest;
+use App\Http\Requests\Accessory\AccessoryEditStatusRequest;
 use App\Http\Requests\Accessory\AccessoryListRequest;
-use App\Http\Requests\AccessoryEditStatusRequest;
 use App\Traits\Common;
 use Illuminate\Http\JsonResponse;
 

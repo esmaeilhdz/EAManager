@@ -9,6 +9,11 @@ trait ClothSellTrait
 {
     use Common;
 
+    public function generateFactorNumber(): string
+    {
+        return $this->randomString(8);
+    }
+
     public function getItemsTransaction($cloth_sell_id, $inputs, $user): array
     {
         try {

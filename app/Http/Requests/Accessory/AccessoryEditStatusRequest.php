@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\ClothSell;
+namespace App\Http\Requests\Accessory;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ClothSellEditRequest extends FormRequest
+class AccessoryEditStatusRequest extends FormRequest
 {
 
     /**
@@ -15,7 +15,6 @@ class ClothSellEditRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'code' => $this->code,
             'id' => $this->id,
         ]);
     }
@@ -38,17 +37,8 @@ class ClothSellEditRequest extends FormRequest
     public function rules()
     {
         return [
-            'code' => 'required|string|size:32',
             'id' => 'required|numeric|min:1',
-            'customer_code' => 'required|string|size:32',
-            'warehouse_place_id' => 'required|numeric|min:1',
-            'sell_date' => 'required|date',
-            'price' => 'required|string',
-//            'factor_no' => 'required|string',
-            'items' => 'required|array',
-            'items.*.metre' => 'required|numeric|min:1',
-            'items.*.price' => 'required|numeric|min:1',
-            'items.*.color_id' => 'required|numeric|min:1',
+            'is_enable' => 'required|numeric|in:0,1',
         ];
     }
 }
