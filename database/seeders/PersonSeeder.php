@@ -21,7 +21,7 @@ class PersonSeeder extends Seeder
         DB::table('people')->insert([
             [
                 'code' => $this->randomString(),
-                'internal_code' => $this->randomPersonnelCode(),
+                'internal_code' => $this->randomPersonnelCode(1),
                 'name' => 'کاربر',
                 'family' => 'ماشین',
                 'father_name' => 'تست',
@@ -33,7 +33,7 @@ class PersonSeeder extends Seeder
             ],
             [
                 'code' => $this->randomString(),
-                'internal_code' => $this->randomPersonnelCode(),
+                'internal_code' => $this->randomPersonnelCode(1),
                 'name' => 'اسماعیل',
                 'family' => 'حیدرزاده',
                 'father_name' => 'محمدتقی',

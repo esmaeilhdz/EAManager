@@ -30,7 +30,7 @@ class RolePermissionSeeder extends Seeder
         $role = Role::find(1);
 
         $resources = [
-            'person' => 'اشخاص',
+            /*'person' => 'اشخاص',
             'accessory' => 'خرج کار',
             'account' => 'حساب ها',
             'address' => 'آدرس',
@@ -58,7 +58,8 @@ class RolePermissionSeeder extends Seeder
             'customer' => 'مشتری',
             'report' => 'گزارش',
             'role' => 'نقش',
-            'enumeration' => 'مقادیر',
+            'enumeration' => 'مقادیر',*/
+            'warehouse' => 'انبار',
         ];
 
         foreach ($resources as $resource => $caption) {
@@ -89,7 +90,7 @@ class RolePermissionSeeder extends Seeder
 
         }
 
-//        $user = User::find(2);
-//        $user->assignRole($role);
+        $user = User::find(2);
+        $user->assignRole($role);
     }
 }

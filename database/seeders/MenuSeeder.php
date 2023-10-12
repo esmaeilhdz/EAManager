@@ -14,7 +14,7 @@ class MenuSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('menu')->insert([
+        /*DB::table('menu')->insert([
             [
                 'id' => 1,
                 'caption' => 'مقادیر اولیه',
@@ -230,6 +230,16 @@ class MenuSeeder extends Seeder
                 'caption' => 'مشتریان بدهکار',
                 'route_name' => 'report',
                 'icon' => 'fa fa-building',
+            ],
+        ]);*/
+        DB::table('menu')->insert([
+            [
+                'id' => 30,
+                'parent_id' => 1,
+                'caption' => 'انبار',
+                'route_name' => 'warehouse',
+                'icon' => 'fa fa-home',
+                'has_permission' => 1,
             ],
         ]);
     }

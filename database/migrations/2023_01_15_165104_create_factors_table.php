@@ -34,7 +34,6 @@ class CreateFactorsTable extends Migration
 
             $table->foreign('company_id')->references('id')->on('companies');
             $table->foreign('customer_id')->references('id')->on('customers');
-            $table->foreign('sale_period_id')->references('id')->on('sale_periods');
         });
     }
 
