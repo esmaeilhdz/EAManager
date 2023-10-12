@@ -15,6 +15,7 @@ class CreateWarehousesTable extends Migration
     {
         Schema::create('warehouses', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('company_id')->index();
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->string('name');
             $table->boolean('is_enable')->default(1)->index();
@@ -22,6 +23,8 @@ class CreateWarehousesTable extends Migration
             $table->timestamps();
 
             $table->engine = 'InnoDB';
+
+            $table->foreign('company_id')->references('id')->on('companies');
         });
     }
 
