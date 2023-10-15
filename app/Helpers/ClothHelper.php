@@ -151,7 +151,6 @@ class ClothHelper
      * افزودن پارچه
      * @param $inputs
      * @return array
-     * @throws \App\Exceptions\ApiException
      */
     public function addCloth($inputs): array
     {

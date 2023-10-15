@@ -6,7 +6,6 @@ use App\Exceptions\ApiException;
 use App\Models\Warehouse;
 use App\Traits\Common;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Hash;
 
 class WarehouseRepository implements Interfaces\iWarehouse
 {
