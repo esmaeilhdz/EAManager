@@ -2,10 +2,13 @@
 
 namespace App\Helpers;
 
+use App\Exceptions\ApiException;
 use App\Repositories\Interfaces\iCloth;
 use App\Repositories\Interfaces\iClothBuy;
 use App\Repositories\Interfaces\iClothBuyItems;
 use App\Repositories\Interfaces\iClothWarehouse;
+use App\Repositories\Interfaces\iWarehouse;
+use App\Repositories\Interfaces\iWarehouseItem;
 use App\Traits\ClothBuyTrait;
 use App\Traits\Common;
 use Illuminate\Support\Facades\Auth;
@@ -17,18 +20,21 @@ class ClothBuyHelper
 
     // attributes
     public iClothWarehouse $cloth_warehouse_interface;
+    public iWarehouseItem $warehouse_item_interface;
     public iClothBuy $cloth_buy_interface;
     public iCloth $cloth_interface;
     public iClothBuyItems $cloth_buy_item_interface;
 
     public function __construct(
         iClothWarehouse $cloth_warehouse_interface,
+        iWarehouseItem $warehouse_item_interface,
         iClothBuy $cloth_buy_interface,
         iCloth $cloth_interface,
         iClothBuyItems $cloth_buy_item_interface,
     )
     {
         $this->cloth_warehouse_interface = $cloth_warehouse_interface;
+        $this->warehouse_item_interface = $warehouse_item_interface;
         $this->cloth_buy_interface = $cloth_buy_interface;
         $this->cloth_interface = $cloth_interface;
         $this->cloth_buy_item_interface = $cloth_buy_item_interface;
@@ -159,7 +165,7 @@ class ClothBuyHelper
      * ویرایش خرید پارچه
      * @param $inputs
      * @return array
-     * @throws \App\Exceptions\ApiException
+     * @throws ApiException
      */
     public function editClothBuy($inputs): array
     {
@@ -197,8 +203,7 @@ class ClothBuyHelper
 
         // insert
         foreach ($inserts as $insert) {
-            $result[] = $this->cloth_warehouse_interface->addWarehouse($insert, $user);
-
+            $result[] = $this->warehouse_item_interface->addWarehouseItem($insert);
 
             $res = $this->cloth_buy_item_interface->addClothBuyItem($insert, $user, true);
             $result[] = $res['result'];
@@ -224,10 +229,7 @@ class ClothBuyHelper
                 $params['metre'] = $update['metre'];
             }
 
-//            dd($cloth_buy_item, $update);
-//            dd($params);
-
-            $result[] = $this->cloth_warehouse_interface->editWarehouse($params);
+            $result[] = $this->warehouse_item_interface->editWarehouseItem($update, $params, $user);
             $result[] = $this->cloth_buy_item_interface->editClothBuyItem($update);
         }
 

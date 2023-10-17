@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Exceptions\ApiException;
 use App\Models\Company;
+use App\Models\Warehouse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -535,6 +536,23 @@ trait Common
         }
 
         return $person_company->company_id;
+    }
+
+    /**
+     * انبار مرکزی شرکت کاربر
+     * @param $company_id
+     * @return int|null
+     * @throws ApiException
+     */
+    public function getCenterWarehouseOfCompany($company_id): int|null
+    {
+        try {
+            $warehouse = Warehouse::select('id')->where('company_id', $company_id)->first();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+
+        return $warehouse->id ?? null;
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Exceptions\ApiException;
+use App\Models\Cloth;
 use App\Models\ClothBuyItem;
 
 trait ClothBuyTrait
@@ -12,6 +13,7 @@ trait ClothBuyTrait
     {
         try {
             $company_id = $this->getCurrentCompanyOfUser($user);
+            $warehouse_id = $this->getCenterWarehouseOfCompany($company_id);
             $db_color_ids = ClothBuyItem::select('color_id')
                 ->where('cloth_buy_id', $cloth_buy_id)
                 ->whereHas('cloth_buy.cloth', function ($q) use ($company_id) {
@@ -31,8 +33,11 @@ trait ClothBuyTrait
         foreach ($inputs['items'] as $item) {
             if (!in_array($item['color_id'], $db_color_ids)) {
                 $result['insert'][] = [
+                    'warehouse_id' => $warehouse_id,
                     'cloth_buy_id' => $cloth_buy_id,
                     'cloth_id' => $inputs['cloth_id'],
+                    'model_type' => Cloth::class,
+                    'model_id' => $inputs['cloth_id'],
                     'color_id' => $item['color_id'],
                     'place_id' => $inputs['warehouse_place_id'],
                     'metre' => $item['metre'],
@@ -47,6 +52,8 @@ trait ClothBuyTrait
         foreach ($db_color_ids as $db_color_id) {
             if (!in_array($db_color_id, $input_color_ids)) {
                 $result['delete'][] = [
+                    'warehouse_id' => $warehouse_id,
+                    'place_id' => $inputs['warehouse_place_id'],
                     'cloth_buy_id' => $cloth_buy_id,
                     'color_id' => $db_color_id,
                 ];
@@ -57,6 +64,8 @@ trait ClothBuyTrait
         foreach ($inputs['items'] as $item) {
             if (in_array($item['color_id'], $db_color_ids)) {
                 $result['update'][] = [
+                    'warehouse_id' => $warehouse_id,
+                    'place_id' => $inputs['warehouse_place_id'],
                     'cloth_buy_id' => $cloth_buy_id,
                     'color_id' => $item['color_id'],
                     'metre' => $item['metre'],
