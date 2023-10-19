@@ -38,7 +38,8 @@ class ProductModelAddRequest extends FormRequest
     {
         return [
             'code' => 'required|string|size:32',
-            'name' => 'required|string|min:2'
+            'name' => 'required|string|min:2',
+            'pack_count' => 'required|numeric|min:1',
         ];
     }
 }

@@ -41,6 +41,7 @@ class ProductModelEditRequest extends FormRequest
             'code' => 'required|string|size:32',
             'id' => 'required|numeric|min:1',
             'name' => 'required|string|min:2',
+            'pack_count' => 'required|numeric|min:1',
             'is_enable' => 'required|numeric|in:0,1'
         ];
     }

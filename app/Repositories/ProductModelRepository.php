@@ -18,7 +18,7 @@ class ProductModelRepository implements Interfaces\iProductModel
         try {
             $company_id = $this->getCurrentCompanyOfUser($user);
             return ProductModel::query()
-                ->select('id', 'name', 'created_at')
+                ->select('id', 'name', 'pack_count', 'created_at')
                 ->whereHas('product', function ($q) use ($company_id) {
                     $q->where('company_id', $company_id);
                 })
@@ -35,7 +35,7 @@ class ProductModelRepository implements Interfaces\iProductModel
         try {
             $company_id = $this->getCurrentCompanyOfUser($user);
             return ProductModel::query()
-                ->select('id', 'name', 'is_enable')
+                ->select('id', 'name', 'pack_count', 'is_enable')
                 ->whereHas('product', function ($q) use ($company_id) {
                     $q->where('company_id', $company_id);
                 })
@@ -54,7 +54,7 @@ class ProductModelRepository implements Interfaces\iProductModel
             return ProductModel::with([
                 'product:id,name'
             ])
-                ->select('id', 'name', 'product_id')
+                ->select('id', 'name', 'pack_count', 'product_id')
                 ->whereHas('product', function ($q) use ($company_id) {
                     $q->where('company_id', $company_id);
                 })
@@ -74,7 +74,7 @@ class ProductModelRepository implements Interfaces\iProductModel
     {
         try {
             $company_id = $this->getCurrentCompanyOfUser($user);
-            return ProductModel::select('id', 'name')
+            return ProductModel::select('id', 'name', 'pack_count')
                 ->whereHas('product', function ($q) use ($company_id) {
                     $q->where('company_id', $company_id);
                 })
@@ -94,6 +94,7 @@ class ProductModelRepository implements Interfaces\iProductModel
     {
         try {
             $product_model->name = $inputs['name'];
+            $product_model->pack_count = $inputs['pack_count'];
             $product_model->is_enable = $inputs['is_enable'];
 
             return $product_model->save();
@@ -109,6 +110,7 @@ class ProductModelRepository implements Interfaces\iProductModel
 
             $product_model->product_id = $inputs['product_id'];
             $product_model->name = $inputs['name'];
+            $product_model->pack_count = $inputs['pack_count'];
 
             $result = $product_model->save();
 

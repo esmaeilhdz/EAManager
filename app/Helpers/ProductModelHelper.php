@@ -53,6 +53,7 @@ class ProductModelHelper
             return [
                 'id' => $item->id,
                 'name' => $item->name,
+                'pack_count' => $item->pack_count,
                 'created_at' => $item->created_at,
             ];
         });
