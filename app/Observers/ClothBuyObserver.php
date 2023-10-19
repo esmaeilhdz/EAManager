@@ -29,11 +29,9 @@ class ClothBuyObserver
     {
         $user = Auth::user();
         $company_id = $this->getCurrentCompanyOfUser($user);
-        $warehouse = Warehouse::where('company_id', $company_id)
-            ->whereNull('parent_id')
-            ->first();
+        $warehouse_id = $this->getCenterWarehouseOfCompany($company_id);
 
-        $warehouse_item = WarehouseItem::where('warehouse_id', $warehouse->id)
+        $warehouse_item = WarehouseItem::where('warehouse_id', $warehouse_id)
             ->where('model_type', Cloth::class)
             ->where('model_id', $cloth_buy_item->cloth_buy->cloth_id)
             ->where('place_id', $cloth_buy_item->cloth_buy->warehouse_place_id)
@@ -43,7 +41,7 @@ class ClothBuyObserver
         if (is_null($warehouse_item)) {
             $warehouse_item = new WarehouseItem();
 
-            $warehouse_item->warehouse_id = $warehouse->id;
+            $warehouse_item->warehouse_id = $warehouse_id;
             $warehouse_item->model_type = Cloth::class;
             $warehouse_item->model_id = $cloth_buy_item->cloth_buy->cloth_id;
             $warehouse_item->place_id = $cloth_buy_item->cloth_buy->warehouse_place_id;
@@ -71,19 +69,24 @@ class ClothBuyObserver
      *
      * @param ClothBuyItem $cloth_buy_item
      * @return void
+     * @throws ApiException
      */
     public function deleted(ClothBuyItem $cloth_buy_item)
     {
-        $cloth_warehouse = ClothWareHouse::where('cloth_id', $cloth_buy_item->cloth_buy->cloth_id)
+        $user = Auth::user();
+        $company_id = $this->getCurrentCompanyOfUser($user);
+        $warehouse_id = $this->getCenterWarehouseOfCompany($company_id);
+
+        $warehouse_item = WarehouseItem::where('warehouse_id', $warehouse_id)
+            ->where('model_type', Cloth::class)
+            ->where('model_id', $cloth_buy_item->cloth_buy->cloth_id)
             ->where('place_id', $cloth_buy_item->cloth_buy->warehouse_place_id)
             ->where('color_id', $cloth_buy_item->color_id)
             ->first();
 
-        if (!is_null($cloth_warehouse)) {
-            $cloth_warehouse->metre -= $cloth_buy_item->metre;
-            $cloth_warehouse->save();
-        } else {
-            $cloth_warehouse->delete();
+        if (!is_null($warehouse_item)) {
+            $warehouse_item->metre -= $cloth_buy_item->metre;
+            $warehouse_item->save();
         }
     }
 
