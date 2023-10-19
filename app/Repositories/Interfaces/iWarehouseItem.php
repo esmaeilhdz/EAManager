@@ -8,6 +8,8 @@ interface iWarehouseItem
 
     public function getWarehouseItemById($id, $user, $select = [], $relation = []);
 
+    public function getWarehouseItemByData($inputs, $user, $select = [], $relation = []);
+
     public function editWarehouseItem($warehouse_item, $inputs, $user);
 
     public function addWarehouseItem($inputs);

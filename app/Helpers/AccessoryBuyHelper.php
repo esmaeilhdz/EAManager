@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 
+use App\Exceptions\ApiException;
+use App\Models\Accessory;
 use App\Repositories\Interfaces\iAccessory;
 use App\Repositories\Interfaces\iAccessoryBuy;
 use App\Repositories\Interfaces\iAccessoryWarehouse;
@@ -124,6 +126,7 @@ class AccessoryBuyHelper
      * ویرایش خرید خرج کار
      * @param $inputs
      * @return array
+     * @throws ApiException
      */
     public function editAccessoryBuy($inputs): array
     {
@@ -145,7 +148,9 @@ class AccessoryBuyHelper
             ];
         }
 
-        $params['accessory_id'] = $accessory->id;
+        $user = Auth::user();
+        $params['model_type'] = Accessory::class;
+        $params['model_id'] = $accessory->id;
         $params['place_id'] = $inputs['place_id'];
         if ($accessory_buy->count > $inputs['count']) {
             $params['sign'] = 'minus';
@@ -158,9 +163,15 @@ class AccessoryBuyHelper
             $params['count'] = $inputs['count'];
         }
 
+        $company_id = $this->getCurrentCompanyOfUser($user);
+        $warehouse_id = $this->getCenterWarehouseOfCompany($company_id);
+        $inputs['warehouse_id'] = $warehouse_id;
+
+        $warehouse_item = $this->warehouse_item_interface->getWarehouseItemByData($inputs, $user);
+
         DB::beginTransaction();
         $result[] = $this->accessory_buy_interface->editAccessoryBuy($accessory_buy, $inputs);
-        $result[] = $this->warehouse_item_interface->editWarehouseItem($params);
+        $result[] = $this->warehouse_item_interface->editWarehouseItem($warehouse_item, $params, $user);
 
         if (!in_array(false, $result)) {
             $flag = true;

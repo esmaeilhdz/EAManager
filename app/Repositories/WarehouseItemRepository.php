@@ -48,7 +48,7 @@ class WarehouseItemRepository implements Interfaces\iWarehouseItem
 
     /**
      * جزئیات انبار
-     * @param $code
+     * @param $id
      * @param $user
      * @param array $select
      * @param array $relation
@@ -59,7 +59,28 @@ class WarehouseItemRepository implements Interfaces\iWarehouseItem
     {
         try {
             $company_id = $this->getCurrentCompanyOfUser($user);
-            return Warehouse::whereCode($id)
+            return Warehouse::where('id', $id)
+                ->when(count($select), function ($q) use ($select) {
+                    $q->select($select);
+                })
+                ->when(count($relation), function ($q) use ($relation) {
+                    $q->with($relation);
+                })
+                ->where('company_id', $company_id)
+                ->first();
+        } catch (\Exception $e) {
+            throw new ApiException($e);
+        }
+    }
+
+    public function getWarehouseItemByData($inputs, $user, $select = [], $relation = [])
+    {
+        try {
+            $company_id = $this->getCurrentCompanyOfUser($user);
+            return Warehouse::where('warehouse_id', $inputs['warehouse_id'])
+                ->where('model_type', $inputs['model_type'])
+                ->where('model_id', $inputs['model_id'])
+                ->where('place_id', $inputs['place_id'])
                 ->when(count($select), function ($q) use ($select) {
                     $q->select($select);
                 })
