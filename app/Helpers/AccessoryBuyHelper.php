@@ -5,6 +5,8 @@ namespace App\Helpers;
 use App\Repositories\Interfaces\iAccessory;
 use App\Repositories\Interfaces\iAccessoryBuy;
 use App\Repositories\Interfaces\iAccessoryWarehouse;
+use App\Repositories\Interfaces\iWarehouse;
+use App\Repositories\Interfaces\iWarehouseItem;
 use App\Traits\Common;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -17,16 +19,19 @@ class AccessoryBuyHelper
     public iAccessory $accessory_interface;
     public iAccessoryBuy $accessory_buy_interface;
     public iAccessoryWarehouse $accessory_warehouse_interface;
+    public iWarehouseItem $warehouse_item_interface;
 
     public function __construct(
         iAccessory $accessory_interface,
         iAccessoryBuy $accessory_buy_interface,
-        iAccessoryWarehouse $accessory_warehouse_interface
+        iAccessoryWarehouse $accessory_warehouse_interface,
+        iWarehouseItem $warehouse_item_interface,
     )
     {
         $this->accessory_interface = $accessory_interface;
         $this->accessory_buy_interface = $accessory_buy_interface;
         $this->accessory_warehouse_interface = $accessory_warehouse_interface;
+        $this->warehouse_item_interface = $warehouse_item_interface;
     }
 
     /**
@@ -63,6 +68,10 @@ class AccessoryBuyHelper
                     'name' => $item->place->name
                 ],
                 'count' => $item->count,
+                'receive_date' => $item->receive_date,
+                'factor_no' => $item->factor_no,
+                'unit_price' => $item->unit_price,
+                'price' => $item->price,
                 'creator' => is_null($item->creator->person) ? null : [
                     'person' => [
                         'full_name' => $item->creator->person->name . ' ' . $item->creator->person->family,
@@ -149,9 +158,11 @@ class AccessoryBuyHelper
             $params['count'] = $inputs['count'];
         }
 
+
+
         DB::beginTransaction();
         $result[] = $this->accessory_buy_interface->editAccessoryBuy($accessory_buy, $inputs);
-        $result[] = $this->accessory_warehouse_interface->editAccessoryWarehouse($params);
+        $result[] = $this->warehouse_item_interface->editWarehouseItem($params);
 
         if (!in_array(false, $result)) {
             $flag = true;

@@ -33,6 +33,10 @@ class AccessoryBuyRepository implements Interfaces\iAccessoryBuy
                     'accessory_id',
                     'place_id',
                     'count',
+                    'receive_date',
+                    'factor_no',
+                    'unit_price',
+                    'price',
                     'created_by',
                     'created_at'
                 ])
@@ -63,7 +67,12 @@ class AccessoryBuyRepository implements Interfaces\iAccessoryBuy
                     'id',
                     'accessory_id',
                     'place_id',
-                    'count'
+                    'count',
+                    'receive_date',
+                    'factor_no',
+                    'unit_price',
+                    'price',
+                    'description',
                 ])
                 ->where('accessory_id', $inputs['accessory_id'])
                 ->where('id', $inputs['id'])
@@ -85,6 +94,11 @@ class AccessoryBuyRepository implements Interfaces\iAccessoryBuy
         try {
             $accessory_buy->place_id = $inputs['place_id'];
             $accessory_buy->count = $inputs['count'];
+            $accessory_buy->receive_date = $inputs['receive_date'];
+            $accessory_buy->factor_no = $inputs['factor_no'];
+            $accessory_buy->unit_price = $inputs['unit_price'];
+            $accessory_buy->price = $inputs['count'] * $inputs['unit_price'];
+            $accessory_buy->description = $inputs['description'];
 
             return $accessory_buy->save();
 
@@ -108,6 +122,11 @@ class AccessoryBuyRepository implements Interfaces\iAccessoryBuy
             $accessory_buy->accessory_id = $inputs['accessory_id'];
             $accessory_buy->place_id = $inputs['place_id'];
             $accessory_buy->count = $inputs['count'];
+            $accessory_buy->receive_date = $inputs['receive_date'];
+            $accessory_buy->factor_no = $inputs['factor_no'];
+            $accessory_buy->unit_price = $inputs['unit_price'];
+            $accessory_buy->price = $inputs['count'] * $inputs['unit_price'];
+            $accessory_buy->description = $inputs['description'];
             $accessory_buy->created_by = $user->id;
 
             $result = $accessory_buy->save();

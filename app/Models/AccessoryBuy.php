@@ -21,6 +21,15 @@ class AccessoryBuy extends Model
             ],
         );
     }
+    protected function receiveDate(): Attribute
+    {
+        return Attribute::get(
+            get: fn ($value) => [
+                'jalali' => jdate($value)->format('Y/m/d'),
+                'gregorian' => $value
+            ],
+        );
+    }
 
 
     public function accessory()
