@@ -158,8 +158,6 @@ class AccessoryBuyHelper
             $params['count'] = $inputs['count'];
         }
 
-
-
         DB::beginTransaction();
         $result[] = $this->accessory_buy_interface->editAccessoryBuy($accessory_buy, $inputs);
         $result[] = $this->warehouse_item_interface->editWarehouseItem($params);

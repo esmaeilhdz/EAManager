@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Facades\WarehouseFacade;
 use App\Http\Requests\Warehouse\WarehouseAddRequest;
+use App\Http\Requests\Warehouse\WarehouseComboRequest;
 use App\Http\Requests\Warehouse\WarehouseDetailRequest;
 use App\Http\Requests\Warehouse\WarehouseEditRequest;
 use App\Http\Requests\Warehouse\WarehouseListRequest;
@@ -39,6 +40,20 @@ class WarehouseController extends Controller
         $this->cleanInput($inputs, array_keys($request->rules()));
 
         $result = WarehouseFacade::getWarehouseDetail($inputs['code']);
+        return $this->api_response->response($result['result'], $result['message'], $result['data']);
+    }
+
+    /**
+     * سرویس جزئیات انبار
+     * @param WarehouseComboRequest $request
+     * @return JsonResponse
+     */
+    public function getWarehousesCombo(WarehouseComboRequest $request): JsonResponse
+    {
+        $inputs = $request->validated();
+        $this->cleanInput($inputs, array_keys($request->rules()));
+
+        $result = WarehouseFacade::getWarehousesCombo($inputs);
         return $this->api_response->response($result['result'], $result['message'], $result['data']);
     }
 

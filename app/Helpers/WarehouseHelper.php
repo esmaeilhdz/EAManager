@@ -79,6 +79,19 @@ class WarehouseHelper
         ];
     }
 
+    public function getWarehousesCombo($inputs)
+    {
+        $user = Auth::user();
+        $warehouses = $this->warehouse_interface->getWarehousesCombo($inputs, $user);
+
+        return [
+            'result' => true,
+            'message' => __('messages.success'),
+            'data' => $warehouses
+        ];
+
+    }
+
     /**
      * سرویس ویرایش انبار
      * @param $inputs

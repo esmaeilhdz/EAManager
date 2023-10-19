@@ -7,6 +7,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'auth:sanctum'], function () {
     Route::group(['middleware' => ['permission:admin-warehouse|edit-warehouse|view-warehouse']], function () {
         Route::get('warehouse', [WarehouseController::class, 'getWarehouses']);
         Route::get('warehouse/{code}', [WarehouseController::class, 'getWarehouseDetail']);
+        Route::get('warehouse_combo', [WarehouseController::class, 'getWarehousesCombo']);
     });
     Route::group(['middleware' => ['permission:admin-warehouse|edit-warehouse']], function () {
         Route::put('warehouse/{code}', [WarehouseController::class, 'editWarehouse']);

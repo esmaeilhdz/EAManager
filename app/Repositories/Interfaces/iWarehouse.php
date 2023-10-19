@@ -8,6 +8,8 @@ interface iWarehouse
 
     public function getWarehouseByCode($code, $user, $select = [], $relation = []);
 
+    public function getWarehousesCombo($inputs, $user);
+
     public function editWarehouse($inputs, $user);
 
     public function addWarehouse($inputs, $user);
