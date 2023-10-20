@@ -18,6 +18,9 @@ class ProductModelRepository implements Interfaces\iProductModel
         try {
             $company_id = $this->getCurrentCompanyOfUser($user);
             return ProductModel::query()
+                ->with([
+                    'warehouse:model_type,model_id,free_size_count,size1_count,size2_count,size3_count,size4_count'
+                ])
                 ->select('id', 'name', 'pack_count', 'created_at')
                 ->whereHas('product', function ($q) use ($company_id) {
                     $q->where('company_id', $company_id);
@@ -35,6 +38,9 @@ class ProductModelRepository implements Interfaces\iProductModel
         try {
             $company_id = $this->getCurrentCompanyOfUser($user);
             return ProductModel::query()
+                ->with([
+                    'warehouse:model_type,model_id,free_size_count,size1_count,size2_count,size3_count,size4_count'
+                ])
                 ->select('id', 'name', 'pack_count', 'is_enable')
                 ->whereHas('product', function ($q) use ($company_id) {
                     $q->where('company_id', $company_id);

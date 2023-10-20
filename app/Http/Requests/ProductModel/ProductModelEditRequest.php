@@ -42,7 +42,13 @@ class ProductModelEditRequest extends FormRequest
             'id' => 'required|numeric|min:1',
             'name' => 'required|string|min:2',
             'pack_count' => 'required|numeric|min:1',
-            'is_enable' => 'required|numeric|in:0,1'
+            'is_enable' => 'required|numeric|in:0,1',
+            'place_id' => 'required|numeric|min:1',
+            'free_size_count' => 'required|numeric|min:1',
+            'size1_count' => 'required|numeric|min:1',
+            'size2_count' => 'required|numeric|min:1',
+            'size3_count' => 'required|numeric|min:1',
+            'size4_count' => 'required|numeric|min:1',
         ];
     }
 }

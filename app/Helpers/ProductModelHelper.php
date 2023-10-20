@@ -2,28 +2,37 @@
 
 namespace App\Helpers;
 
-use App\Repositories\Interfaces\iCloth;
+use App\Exceptions\ApiException;
+use App\Facades\WarehouseItemFacade;
+use App\Repositories\Interfaces\iPlace;
 use App\Repositories\Interfaces\iProduct;
 use App\Repositories\Interfaces\iProductModel;
-use App\Repositories\Interfaces\iSalePeriod;
+use App\Repositories\Interfaces\iWarehouseItem;
 use App\Traits\Common;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ProductModelHelper
 {
     use Common;
 
     // attributes
+    public iPlace $place_interface;
     public iProduct $product_interface;
     public iProductModel $product_model_interface;
+    public iWarehouseItem $warehouse_item_interface;
 
     public function __construct(
+        iPlace $place_interface,
         iProduct $product_interface,
-        iProductModel $product_model_interface
+        iProductModel $product_model_interface,
+        iWarehouseItem $warehouse_item_interface,
     )
     {
+        $this->place_interface = $place_interface;
         $this->product_interface = $product_interface;
         $this->product_model_interface = $product_model_interface;
+        $this->warehouse_item_interface = $warehouse_item_interface;
     }
 
     /**
@@ -53,8 +62,13 @@ class ProductModelHelper
             return [
                 'id' => $item->id,
                 'name' => $item->name,
-                'pack_count' => $item->pack_count,
                 'created_at' => $item->created_at,
+                'free_size_count' => $item->free_size_count,
+                'size1_count' => $item->size1_count,
+                'size2_count' => $item->size2_count,
+                'size3_count' => $item->size3_count,
+                'size4_count' => $item->size4_count,
+                'pack_count' => $item->pack_count,
             ];
         });
 
@@ -99,7 +113,7 @@ class ProductModelHelper
         ];
     }
 
-    public function getProductsModelCombo($inputs)
+    public function getProductsModelCombo($inputs): array
     {
         $user = Auth::user();
         $product = $this->product_interface->getProductByCode($inputs['code'], $user, ['id']);
@@ -136,7 +150,7 @@ class ProductModelHelper
         ];
     }
 
-    public function getProductModelCombo($inputs)
+    public function getProductModelCombo($inputs): array
     {
         $user = Auth::user();
         $product = $this->product_interface->getProductByCode($inputs['code'], $user, ['id']);
@@ -165,7 +179,12 @@ class ProductModelHelper
         ];
     }
 
-    public function editProductModel($inputs)
+    /**
+     * @param $inputs
+     * @return array
+     * @throws ApiException
+     */
+    public function editProductModel($inputs): array
     {
         $user = Auth::user();
         $product = $this->product_interface->getProductByCode($inputs['code'], $user, ['id']);
@@ -187,7 +206,15 @@ class ProductModelHelper
             ];
         }
 
-        $result = $this->product_model_interface->editProductModel($product_model, $inputs);
+        $company_id = $this->getCurrentCompanyOfUser($user);
+        $inputs['warehouse_id'] = $this->getCenterWarehouseOfCompany($company_id);
+        $warehouse_item = WarehouseItemFacade::getWarehouseItemByData($inputs, $user)['data'];
+
+        DB::beginTransaction();
+        $result[] = $this->product_model_interface->editProductModel($product_model, $inputs);
+
+        $inputs['sign'] = 'equal';
+        $result[] = $this->warehouse_item_interface->editWarehouseItem($warehouse_item, $inputs, $user);
 
         return [
             'result' => (bool) $result,
@@ -196,7 +223,7 @@ class ProductModelHelper
         ];
     }
 
-    public function addProductModel($inputs)
+    public function addProductModel($inputs): array
     {
         $user = Auth::user();
         $product = $this->product_interface->getProductByCode($inputs['code'], $user, ['id']);
@@ -208,13 +235,42 @@ class ProductModelHelper
             ];
         }
 
+        // تامین کننده مدل کالا
+        $place = $this->place_interface->getPlaceById($inputs['place_id']);
+        if (!$place) {
+            return [
+                'result' => 'false',
+                'message' => __('messages.supplier_not_found'),
+                'data' => null
+            ];
+        }
+
         $inputs['product_id'] = $product->id;
-        $result = $this->product_model_interface->addProductModel($inputs, $user);
+        $company_id = $this->getCurrentCompanyOfUser($user);
+        $inputs['warehouse_id'] = $this->getCenterWarehouseOfCompany($company_id);
+        $warehouse_item = WarehouseItemFacade::getWarehouseItemByData($inputs, $user)['data'];
+
+        DB::beginTransaction();
+        $res = $this->product_model_interface->addProductModel($inputs, $user);
+        $result[] = $res['result'];
+
+        $inputs['sign'] = 'plus';
+        $result[] = $this->warehouse_item_interface->editWarehouseItem($warehouse_item, $inputs, $user);
+
+        if (!in_array(false, $result)) {
+            $data = $res['data'];
+            $flag = true;
+            DB::commit();
+        } else {
+            $data = null;
+            $flag = false;
+            DB::rollBack();
+        }
 
         return [
-            'result' => $result['result'],
-            'message' => $result['result'] ? __('messages.success') : __('messages.fail'),
-            'data' => $result['data']
+            'result' => $flag,
+            'message' => $flag ? __('messages.success') : __('messages.fail'),
+            'data' => $data
         ];
     }
 

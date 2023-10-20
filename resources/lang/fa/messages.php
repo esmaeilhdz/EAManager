@@ -58,4 +58,5 @@ return [
     'factor_already_returned_cannot_add_payment' => 'این فاکتور قبلا مرجوع شده است. شما قادر به افزودن پرداخت به فاکتور نیستید.',
     'factor_already_confirmed_cannot_do_operation' => 'این فاکتور قبلا تایید شده است. شما قادر به انجام این عملیات نیستید.',
     'factor_already_returned_cannot_do_operation' => 'این فاکتور قبلا مرجوع شده است. شما قادر به انجام این عملیات نیستید.',
+    'supplier_not_found' => 'تامین کننده یافت نشد.',
 ];

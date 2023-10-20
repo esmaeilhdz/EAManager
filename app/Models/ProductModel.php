@@ -34,4 +34,9 @@ class ProductModel extends Model
     {
         return $this->hasOne(Product::class, 'id', 'product_id');
     }
+
+    public function warehouse()
+    {
+        return $this->morphOne(WarehouseItem::class, 'model');
+    }
 }

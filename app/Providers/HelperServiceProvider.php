@@ -49,6 +49,7 @@ use App\Helpers\RequestProductWarehouseHelper;
 use App\Helpers\SewingHelper;
 use App\Helpers\UserHelper;
 use App\Helpers\WarehouseHelper;
+use App\Helpers\WarehouseItemHelper;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
 
@@ -108,6 +109,7 @@ class HelperServiceProvider extends ServiceProvider
         App::alias(ProductAccessoryHelper::class, 'product_accessory_helper');
         App::alias(AccessoryWarehouseHelper::class, 'accessory_warehouse_helper');
         App::alias(WarehouseHelper::class, 'warehouse_helper');
+        App::alias(WarehouseItemHelper::class, 'warehouse_item_helper');
     }
 
     /**
