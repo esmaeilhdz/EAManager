@@ -32,6 +32,6 @@ class Warehouse extends Model
 
     public function parent()
     {
-        return $this->hasOne(Warehouse::class, 'parent_id', 'id');
+        return $this->hasOne(Warehouse::class, 'id', 'parent_id');
     }
 }
