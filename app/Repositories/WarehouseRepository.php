@@ -24,7 +24,7 @@ class WarehouseRepository implements Interfaces\iWarehouse
             $company_id = $this->getCurrentCompanyOfUser($user);
             return Warehouse::query()
                 ->with([
-                    'parent:id,name'
+                    'parent:id,code,name'
                 ])
                 ->select([
                     'id',

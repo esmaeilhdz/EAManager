@@ -33,9 +33,9 @@ class WarehouseHelper
         $inputs['order_by'] = $this->orderBy($inputs, 'warehouses');
         $inputs['per_page'] = $this->calculatePerPage($inputs);
 
-        $Warehouses = $this->warehouse_interface->getWarehouses($inputs, $user);
+        $warehouses = $this->warehouse_interface->getWarehouses($inputs, $user);
 
-        $Warehouses->transform(function ($item) {
+        $warehouses->transform(function ($item) {
             return [
                 'code' => $item->code,
                 'parent' => is_null($item->parent_id) ? null : [
@@ -51,7 +51,7 @@ class WarehouseHelper
         return [
             'result' => true,
             'message' => __('messages.success'),
-            'data' => $Warehouses
+            'data' => $warehouses
         ];
     }
 
