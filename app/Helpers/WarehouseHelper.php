@@ -30,7 +30,7 @@ class WarehouseHelper
     {
         $user = Auth::user();
 
-        $inputs['order_by'] = $this->orderBy($inputs, 'Warehouses');
+        $inputs['order_by'] = $this->orderBy($inputs, 'warehouses');
         $inputs['per_page'] = $this->calculatePerPage($inputs);
 
         $Warehouses = $this->warehouse_interface->getWarehouses($inputs, $user);
