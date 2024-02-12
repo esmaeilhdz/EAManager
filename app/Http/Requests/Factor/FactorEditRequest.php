@@ -47,6 +47,16 @@ class FactorEditRequest extends FormRequest
             'final_price' => 'required|numeric',
             'status' => 'required|numeric|min:1',
             'description' => 'nullable|string',
+            /*'factor_items' => 'required|array',
+            'factor_items.*.id' => 'required|numeric|min:1',
+            'factor_items.*.metre' => 'nullable|numeric|min:1',
+            'factor_items.*.price' => 'nullable|numeric|min:1',
+            'factor_items.*.pack_count' => 'nullable|numeric|min:1',
+            'factor_payments' => 'required|array',
+            'factor_payments.*.id' => 'required|numeric|min:1',
+            'factor_payments.*.payment_type_id' => 'required|numeric|min:1',
+            'factor_payments.*.price' => 'required|numeric|min:1',
+            'factor_payments.*.description' => 'required|numeric|min:1',*/
         ];
     }
 }

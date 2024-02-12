@@ -15,21 +15,16 @@ trait FactorTrait
     public function changeStatusFactorHelper($status, $factor): array
     {
         $params = null;
-        $select = ['product_warehouse_id', 'free_size_count', 'size1_count', 'size2_count', 'size3_count', 'size4_count'];
-        $relation = [
-            'product_warehouse:id,free_size_count,size1_count,size2_count,size3_count,size4_count'
-        ];
-        $factor_products = $this->factor_product_interface->getByFactorId($factor->id, [], $select, $relation);
+        $select = ['pack_count', 'metre', 'count'];
+        $factor_items = $this->factor_item_interface->getByFactorId($factor->id, [], $select/*, $relation*/);
         // تکمیل فاکتور ناقص
         // باید موجودی انبار موردنظر به تعداد خریداری شده، کسر شود.
         if ($status == 2) {
-            foreach ($factor_products as $key => $factor_product) {
+            foreach ($factor_items as $key => $factor_item) {
                 $params[$key]['sign'] = 'minus';
-                $params[$key]['free_size_count'] = $factor_product->free_size_count;
-                $params[$key]['size1_count'] = $factor_product->size1_count;
-                $params[$key]['size2_count'] = $factor_product->size2_count;
-                $params[$key]['size3_count'] = $factor_product->size3_count;
-                $params[$key]['size4_count'] = $factor_product->size4_count;
+                $params[$key]['pack_count'] = $factor_item->pack_count;
+                $params[$key]['metre'] = $factor_item->metre;
+                $params[$key]['count'] = $factor_item->count;
             }
         } elseif ($status == 3) {
             // مرجوع فاکتور
@@ -43,13 +38,11 @@ trait FactorTrait
                 ];
             }
 
-            foreach ($factor_products as $key => $factor_product) {
+            foreach ($factor_items as $key => $factor_item) {
                 $params[$key]['sign'] = 'plus';
-                $params[$key]['free_size_count'] = $factor_product->free_size_count;
-                $params[$key]['size1_count'] = $factor_product->size1_count;
-                $params[$key]['size2_count'] = $factor_product->size2_count;
-                $params[$key]['size3_count'] = $factor_product->size3_count;
-                $params[$key]['size4_count'] = $factor_product->size4_count;
+                $params[$key]['pack_count'] = $factor_item->pack_count;
+                $params[$key]['metre'] = $factor_item->metre;
+                $params[$key]['count'] = $factor_item->count;
             }
 
         }
@@ -59,7 +52,7 @@ trait FactorTrait
             'message' => null,
             'data' => [
                 'params' => $params,
-                'factor_products' => $factor_products
+                'factor_items' => $factor_items
             ]
         ];
     }

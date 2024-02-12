@@ -126,23 +126,17 @@ class WarehouseItemRepository implements Interfaces\iWarehouseItem
                     break;
                 case Product::class:
                     if ($inputs['sign'] == 'plus') {
-                        $warehouse_item->free_size_count += $inputs['free_size_count'];
-                        $warehouse_item->size1_count += $inputs['size1_count'];
-                        $warehouse_item->size2_count += $inputs['size2_count'];
-                        $warehouse_item->size3_count += $inputs['size3_count'];
-                        $warehouse_item->size4_count += $inputs['size4_count'];
+                        $warehouse_item->pack_count += $inputs['pack_count'];
+                        $warehouse_item->metre += $inputs['metre'];
+                        $warehouse_item->count += $inputs['count'];
                     } elseif ($inputs['sign'] == 'minus') {
-                        $warehouse_item->free_size_count -= $inputs['free_size_count'];
-                        $warehouse_item->size1_count -= $inputs['size1_count'];
-                        $warehouse_item->size2_count -= $inputs['size2_count'];
-                        $warehouse_item->size3_count -= $inputs['size3_count'];
-                        $warehouse_item->size4_count -= $inputs['size4_count'];
+                        $warehouse_item->pack_count -= $inputs['pack_count'];
+                        $warehouse_item->metre -= $inputs['metre'];
+                        $warehouse_item->count -= $inputs['count'];
                     } else {
-                        $warehouse_item->free_size_count = $inputs['free_size_count'];
-                        $warehouse_item->size1_count = $inputs['size1_count'];
-                        $warehouse_item->size2_count = $inputs['size2_count'];
-                        $warehouse_item->size3_count = $inputs['size3_count'];
-                        $warehouse_item->size4_count = $inputs['size4_count'];
+                        $warehouse_item->pack_count = $inputs['pack_count'];
+                        $warehouse_item->metre = $inputs['metre'];
+                        $warehouse_item->count = $inputs['count'];
                     }
                     break;
             }

@@ -8,7 +8,7 @@ use App\Repositories\Interfaces\iCity;
 use App\Repositories\Interfaces\iCustomer;
 use App\Repositories\Interfaces\iFactor;
 use App\Repositories\Interfaces\iFactorPayment;
-use App\Repositories\Interfaces\iFactorProduct;
+use App\Repositories\Interfaces\iFactorItem;
 use App\Repositories\Interfaces\iMenu;
 use App\Repositories\Interfaces\iProductWarehouse;
 use App\Repositories\Interfaces\iProvince;

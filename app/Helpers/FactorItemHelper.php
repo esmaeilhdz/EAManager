@@ -2,8 +2,11 @@
 
 namespace App\Helpers;
 
+use App\Models\Accessory;
+use App\Models\Cloth;
+use App\Models\Product;
 use App\Repositories\Interfaces\iFactor;
-use App\Repositories\Interfaces\iFactorProduct;
+use App\Repositories\Interfaces\iFactorItem;
 use App\Repositories\Interfaces\iProductWarehouse;
 use App\Repositories\Interfaces\iRequestProductWarehouse;
 use App\Traits\Common;
@@ -11,35 +14,56 @@ use App\Traits\FactorTrait;
 use App\Traits\RequestProductWarehouseTrait;
 use Illuminate\Support\Facades\Auth;
 
-class FactorProductHelper
+class FactorItemHelper
 {
     use Common, RequestProductWarehouseTrait, FactorTrait;
 
     // attributes
     public iFactor $factor_interface;
-    public iFactorProduct $factor_product_interface;
+    public iFactorItem $factor_item_interface;
     public iProductWarehouse $product_warehouse_interface;
     public iRequestProductWarehouse $request_product_interface;
 
     public function __construct(
         iFactor           $factor_interface,
-        iFactorProduct    $factor_product_interface,
+        iFactorItem    $factor_item_interface,
         iProductWarehouse $product_warehouse_interface,
     )
     {
         $this->factor_interface = $factor_interface;
-        $this->factor_product_interface = $factor_product_interface;
+        $this->factor_item_interface = $factor_item_interface;
         $this->product_warehouse_interface = $product_warehouse_interface;
     }
+
+    private function fillMorphFields($inputs)
+    {
+        switch ($inputs['item_type']) {
+            case 'accessory':
+                $inputs['model_type'] = Accessory::class;
+                $inputs['model_id'] = $inputs['item_id'];
+                break;
+            case 'cloth':
+                $inputs['model_type'] = Cloth::class;
+                $inputs['model_id'] = Cloth::select('id')->whereCode($inputs['item_id'])->first()->id;
+                break;
+            case 'product':
+                $inputs['model_type'] = Product::class;
+                $inputs['model_id'] = Product::select('id')->whereCode($inputs['item_id'])->first()->id;
+                break;
+        }
+
+        return $inputs;
+    }
+
 
     /**
      * لیست کالاهای فاکتور
      * @param $inputs
      * @return array
      */
-    public function getFactorProducts($inputs): array
+    public function getFactorItems($inputs): array
     {
-        $inputs['order_by'] = $this->orderBy($inputs, 'factor_products');
+        $inputs['order_by'] = $this->orderBy($inputs, 'factor_items');
         $inputs['per_page'] = $this->calculatePerPage($inputs);
 
         $user = Auth::user();
@@ -52,31 +76,20 @@ class FactorProductHelper
             ];
         }
 
-        $select = ['id', 'factor_id', 'product_warehouse_id', 'free_size_count', 'size1_count', 'size2_count', 'size3_count', 'size4_count', 'price'];
+        $select = ['id', 'factor_id', 'pack_count', 'metre', 'price'];
         $relation = [
-            'product_warehouse:id,place_id,product_id,product_model_id',
-            'product_warehouse.place:id,name',
-            'product_warehouse.product:id,code,name',
-            'product_warehouse.product_model:id,product_id,name',
+            'model'
         ];
-        $factor_products = $this->factor_product_interface->getByFactorId($factor->id, $inputs, $select, $relation);
+        $factor_items = $this->factor_item_interface->getByFactorId($factor->id, $inputs, $select, $relation);
 
-        $factor_products->transform(function ($item) {
+        $factor_items->transform(function ($item) {
             return [
                 'id' => $item->id,
-                'product' => [
-                    'code' => $item->product_warehouse->product->code,
-                    'name' => $item->product_warehouse->product->name . ' - ' . $item->product_warehouse->product_model->name,
+                'item' => [
+                    'name' => $item->model->name
                 ],
-                'place' => [
-                    'id' => $item->product_warehouse->place->id,
-                    'name' => $item->product_warehouse->place->name,
-                ],
-                'free_size_count' => $item->free_size_count,
-                'size1_count' => $item->size1_count,
-                'size2_count' => $item->size2_count,
-                'size3_count' => $item->size3_count,
-                'size4_count' => $item->size4_count,
+                'pack_count' => $item->pack_count,
+                'metre' => $item->metre,
                 'price' => $item->price,
             ];
         });
@@ -84,7 +97,7 @@ class FactorProductHelper
         return [
             'result' => true,
             'message' => __('messages.success'),
-            'data' => $factor_products
+            'data' => $factor_items
         ];
     }
 
@@ -93,7 +106,7 @@ class FactorProductHelper
      * @param $inputs
      * @return array
      */
-    public function getFactorProductDetail($inputs): array
+    public function getFactorItemDetail($inputs): array
     {
         $user = Auth::user();
         $factor = $this->factor_interface->getFactorByCode($inputs['code'], $user);
@@ -105,18 +118,16 @@ class FactorProductHelper
             ];
         }
 
-        $select = ['id', 'factor_id', 'product_warehouse_id', 'free_size_count', 'size1_count', 'size2_count', 'size3_count', 'size4_count', 'price'];
+        $select = ['id', 'factor_id', 'pack_count', 'metre', 'price'];
         $relation = [
-            'product_warehouse:id,place_id,product_id',
-            'product_warehouse.place:id,name',
-            'product_warehouse.product:id,code,name',
+            'model',
         ];
-        $factor_product = $this->factor_product_interface->getById($factor->id, $inputs['id'], $select, $relation);
+        $factor_item = $this->factor_item_interface->getById($factor->id, $inputs['id'], $select, $relation);
 
         return [
             'result' => true,
             'message' => __('messages.success'),
-            'data' => $factor_product
+            'data' => $factor_item
         ];
     }
 
@@ -125,7 +136,7 @@ class FactorProductHelper
      * @param $inputs
      * @return array
      */
-    public function addFactorProduct($inputs): array
+    public function addFactorItem($inputs): array
     {
         $user = Auth::user();
         $factor = $this->factor_interface->getFactorByCode($inputs['code'], $user);
@@ -142,16 +153,8 @@ class FactorProductHelper
             return $result;
         }
 
-        $product_warehouse = $this->product_warehouse_interface->getById($inputs['product_warehouse_id'], ['id']);
-        if (is_null($product_warehouse)) {
-            return [
-                'result' => false,
-                'message' => __('messages.product_warehouse_not_found'),
-                'data' => null
-            ];
-        }
-
-        $res_factor = $this->factor_product_interface->addFactorProduct($inputs, $factor->id, $user);
+        $inputs = $this->fillMorphFields($inputs);
+        $res_factor = $this->factor_item_interface->addFactorItem($inputs, $factor->id, $user);
         $result = $res_factor['result'];
 
         return [
@@ -166,7 +169,7 @@ class FactorProductHelper
      * @param $inputs
      * @return array
      */
-    public function deleteFactorProducts($inputs): array
+    public function deleteFactorItems($inputs): array
     {
         $user = Auth::user();
         $factor = $this->factor_interface->getFactorByCode($inputs['code'], $user);
@@ -183,7 +186,7 @@ class FactorProductHelper
             return $result;
         }
 
-        $result = (bool)$this->factor_product_interface->deleteFactorProducts($factor->id);
+        $result = (bool)$this->factor_item_interface->deleteFactorItems($factor->id);
 
         return [
             'result' => $result,
@@ -197,7 +200,7 @@ class FactorProductHelper
      * @param $inputs
      * @return array
      */
-    public function deleteFactorProduct($inputs): array
+    public function deleteFactorItem($inputs): array
     {
         $user = Auth::user();
         $factor = $this->factor_interface->getFactorByCode($inputs['code'], $user);
@@ -214,7 +217,7 @@ class FactorProductHelper
             return $result;
         }
 
-        $result = (bool) $this->factor_product_interface->deleteFactorProduct($factor->id, $inputs['id']);
+        $result = (bool) $this->factor_item_interface->deleteFactorItem($factor->id, $inputs['id']);
 
         return [
             'result' => $result,

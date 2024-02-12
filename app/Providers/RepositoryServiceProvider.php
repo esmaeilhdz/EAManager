@@ -25,7 +25,7 @@ use App\Repositories\CustomerRepository;
 use App\Repositories\CuttingRepository;
 use App\Repositories\DesignModelRepository;
 use App\Repositories\FactorPaymentRepository;
-use App\Repositories\FactorProductRepository;
+use App\Repositories\FactorItemRepository;
 use App\Repositories\FactorRepository;
 use App\Repositories\Interfaces\iAccessory;
 use App\Repositories\Interfaces\iAccessoryBuy;
@@ -51,7 +51,7 @@ use App\Repositories\Interfaces\iCutting;
 use App\Repositories\Interfaces\iDesignModel;
 use App\Repositories\Interfaces\iFactor;
 use App\Repositories\Interfaces\iFactorPayment;
-use App\Repositories\Interfaces\iFactorProduct;
+use App\Repositories\Interfaces\iFactorItem;
 use App\Repositories\Interfaces\iInvoice;
 use App\Repositories\Interfaces\iInvoiceProduct;
 use App\Repositories\Interfaces\iMenu;
@@ -79,6 +79,7 @@ use App\Repositories\Interfaces\iRequestProductWarehouse;
 use App\Repositories\Interfaces\iSewing;
 use App\Repositories\Interfaces\iUser;
 use App\Repositories\Interfaces\iWarehouse;
+use App\Repositories\Interfaces\iWarehouseItem;
 use App\Repositories\InvoiceProductRepository;
 use App\Repositories\InvoiceRepository;
 use App\Repositories\MenuRepository;
@@ -105,6 +106,7 @@ use App\Repositories\ProductWarehouseRepository;
 use App\Repositories\RequestProductWarehouseRepository;
 use App\Repositories\SewingRepository;
 use App\Repositories\UserRepository;
+use App\Repositories\WarehouseItemRepository;
 use App\Repositories\WarehouseRepository;
 use Illuminate\Support\ServiceProvider;
 
@@ -141,7 +143,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(iInvoice::class, InvoiceRepository::class);
         $this->app->bind(iInvoiceProduct::class, InvoiceProductRepository::class);
         $this->app->bind(iFactor::class, FactorRepository::class);
-        $this->app->bind(iFactorProduct::class, FactorProductRepository::class);
+        $this->app->bind(iFactorItem::class, FactorItemRepository::class);
         $this->app->bind(iFactorPayment::class, FactorPaymentRepository::class);
         $this->app->bind(iAttachment::class, AttachmentRepository::class);
         $this->app->bind(iPayment::class, PaymentRepository::class);
@@ -169,6 +171,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(iProductAccessory::class, ProductAccessoryRepository::class);
         $this->app->bind(iProductAccessoryPrice::class, ProductAccessoryPriceRepository::class);
         $this->app->bind(iWarehouse::class, WarehouseRepository::class);
+        $this->app->bind(iWarehouseItem::class, WarehouseItemRepository::class);
     }
 
     /**

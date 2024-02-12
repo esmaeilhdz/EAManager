@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFactorProductsTable extends Migration
+class CreateFactorItemsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class CreateFactorProductsTable extends Migration
      */
     public function up()
     {
-        Schema::dropIfExists('factor_products');
-        Schema::create('factor_products', function (Blueprint $table) {
+        Schema::dropIfExists('factor_items');
+        Schema::create('factor_items', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('factor_id');
             $table->unsignedBigInteger('product_warehouse_id');
@@ -40,6 +40,6 @@ class CreateFactorProductsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('factor_products');
+        Schema::dropIfExists('factor_items');
     }
 }

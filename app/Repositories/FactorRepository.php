@@ -80,7 +80,7 @@ class FactorRepository implements Interfaces\iFactor
                 'fp.size3_count',
                 'fp.size4_count'
             ])
-                ->join('factor_products as fp', 'factors.id', '=', 'fp.factor_id')
+                ->join('factor_items as fp', 'factors.id', '=', 'fp.factor_id')
                 ->join('product_warehouses as pw', 'pw.id', '=', 'fp.product_warehouse_id')
                 ->where('factors.status', 1)
                 ->get();
@@ -116,7 +116,7 @@ class FactorRepository implements Interfaces\iFactor
                     'factors.created_by',
                     'factors.created_at'
                 ])
-                ->join('factor_products as fp', 'factors.id', '=', 'fp.factor_id')
+                ->join('factor_items as fp', 'factors.id', '=', 'fp.factor_id')
                 ->join('product_warehouses as pw', 'pw.id', '=', 'fp.product_warehouse_id')
                 ->where(function ($q) use ($inputs) {
                     $q->whereRaw($inputs['where']['search']['condition'], $inputs['where']['search']['params'])

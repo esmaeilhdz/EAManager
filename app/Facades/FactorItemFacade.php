@@ -4,10 +4,10 @@ namespace App\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class FactorProductFacade extends Facade
+class FactorItemFacade extends Facade
 {
     public static function getFacadeAccessor(): string
     {
-        return 'factor_product_helper';
+        return 'factor_item_helper';
     }
 }

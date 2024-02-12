@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class FactorProduct extends Model
+class FactorItem extends Model
 {
     use HasFactory;
     protected $hidden = ['factor_id', 'product_warehouse_id', 'updated_at'];
@@ -21,14 +21,13 @@ class FactorProduct extends Model
         );
     }
 
-
     public function factor()
     {
         return $this->hasOne(Factor::class, 'id', 'factor_id');
     }
 
-    public function product_warehouse()
+    public function model()
     {
-        return $this->hasOne(ProductWarehouse::class, 'id', 'product_warehouse_id');
+        return $this->morphTo();
     }
 }

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\FactorProduct;
+namespace App\Http\Requests\FactorItem;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class FactorProductAddRequest extends FormRequest
+class FactorItemAddRequest extends FormRequest
 {
 
     /**
@@ -38,12 +38,11 @@ class FactorProductAddRequest extends FormRequest
     {
         return [
             'code' => 'required|string|size:32',
-            'product_warehouse_id' => 'required|numeric|min:1',
-            'free_size_count' => 'required|numeric|min:1',
-            'size1_count' => 'required|numeric|min:1',
-            'size2_count' => 'required|numeric|min:1',
-            'size3_count' => 'required|numeric|min:1',
-            'size4_count' => 'required|numeric|min:1',
+            'item_type' => 'required|string|in:accessory,product,cloth',
+            'item_id' => 'required',
+            'pack_count' => 'nullable|numeric|min:1',
+            'metre' => 'nullable|numeric|min:1',
+            'count' => 'nullable|numeric|min:1',
             'price' => 'required|numeric|min:1',
         ];
     }

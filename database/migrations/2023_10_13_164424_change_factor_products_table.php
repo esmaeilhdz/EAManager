@@ -16,7 +16,7 @@ class ChangeFactorProductsTable extends Migration
         Schema::rename('factor_products', 'factor_items');
         Schema::table('factor_items', function (Blueprint $table) {
             $table->morphs('model');
-            $table->dropForeign('factor_products_product_warehouse_id_foreign');
+            $table->dropForeign('factor_items_product_warehouse_id_foreign');
             $table->dropColumn('product_warehouse_id');
 
             $table->unsignedInteger('free_size_count')->nullable()->change();

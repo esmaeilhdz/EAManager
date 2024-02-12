@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\FactorProduct;
+namespace App\Http\Requests\FactorItem;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class FactorProductEditRequest extends FormRequest
+class FactorItemEditRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

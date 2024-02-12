@@ -14,7 +14,7 @@ use App\Helpers\ClothSellHelper;
 use App\Helpers\ClothWarehouseHelper;
 use App\Helpers\EnumerationHelper;
 use App\Helpers\FactorPaymentHelper;
-use App\Helpers\FactorProductHelper;
+use App\Helpers\FactorItemHelper;
 use App\Helpers\GroupConversationHelper;
 use App\Helpers\ChatGroupPersonHelper;
 use App\Helpers\ChatHelper;
@@ -83,7 +83,7 @@ class HelperServiceProvider extends ServiceProvider
         App::alias(AddressHelper::class, 'address_helper');
         App::alias(InvoiceHelper::class, 'invoice_helper');
         App::alias(FactorHelper::class, 'factor_helper');
-        App::alias(FactorProductHelper::class, 'factor_product_helper');
+        App::alias(FactorItemHelper::class, 'factor_item_helper');
         App::alias(FactorPaymentHelper::class, 'factor_payment_helper');
         App::alias(AttachmentHelper::class, 'attachment_helper');
         App::alias(PaymentHelper::class, 'payment_helper');

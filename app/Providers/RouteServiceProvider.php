@@ -316,7 +316,7 @@ class RouteServiceProvider extends ServiceProvider
         Route::prefix('api')
             ->middleware('api')
             ->namespace($this->namespace)
-            ->group(base_path('routes/factor_product.php'));
+            ->group(base_path('routes/factor_item.php'));
 
         Route::prefix('api')
             ->middleware('api')

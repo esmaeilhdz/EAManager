@@ -5,9 +5,11 @@ namespace App\Helpers;
 use App\Repositories\Interfaces\iCustomer;
 use App\Repositories\Interfaces\iFactor;
 use App\Repositories\Interfaces\iFactorPayment;
-use App\Repositories\Interfaces\iFactorProduct;
+use App\Repositories\Interfaces\iFactorItem;
 use App\Repositories\Interfaces\iProductWarehouse;
 use App\Repositories\Interfaces\iRequestProductWarehouse;
+use App\Repositories\Interfaces\iWarehouse;
+use App\Repositories\Interfaces\iWarehouseItem;
 use App\Traits\Common;
 use App\Traits\FactorTrait;
 use App\Traits\RequestProductWarehouseTrait;
@@ -28,26 +30,28 @@ class FactorHelper
     // attributes
     public iFactor $factor_interface;
     public iCustomer $customer_interface;
-    public iFactorProduct $factor_product_interface;
+    public iFactorItem $factor_item_interface;
     public iFactorPayment $factor_payment_interface;
-    public iProductWarehouse $product_warehouse_interface;
-    public iRequestProductWarehouse $request_product_interface;
+    public iWarehouse $warehouse_interface;
+    public iWarehouseItem $warehouse_item_interface;
+//    public iProductWarehouse $product_warehouse_interface;
+//    public iRequestProductWarehouse $request_product_interface;
 
     public function __construct(
         iFactor                  $factor_interface,
         iCustomer                $customer_interface,
-        iFactorProduct           $factor_product_interface,
+        iFactorItem              $factor_item_interface,
         iFactorPayment           $factor_payment_interface,
-        iProductWarehouse        $product_warehouse_interface,
-        iRequestProductWarehouse $request_product_interface,
+        iWarehouse               $warehouse_interface,
+        iWarehouseItem           $warehouse_item_interface
     )
     {
         $this->factor_interface = $factor_interface;
         $this->customer_interface = $customer_interface;
-        $this->factor_product_interface = $factor_product_interface;
+        $this->factor_item_interface = $factor_item_interface;
         $this->factor_payment_interface = $factor_payment_interface;
-        $this->product_warehouse_interface = $product_warehouse_interface;
-        $this->request_product_interface = $request_product_interface;
+        $this->warehouse_interface = $warehouse_interface;
+        $this->warehouse_item_interface = $warehouse_item_interface;
     }
 
     /**
@@ -166,10 +170,8 @@ class FactorHelper
         $select = ['id', 'code', 'customer_id', 'factor_no', 'has_return_permission', 'is_credit', 'status', 'settlement_date', 'returned_at', 'final_price', 'description'];
         $relation = [
             'customer:id,code,name,mobile,score',
-            'factor_products:factor_id,product_warehouse_id,free_size_count,size1_count,size2_count,size3_count,size4_count,price',
-            'factor_products.product_warehouse:id,product_id,product_model_id',
-            'factor_products.product_warehouse.product:id,name',
-            'factor_products.product_warehouse.product_model:id,product_id,name',
+            'factor_items:model_type,model_id,factor_id,pack_count,count,metre,price',
+            'factor_items.model',
             'factor_payments:factor_id,payment_type_id,description,price',
             'factor_payments.payment_type:enum_id,enum_caption',
         ];
@@ -187,16 +189,14 @@ class FactorHelper
             'gregorian' => $factor->returned_at,
         ];
 
-        $factor_products = [];
-        foreach ($factor->factor_products as $factor_product) {
-            $factor_products[] = [
-                'free_size_count' => $factor_product->free_size_count,
-                'size1_count' => $factor_product->size1_count,
-                'size2_count' => $factor_product->size2_count,
-                'size3_count' => $factor_product->size3_count,
-                'size4_count' => $factor_product->size4_count,
-                'price' => $factor_product->price,
-                'product' => $factor_product->product_warehouse->product->name . ' - ' . $factor_product->product_warehouse->product_model->name
+        $factor_items = [];
+        foreach ($factor->factor_items as $factor_item) {
+            $factor_items[] = [
+                'pack_count' => $factor_item->pack_count,
+                'count' => $factor_item->count,
+                'metre' => $factor_item->metre,
+                'price' => $factor_item->price,
+                'item' => $factor_item?->model?->name
             ];
         }
 
@@ -213,7 +213,7 @@ class FactorHelper
         }
 
         $factor = $factor->toArray();
-        $factor['factor_products'] = $factor_products;
+        $factor['factor_items'] = $factor_items;
         $factor['factor_payments'] = $factor_payments;
 
         return [
@@ -257,10 +257,8 @@ class FactorHelper
             ];
         }
         $inputs['customer_id'] = $customer->id;
-
         // ویرایش فاکتور
-        $result = $this->factor_interface->editFactor($factor, $inputs);
-
+        $this->factor_interface->editFactor($factor, $inputs);
         return [
             'result' => $result,
             'message' => $result ? __('messages.success') : __('messages.fail'),
@@ -295,6 +293,8 @@ class FactorHelper
             ];
         }
 
+        $warehouse = $this->warehouse_interface->getWarehouses($inputs, $user);
+
         DB::beginTransaction();
         $result[] = $this->factor_interface->changeStatusFactor($factor, $inputs);
 
@@ -307,20 +307,18 @@ class FactorHelper
         foreach ($change_status_data['data']['params'] as $key => $param) {
             if (isset($param['sign'])) {
                 if ($param['sign'] == 'plus') {
-                    $param['free_size_count'] = $change_status_data['data']['factor_products'][$key]->product_warehouse->free_size_count + $param['free_size_count'];
-                    $param['size1_count'] = $change_status_data['data']['factor_products'][$key]->product_warehouse->size1_count + $param['size1_count'];
-                    $param['size2_count'] = $change_status_data['data']['factor_products'][$key]->product_warehouse->size2_count + $param['size2_count'];
-                    $param['size3_count'] = $change_status_data['data']['factor_products'][$key]->product_warehouse->size3_count + $param['size3_count'];
-                    $param['size4_count'] = $change_status_data['data']['factor_products'][$key]->product_warehouse->size4_count + $param['size4_count'];
+                    $param['pack_count'] = $change_status_data['data']['factor_items'][$key]->product_warehouse->free_size_count + $param['pack_count'];
+                    $param['metre'] = $change_status_data['data']['factor_items'][$key]->product_warehouse->size1_count + $param['metre'];
+                    $param['count'] = $change_status_data['data']['factor_items'][$key]->product_warehouse->size2_count + $param['count'];
                 } elseif ($param['sign'] == 'minus') {
-                    $param['free_size_count'] = $change_status_data['data']['factor_products'][$key]->product_warehouse->free_size_count - $param['free_size_count'];
-                    $param['size1_count'] = $change_status_data['data']['factor_products'][$key]->product_warehouse->size1_count - $param['size1_count'];
-                    $param['size2_count'] = $change_status_data['data']['factor_products'][$key]->product_warehouse->size2_count - $param['size2_count'];
-                    $param['size3_count'] = $change_status_data['data']['factor_products'][$key]->product_warehouse->size3_count - $param['size3_count'];
-                    $param['size4_count'] = $change_status_data['data']['factor_products'][$key]->product_warehouse->size4_count - $param['size4_count'];
+                    $param['pack_count'] = $change_status_data['data']['factor_items'][$key]->product_warehouse->free_size_count - $param['pack_count'];
+                    $param['metre'] = $change_status_data['data']['factor_items'][$key]->product_warehouse->size1_count - $param['metre'];
+                    $param['count'] = $change_status_data['data']['factor_items'][$key]->product_warehouse->size2_count - $param['count'];
                 }
             }
-            $result[] = $this->product_warehouse_interface->editProductWarehouse($change_status_data['data']['factor_products'][$key]->product_warehouse, $param);
+
+            $result[] = $this->warehouse_item_interface->editWarehouseItem();
+//            $result[] = $this->product_warehouse_interface->editProductWarehouse($change_status_data['data']['factor_items'][$key]->product_warehouse, $param);
         }
 
         if (!in_array(false, $result)) {
@@ -393,7 +391,7 @@ class FactorHelper
 
         DB::beginTransaction();
         $result[] = $this->factor_interface->deleteFactor($factor);
-        $result[] = $this->factor_product_interface->deleteFactorProducts($factor->id);
+        $result[] = $this->factor_item_interface->deleteFactorItems($factor->id);
         $result[] = $this->factor_payment_interface->deleteFactorPayments($factor->id);
 
         $result = $this->prepareTransactionArray($result);

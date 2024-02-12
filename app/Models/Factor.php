@@ -66,9 +66,9 @@ class Factor extends Model
     }
 
 
-    public function factor_products()
+    public function factor_items()
     {
-        return $this->hasMany(FactorProduct::class, 'factor_id', 'id');
+        return $this->hasMany(FactorItem::class, 'factor_id', 'id');
     }
 
     public function factor_payments()

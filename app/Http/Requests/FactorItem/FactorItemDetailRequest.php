@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Http\Requests\FactorProduct;
+namespace App\Http\Requests\FactorItem;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class FactorProductListRequest extends FormRequest
+class FactorItemDetailRequest extends FormRequest
 {
-
     /**
      * Prepare the data for validation.
      *
@@ -16,6 +15,7 @@ class FactorProductListRequest extends FormRequest
     {
         $this->merge([
             'code' => $this->code,
+            'id' => $this->id,
         ]);
     }
 
@@ -38,9 +38,7 @@ class FactorProductListRequest extends FormRequest
     {
         return [
             'code' => 'required|string|size:32',
-            'page' => 'required|numeric|min:1',
-            'per_page' => 'required|numeric',
-            'search_txt' => 'nullable|string',
+            'id' => 'required|numeric|min:1',
         ];
     }
 }
