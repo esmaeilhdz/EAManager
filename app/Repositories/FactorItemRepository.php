@@ -94,6 +94,8 @@ class FactorItemRepository implements Interfaces\iFactorItem
             $factor_item->metre = $inputs['metre'] ?? null;
             $factor_item->count = $inputs['count'] ?? null;
             $factor_item->price = $inputs['price'];
+            $factor_item->discount_type_id = $inputs['discount_type_id'];
+            $factor_item->discount = $inputs['discount'];
 
             $result = $factor_item->save();
 

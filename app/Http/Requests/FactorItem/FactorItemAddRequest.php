@@ -44,6 +44,8 @@ class FactorItemAddRequest extends FormRequest
             'metre' => 'nullable|numeric|min:1',
             'count' => 'nullable|numeric|min:1',
             'price' => 'required|numeric|min:1',
+            'discount_type_id' => 'nullable|numeric|min:1',
+            'discount' => 'nullable|numeric|min:1',
         ];
     }
 }

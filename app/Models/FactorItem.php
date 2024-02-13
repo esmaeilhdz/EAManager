@@ -26,6 +26,12 @@ class FactorItem extends Model
         return $this->hasOne(Factor::class, 'id', 'factor_id');
     }
 
+    public function discount_type()
+    {
+        return $this->hasOne(Enumeration::class, 'enum_id', 'discount_type_id')
+            ->where('category_name', 'discount_type');
+    }
+
     public function model()
     {
         return $this->morphTo();

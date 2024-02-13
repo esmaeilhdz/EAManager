@@ -76,9 +76,10 @@ class FactorItemHelper
             ];
         }
 
-        $select = ['id', 'factor_id', 'pack_count', 'metre', 'price'];
+        $select = ['id', 'factor_id', 'pack_count', 'metre', 'price', 'discount_type_id', 'discount'];
         $relation = [
-            'model'
+            'model',
+            'discount_type:enum_id,enum_caption'
         ];
         $factor_items = $this->factor_item_interface->getByFactorId($factor->id, $inputs, $select, $relation);
 
@@ -91,6 +92,11 @@ class FactorItemHelper
                 'pack_count' => $item->pack_count,
                 'metre' => $item->metre,
                 'price' => $item->price,
+                'discount_type' => [
+                    'id' => $item->discount_type->enum_id,
+                    'caption' => $item->discount_type->enum_caption
+                ],
+                'discount' => $item->discount,
             ];
         });
 
@@ -118,9 +124,10 @@ class FactorItemHelper
             ];
         }
 
-        $select = ['id', 'factor_id', 'pack_count', 'metre', 'price'];
+        $select = ['id', 'factor_id', 'pack_count', 'metre', 'price', 'discount_type_id', 'discount'];
         $relation = [
             'model',
+            'discount_type:enum_id,enum_caption'
         ];
         $factor_item = $this->factor_item_interface->getById($factor->id, $inputs['id'], $select, $relation);
 
